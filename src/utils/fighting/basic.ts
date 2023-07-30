@@ -1,41 +1,32 @@
-import {
-  Elements,
-  MultiplierBonuses,
-} from "@config/globalConstants/fighting/basic";
 import { drawingResult } from "@models/game/basic";
 import {
   convertPercentSuccessIntoSuccessMinNumber,
   isSuccess,
 } from "@utils/DrawsUtils";
+import {
+  ElementalTypeConfig,
+  ElementalTypesInteractions,
+  Elements,
+} from "@models/fight/ElementalTypesModels";
+import {
+  defaultElementalTypeConfig,
+  elementalTypesGlobalConfig,
+} from "@config/globalConstants/fighting/Elements/elementTypesConfig";
 
-export const elementalMultiplier = (
-  attackerElement: string,
-  defenderElement: string
-): number => {
-  /* 
-    Elements : fire - water - plant | light - dark | null
-  */
-  let elementalMultiplier = MultiplierBonuses.BASIC;
-  if (
-    (attackerElement === Elements.LIGHT && defenderElement === Elements.DARK) ||
-    (attackerElement === Elements.DARK && defenderElement === Elements.LIGHT)
-  ) {
-    elementalMultiplier = MultiplierBonuses.EXCELLENT;
-  } else if (
-    (attackerElement === Elements.FIRE && defenderElement === Elements.PLANT) ||
-    (attackerElement === Elements.WATER && defenderElement === Elements.FIRE) ||
-    (attackerElement === Elements.PLANT && defenderElement === Elements.WATER)
-  ) {
-    elementalMultiplier = MultiplierBonuses.GOOD;
-  } else if (
-    (attackerElement === Elements.PLANT && defenderElement === Elements.FIRE) ||
-    (attackerElement === Elements.FIRE && defenderElement === Elements.WATER) ||
-    (attackerElement === Elements.WATER && defenderElement === Elements.PLANT)
-  ) {
-    elementalMultiplier = MultiplierBonuses.BAD;
+function getElementalTypeConfig(
+  atkElement: Elements,
+  defElement: Elements
+): ElementalTypeConfig {
+  // if the attacker element is not in the global config --> we return a default config that will not give any bonus/malus
+  if (!elementalTypesGlobalConfig[atkElement]) {
+    return defaultElementalTypeConfig;
   }
-  return elementalMultiplier;
-};
+  const atkTypeConfig: ElementalTypesInteractions =
+    elementalTypesGlobalConfig[atkElement]!;
+
+  // if the defender element is not in the attacker config --> we return a default config that will not give any bonus/malus
+  return atkTypeConfig.effectOn[defElement] || defaultElementalTypeConfig;
+}
 
 // Note: max luckyHitRate is fixed at 30% chance. (coresponding to successMinNumber = 70)
 //calc tel que max pour 180 luck | max-10% pour 150
@@ -74,7 +65,7 @@ export const isLuckyHit = (attackerLuck: number): boolean => {
   return res === drawingResult.SUCCESS;
 };
 export const isCriticalHit = (attackerStats, defenderStats): boolean => {
-  return true;
+  return false;
 };
 
 // speed - agility - dexterity - luck

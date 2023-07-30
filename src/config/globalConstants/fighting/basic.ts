@@ -1,11 +1,3 @@
-export enum Elements {
-  FIRE = "fire",
-  WATER = "water",
-  PLANT = "plant",
-  LIGHT = "light",
-  DARK = "dark",
-  NULL = "null",
-}
 export enum MultiplierBonuses {
   NO_EFFECT = 0,
   BAD = 0.6,
