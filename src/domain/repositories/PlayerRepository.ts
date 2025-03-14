@@ -1,7 +1,7 @@
 import { usePlayerStore } from "../database-stores/player";
 import { Result } from "../models/BasicAndTempModels";
 import { Combatant } from "../models/entitiesStats/CombatantModels";
-import { CombatantsRepository } from "./CombatantsRepository";
+import { CombatantsRepository } from "./Combatants/CombatantsRepository";
 
 export class PlayerRepository {
   private store;

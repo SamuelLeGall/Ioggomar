@@ -1,35 +1,21 @@
-import { useCombatantsStore } from "../database-stores/combatants";
-import { Result } from "../models/BasicAndTempModels";
-import { Combatant } from "../models/entitiesStats/CombatantModels";
-import { ElementalTypes } from "../models/fight/ElementalTypesModels";
+import { Combatant } from "../../models/entitiesStats/CombatantModels";
+import { ElementalTypes } from "../../models/fight/ElementalTypesModels";
+import { CombatantsRepository } from "./CombatantsRepository";
 
 export class CombatantInstanceRepository {
-  private store;
   private combatant: Combatant;
 
-  constructor(combatantId: string, store = useCombatantsStore()) {
-    const [data, error] = this.getCombatantById(combatantId);
+  constructor(combatantId: string, instanceCombatants: CombatantsRepository) {
+    const [data, error] = instanceCombatants.getCombatantById(combatantId);
 
     if (!data) {
       throw error;
     }
 
-    this.store = store;
     this.combatant = data;
   }
 
   /** Getters **/
-  getCombatantById(combatantId: string): Result<Combatant> {
-    const currentCombatant = this.store.combatants.find((combatant) => {
-      return combatant.id === combatantId;
-    });
-
-    if (!currentCombatant) {
-      return [null, new Error("Can't find the combatant for this Id")];
-    }
-
-    return [currentCombatant, null];
-  }
 
   getName(): string {
     return this.combatant.name;
@@ -88,9 +74,5 @@ export class CombatantInstanceRepository {
 
   getCombatantStoreState() {
     return this.combatant;
-  }
-  setCombatantStoreState(data: Combatant) {
-    // TODO
-    this.store.combatants = [data];
   }
 }

@@ -1,6 +1,6 @@
 import { Result } from "@src/domain/models/BasicAndTempModels";
 import { QuestState } from "@src/domain/models/quests/QuestsModels";
-import { QuestRepository } from "@src/domain/repositories/QuestsRepository";
+import { QuestRepository } from "@src/domain/repositories/Quests/QuestsRepository";
 
 export class QuestService {
   private repository: QuestRepository;

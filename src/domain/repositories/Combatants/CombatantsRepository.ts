@@ -1,6 +1,10 @@
-import { useCombatantsStore } from "../database-stores/combatants";
-import { Result } from "../models/BasicAndTempModels";
-import { Combatant } from "../models/entitiesStats/CombatantModels";
+import { useCombatantsStore } from "../../database-stores/combatants";
+import {
+  AppError,
+  AppErrorCodes,
+  Result,
+} from "../../models/BasicAndTempModels";
+import { Combatant } from "../../models/entitiesStats/CombatantModels";
 
 export class CombatantsRepository {
   private store;
@@ -24,6 +28,23 @@ export class CombatantsRepository {
     return this.getAllCombatants().filter((combatant) => {
       return combatant.type === "ALLY";
     });
+  }
+  getCombatantById(combatantId: string): Result<Combatant> {
+    const currentCombatant = this.store.combatants.find((combatant) => {
+      return combatant.id === combatantId;
+    });
+
+    if (!currentCombatant) {
+      return [
+        null,
+        new AppError(
+          "Can't find the combatant for this Id",
+          AppErrorCodes.RESOURCE_NOT_FOUND
+        ),
+      ];
+    }
+
+    return [currentCombatant, null];
   }
 
   /** Technical Actions - no actual high level user-action at this level **/

@@ -1,6 +1,6 @@
 import { drawingResult } from "@src/domain/models/BasicAndTempModels";
 import { ElementalTypes } from "@src/domain/models/fight/ElementalTypesModels";
-import { CombatantInstanceRepository } from "@src/domain/repositories/CombatantInstanceRepository";
+import { CombatantInstanceRepository } from "@src/domain/repositories/Combatants/CombatantInstanceRepository";
 import {
   isSuccess,
   convertPercentSuccessIntoSuccessMinNumber,

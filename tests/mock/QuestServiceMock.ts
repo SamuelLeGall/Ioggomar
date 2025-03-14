@@ -40,4 +40,43 @@ const acceptQuestTestCases: TestCase[] = [
   },
 ];
 
-export { acceptQuestTestCases };
+const cancelQuestTestCases: TestCase[] = [
+  {
+    name: "quest id does not exist - return an error and no data",
+    params: {
+      questId: "TEST_NON_PRESENT",
+    },
+    expected: {
+      result: null,
+      error: new AppError(
+        `No ongoing quest found for id TEST_NON_PRESENT`,
+        AppErrorCodes.QUEST_NOT_FOUND_FOR_THIS_CONTEXT
+      ),
+    },
+  },
+  {
+    name: "quest id exist but is not ongoing - return an error and no data",
+    params: {
+      questId: "loc1_quest001",
+    },
+    expected: {
+      result: null,
+      error: new AppError(
+        `No ongoing quest found for id loc1_quest001`,
+        AppErrorCodes.QUEST_NOT_FOUND_FOR_THIS_CONTEXT
+      ),
+    },
+  },
+  {
+    name: "quest id exist and is ongoing - return the data and no error",
+    params: {
+      questId: "loc1_quest002",
+    },
+    expected: {
+      result: true,
+      error: null,
+    },
+  },
+];
+
+export { acceptQuestTestCases, cancelQuestTestCases };

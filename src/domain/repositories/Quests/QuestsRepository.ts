@@ -1,14 +1,19 @@
-import { useQuestsStore } from "../database-stores/quests";
-import { AppError, AppErrorCodes, Result } from "../models/BasicAndTempModels";
+import { useQuestsStore } from "../../database-stores/quests";
+import {
+  AppError,
+  AppErrorCodes,
+  Result,
+} from "../../models/BasicAndTempModels";
 import {
   OnGoingQuest,
   OnGoingQuests,
+  questDifficulty,
   QuestItem,
   Quests,
   QuestState,
-} from "../models/quests/QuestsModels";
+} from "../../models/quests/QuestsModels";
 
-export class QuestRepository {
+export class QuestsRepository {
   private store;
 
   constructor(store = useQuestsStore()) {
@@ -38,7 +43,7 @@ export class QuestRepository {
         null,
         new AppError(
           `No quest found for id ${questId}`,
-          AppErrorCodes.QUEST_NOT_FOUND
+          AppErrorCodes.RESOURCE_NOT_FOUND
         ),
       ];
     }
@@ -57,7 +62,7 @@ export class QuestRepository {
         null,
         new AppError(
           `No ongoing quest found for id ${questId}`,
-          AppErrorCodes.QUEST_NOT_FOUND_FOR_THIS_CONTEXT
+          AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT
         ),
       ];
     }
@@ -76,7 +81,7 @@ export class QuestRepository {
         null,
         new AppError(
           `No ongoing quest found for id ${questId}`,
-          AppErrorCodes.QUEST_NOT_FOUND_FOR_THIS_CONTEXT
+          AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT
         ),
       ];
     }
@@ -93,7 +98,7 @@ export class QuestRepository {
         null,
         new AppError(
           `No ongoing quest found for id ${questId}`,
-          AppErrorCodes.QUEST_NOT_FOUND_FOR_THIS_CONTEXT
+          AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT
         ),
       ];
     }
@@ -102,9 +107,27 @@ export class QuestRepository {
     return [true, null];
   }
 
+  initNewOnGoingQuestById(
+    questId: string,
+    questDifficulty: questDifficulty
+  ): Result<OnGoingQuest> {
+    // check if the quest exist
+    const [quest, errorAllQuest] = this.getQuestById(questId);
+    if (errorAllQuest) {
+      return [null, errorAllQuest];
+    }
+
+    const questConfig = quest.configs.find(
+      (config) => config.difficulty === questDifficulty
+    );
+    if (!questConfig) {
+      questConfig;
+    }
+  }
+
   addOnGoingQuestById(questId: string): Result<true> {
     // check if the quest exist
-    const [_, errorAllQuest] = this.getQuestById(questId);
+    const [quest, errorAllQuest] = this.getQuestById(questId);
     if (errorAllQuest) {
       return [null, errorAllQuest];
     }
@@ -121,15 +144,16 @@ export class QuestRepository {
       ];
     }
 
-    // we expect to not found the ongoing quest
+    // unexpected error
     if (
-      errorOngoingQuest?.code === AppErrorCodes.QUEST_NOT_FOUND_FOR_THIS_CONTEXT
+      errorOngoingQuest.code !==
+      AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT
     ) {
-      return [true, null];
+      return [null, errorOngoingQuest];
     }
 
-    // unexpected error
-    return [null, errorOngoingQuest];
+    this.store.onGoingQuests.push(quest);
+    return [true, null];
   }
 
   addCompletedQuestById(questId: string): Result<true> {
