@@ -43,7 +43,7 @@
       </div>
       <div v-else>
         <div class="select-option-container padding-10">
-          {{ t("SelectComponent.noResult") }}
+          {{ libelles("SelectComponent.noResult") }}
         </div>
       </div>
     </div>
@@ -53,8 +53,8 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed, onMounted, Ref } from "vue";
 import clickOutsideEvent from "@directives/clickOutsideEvent";
-import { useI18n } from "vue-i18n";
-import { OptionConfig } from "@models/game/basic";
+import { OptionConfig } from "@models/BasicAndTempModels";
+import { GameService } from "@src/domain/services/GameService";
 
 export default defineComponent({
   name: "SelectComponent",
@@ -82,7 +82,7 @@ export default defineComponent({
   },
   emits: ["update:model-value"],
   setup(props: any, { emit }: any) {
-    const { t } = useI18n();
+    const libelles = new GameService().getCurrentLocalizationLibelles()
 
     // state
     const showOptions = ref(false);
@@ -167,7 +167,7 @@ export default defineComponent({
 
     return {
       props,
-      t,
+      libelles,
       selectedOptions,
       showOptions,
       inputText,

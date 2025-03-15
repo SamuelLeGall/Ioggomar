@@ -1,11 +1,11 @@
 import { Result } from "@src/domain/models/BasicAndTempModels";
 import { QuestState } from "@src/domain/models/quests/QuestsModels";
-import { QuestRepository } from "@src/domain/repositories/Quests/QuestsRepository";
+import { QuestsRepository } from "@src/domain/repositories/Quests/QuestsRepository";
 
 export class QuestService {
-  private repository: QuestRepository;
+  private repository: QuestsRepository;
 
-  constructor(repository = new QuestRepository()) {
+  constructor(repository = new QuestsRepository()) {
     this.repository = repository;
   }
 

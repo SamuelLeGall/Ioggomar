@@ -1,12 +1,18 @@
 import { useGameStore } from "../database-stores/game";
 import { OptionConfig } from "../models/BasicAndTempModels";
 import { MainSettings } from "../models/game/SettingsModels";
+import { useI18n } from "vue-i18n";
 
 export class GameRepository {
   private store;
+  private locale;
+  private libelles;
 
   constructor(store = useGameStore()) {
+    const { t, locale } = useI18n({ useScope: "global" });
     this.store = store;
+    this.locale = locale;
+    this.libelles = t;
   }
   /** Getters **/
   getLocalizationText(): string {
@@ -15,6 +21,10 @@ export class GameRepository {
 
   getLocalizationKey(): string {
     return this.store.currentLocalization.key;
+  }
+
+  getLocalizationLibelle() {
+    return this.libelles;
   }
 
   getLocalization(): OptionConfig {
@@ -42,6 +52,7 @@ export class GameRepository {
   /** Technical Actions - no actual high level user-action at this level **/
   setCurrentLocalization(newLocalization: OptionConfig): void {
     this.store.currentLocalization = newLocalization;
+    this.locale.value = newLocalization.key;
   }
 
   setCurrentDataTheme(newDataTheme: OptionConfig): void {

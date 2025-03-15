@@ -12,10 +12,9 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { useI18n } from "vue-i18n";
 import SelectComponent from "@components/UIElements/inputs/Select/SelectComponent.vue";
-import { useGameStore } from "@stores/game";
-import { OptionConfig } from "@models/game/basic";
+import { OptionConfig } from "@models/BasicAndTempModels";
+import { GameService } from "@src/domain/services/GameService";
 
 export default defineComponent({
   name: "SelectChangeData",
@@ -47,12 +46,7 @@ export default defineComponent({
   emits: ["update:model-value"],
   setup(props: any, { emit }: any) {
     // STORE
-    const gameStore = useGameStore();
-    const { setCurrentLocalization, setCurrentDataTheme } = gameStore;
-
-    // I18N
-    // change locale via `global` property
-    const { t, locale } = useI18n({ useScope: "global" });
+    const gameService  = new GameService();
 
     // METHODS
     const changeData = (option: OptionConfig) => {
@@ -71,17 +65,16 @@ export default defineComponent({
     };
 
     const changeLocalization = async (newLocalization: OptionConfig) => {
-      setCurrentLocalization(newLocalization);
-      locale.value = newLocalization.key;
+      gameService.changeLocalization(newLocalization)
     };
+
     const changeTheme = async (newTheme: OptionConfig) => {
-      setCurrentDataTheme(newTheme);
+      gameService.changeTheme(newTheme)
       document.documentElement.setAttribute("data-theme", newTheme.key);
     };
 
     return {
       changeData,
-      t,
       props,
     };
   },

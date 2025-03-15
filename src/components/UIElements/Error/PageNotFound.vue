@@ -1,16 +1,16 @@
 <template>
   <div>
-    <h1>{{ t("ErrorsMessage.PageNotFound.title") }}</h1>
+    <h1>{{ libelles("ErrorsMessage.PageNotFound.title") }}</h1>
     <p>{{ errorMessage }}</p>
     <router-link :to="{ name: 'MAIN_MENU' }">
-      {{ t("ErrorsMessage.PageNotFound.goBackMainMenu") }}
+      {{ libelles("ErrorsMessage.PageNotFound.goBackMainMenu") }}
     </router-link>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useI18n } from "vue-i18n";
+import { GameService } from "@src/domain/services/GameService";
 
 export default defineComponent({
   name: "PageNotFound",
@@ -21,10 +21,10 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { t } = useI18n();
+    const libelles = new GameService().getCurrentLocalizationLibelles()
     return {
       props,
-      t,
+      libelles,
     };
   },
 });

@@ -1,5 +1,5 @@
 import { usePlayerStore } from "../database-stores/player";
-import { Result } from "../models/BasicAndTempModels";
+import { AppError, AppErrorCodes, Result } from "../models/BasicAndTempModels";
 import { Combatant } from "../models/entitiesStats/CombatantModels";
 import { CombatantsRepository } from "./Combatants/CombatantsRepository";
 
@@ -24,7 +24,10 @@ export class PlayerRepository {
       });
 
     if (!currentCombatant) {
-      return [null, new Error("Can't find the player")];
+      return [
+        null,
+        new AppError("Can't find the player", AppErrorCodes.RESOURCE_NOT_FOUND),
+      ];
     }
 
     return [currentCombatant, null];

@@ -6,7 +6,7 @@ import {
   ElementalTypeConfig,
   ElementalTypesInteractions,
 } from "@src/domain/models/fight/ElementalTypesModels";
-import { CombatEntityService } from "./entities/CombatEntityService";
+import { CombatEntityService } from "../../entities/combat/CombatEntityService";
 
 /** FOR SOME GOOD MATHEMATICAL FONCTION FOR GRAPH (experience/damagedealt etc) - https://easings.net/ */
 class CombatSystemService {

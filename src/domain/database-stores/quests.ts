@@ -24,6 +24,8 @@ export const useQuestsStore = defineStore("quests", () => {
   const listQuests = ref<Quests>([
     {
       id: "loc1_quest001",
+      name: "Hello quest 1",
+      description: "you must do stuff",
       locationId: "loc1_tuto",
       typeQuest: questType.LOOT,
       configs: [
@@ -68,6 +70,8 @@ export const useQuestsStore = defineStore("quests", () => {
     },
     {
       id: "loc1_quest002",
+      name: "Hello quest 2",
+      description: "you must do stuff 2",
       locationId: "loc1_tavern",
       typeQuest: questType.LOOT,
       configs: [

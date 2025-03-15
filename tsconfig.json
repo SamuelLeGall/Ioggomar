@@ -38,7 +38,7 @@
         "src/router/*"
       ],
       "@stores/*": [
-        "src/stores/*"
+        "src/domain/database-stores/*"
       ],
       "@styles/*": [
         "src/styles/*"

@@ -11,7 +11,7 @@ const acceptQuestTestCases: TestCase[] = [
       result: null,
       error: new AppError(
         `No quest found for id TEST_NON_PRESENT`,
-        AppErrorCodes.QUEST_NOT_FOUND
+        AppErrorCodes.RESOURCE_NOT_FOUND
       ),
     },
   },
@@ -50,7 +50,7 @@ const cancelQuestTestCases: TestCase[] = [
       result: null,
       error: new AppError(
         `No ongoing quest found for id TEST_NON_PRESENT`,
-        AppErrorCodes.QUEST_NOT_FOUND_FOR_THIS_CONTEXT
+        AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT
       ),
     },
   },
@@ -63,7 +63,7 @@ const cancelQuestTestCases: TestCase[] = [
       result: null,
       error: new AppError(
         `No ongoing quest found for id loc1_quest001`,
-        AppErrorCodes.QUEST_NOT_FOUND_FOR_THIS_CONTEXT
+        AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT
       ),
     },
   },

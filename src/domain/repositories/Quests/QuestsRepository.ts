@@ -106,7 +106,7 @@ export class QuestsRepository {
     this.store.onGoingQuests.splice(selectedQuestIndex, 1);
     return [true, null];
   }
-
+/*
   initNewOnGoingQuestById(
     questId: string,
     questDifficulty: questDifficulty
@@ -121,9 +121,18 @@ export class QuestsRepository {
       (config) => config.difficulty === questDifficulty
     );
     if (!questConfig) {
-      questConfig;
+      return [
+        null,
+        new AppError(
+          `No quest found for this difficulty ${questDifficulty}`,
+          AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT
+        ),
+      ];
     }
+
+    return [TODO, null];
   }
+ */
 
   addOnGoingQuestById(questId: string): Result<true> {
     // check if the quest exist
@@ -152,7 +161,8 @@ export class QuestsRepository {
       return [null, errorOngoingQuest];
     }
 
-    this.store.onGoingQuests.push(quest);
+    // TODO
+    // this.store.onGoingQuests.push(onGoingQuest);
     return [true, null];
   }
 

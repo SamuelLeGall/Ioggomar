@@ -19,6 +19,11 @@ export class GameService {
     this.repository.setCurrentDataTheme(newTheme);
   }
 
+
+  getCurrentLocalizationLibelles() {
+    return this.repository.getLocalizationLibelle();
+  }
+
   getCurrentLocalization(): OptionConfig {
     return this.repository.getLocalization();
   }

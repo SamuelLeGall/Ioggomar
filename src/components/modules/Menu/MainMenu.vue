@@ -3,18 +3,18 @@
     id="main-menu-container"
     class="display-flex flex-direction-column flex-fill gap-1em flex-center"
   >
-    <h1>{{ t("MainMenuMessage.MainMenu.title") }}</h1>
-    <p>Player level {{ playerLvl }}</p>
-    <button @click="playerLvlUp(1)">lvl + 1</button>
+    <h1>{{ libelles("MainMenuMessage.MainMenu.title") }}</h1>
+<!--    <p>Player level {{ playerLvl }}</p>-->
+<!--    <button @click="playerLvlUp(1)">lvl + 1</button>-->
     <router-link :to="{ name: 'HELLO_WORLD' }"> HelloWorld </router-link>
     <button>
-      {{ t("MainMenuMessage.MainMenu.resumeButton") }}
+      {{ libelles("MainMenuMessage.MainMenu.resumeButton") }}
     </button>
     <button @click="save">
-      {{ t("MainMenuMessage.MainMenu.saveButton") }}
+      {{ libelles("MainMenuMessage.MainMenu.saveButton") }}
     </button>
     <button @click="load">
-      {{ t("MainMenuMessage.MainMenu.loadButton") }}
+      {{ libelles("MainMenuMessage.MainMenu.loadButton") }}
     </button>
     <select-change-data
       :options="settingsMapping.game.localization"
@@ -36,14 +36,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
-import { storeToRefs } from "pinia";
-import { usePlayerStore } from "@stores/player";
 import { save, load } from "@utils/SaveSystem";
-import { useGameStore } from "@stores/game";
 import settingsMapping from "@config/mappings/settingsMapping.json";
 import SelectChangeData from "@components/UIElements/inputs/Special/SelectChangeData/SelectChangeData.vue";
+import { GameService } from "@src/domain/services/GameService";
 
 export default defineComponent({
   name: "MainMenu",
@@ -51,23 +49,17 @@ export default defineComponent({
     SelectChangeData,
   },
   setup() {
-    const { t } = useI18n();
-    const playerStore = usePlayerStore();
-    const { playerLvl } = storeToRefs(playerStore);
-    const { playerLvlUp } = playerStore;
-    const modelValueTest = ref([]);
+    const gameService  = new GameService();
+    const currentLocalization = gameService.getCurrentLocalization();
+    const currentDataTheme = gameService.getCurrentTheme();
+    const libelles = gameService.getCurrentLocalizationLibelles();
 
-    const gameStore = useGameStore();
-    const { currentLocalization, currentDataTheme } = storeToRefs(gameStore);
 
     return {
-      t,
-      playerLvl,
+      libelles,
+      settingsMapping,
       currentLocalization,
       currentDataTheme,
-      settingsMapping,
-      modelValueTest,
-      playerLvlUp,
       save,
       load,
     };
@@ -82,4 +74,3 @@ export default defineComponent({
   background-color: rebeccapurple;
 }
 </style>
-src/domain/database-stores/gamesrc/domain/database-stores/player
