@@ -67,10 +67,4 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-#main-menu-container {
-  background-color: aqua;
-}
-#main-menu-container > * {
-  background-color: rebeccapurple;
-}
 </style>

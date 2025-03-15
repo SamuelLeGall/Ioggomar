@@ -80,4 +80,3 @@ export default defineComponent({
   },
 });
 </script>
-src/domain/models/game/basicsrc/domain/database-stores/game

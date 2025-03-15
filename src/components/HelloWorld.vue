@@ -5,7 +5,6 @@
   </div>
 </template>
 <script lang="ts">
-import { storeToRefs } from "pinia";
 import { defineComponent } from "vue";
 
 export default defineComponent({

@@ -182,16 +182,12 @@ export default defineComponent({
 </script>
 <style scoped lang="scss">
 .select-option-container {
-  background-color: aquamarine;
   border-bottom: 2px solid black;
 }
 .select-option-container:hover {
   cursor: pointer;
-  background-color: saddlebrown;
-  color: aquamarine;
 }
 #select-options-list-container {
-  background-color: rebeccapurple;
 }
 #multiple-select-list-values-container {
   display: flex;
@@ -203,7 +199,6 @@ export default defineComponent({
 }
 .multiple-select-value-container {
   padding: 2px 5px;
-  background-color: chartreuse;
   border: 2px black solid;
   border-radius: 5px;
   display: flex;
@@ -215,4 +210,3 @@ export default defineComponent({
   background-color: bisque !important;
 }
 </style>
-src/domain/models/game/basic
