@@ -1,4 +1,4 @@
-import { QuestService } from "@src/domain/services/quests/QuestsService";
+import { QuestService } from "@src/server/services/quests/QuestsService";
 import { acceptQuestTestCases } from "tests/mock/QuestServiceMock";
 import { TestCase } from "tests/Models/testsModels";
 import { setActivePinia, createPinia } from "pinia";

@@ -1,7 +1,7 @@
 import {
   ElementalTypesInteractions,
   ElementalTypes,
-} from "src/domain/models/fight/ElementalTypesModels";
+} from "@src/models/fight/ElementalTypesModels";
 import { defaultElementalTypeConfig } from "./elementTypesConfig";
 
 export const fireElementalTypeConfig: ElementalTypesInteractions = {

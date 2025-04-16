@@ -1,7 +1,7 @@
 import {
   Difficulties,
   DifficultiesModifiers,
-} from "src/domain/models/game/difficulties/DifficultiesModifiersModels";
+} from "@src/models/game/difficulties/DifficultiesModifiersModels";
 import veryEasyDifficultyModifiers from "./veryEasyModifiers";
 import easyDifficultyModifiers from "./easyModifiers";
 import normalDifficultyModifiers from "./normalModifiers";

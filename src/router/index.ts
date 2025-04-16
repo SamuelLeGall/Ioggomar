@@ -11,18 +11,18 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/mainMenu",
     name: "MAIN_MENU",
-    component: () => import("@components/modules/Menu/MainMenu.vue"),
+    component: () => import("@components/views/MainMenu.vue"),
   },
   {
     path: "/HelloWorld",
     name: "HELLO_WORLD",
-    component: () => import("@components/HelloWorld.vue"),
+    component: () => import("@components/views/HelloWorld.vue"),
   },
   //catch 404
   {
     path: "/:catchAll(.*)",
     name: "NOTFOUND",
-    component: () => import("@components/UIElements/Error/PageNotFound.vue"),
+    component: () => import("@components/UI/UIElements/Error/PageNotFound.vue"),
   },
 ];
 

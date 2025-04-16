@@ -2,7 +2,7 @@ import {
   ElementalTypeConfig,
   ElementalTypesGlobalConfig,
   ElementalTypes,
-} from "src/domain/models/fight/ElementalTypesModels";
+} from "@src/models/fight/ElementalTypesModels";
 import { waterElementalTypeConfig } from "./waterElementalType";
 import { woodElementalTypeConfig } from "./woodElementalType";
 import { lightElementalTypeConfig } from "./lightElementalType";

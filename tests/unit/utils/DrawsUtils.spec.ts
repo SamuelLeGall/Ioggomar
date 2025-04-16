@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import * as GeneralUtilsModule from "@utils/GeneralUtils";
 import { isSuccess } from "@utils/DrawsUtils";
-import { drawingResult } from "src/domain/models/BasicAndTempModels";
+import { drawingResult } from "@src/models/BasicAndTempModels";
 import {
   isSuccessMockedDrawResult,
   drawingLimitsMock,

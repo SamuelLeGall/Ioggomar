@@ -1,7 +1,7 @@
 import {
   ExtendingDrawingLimits,
   drawingResult,
-} from "@src/domain/models/BasicAndTempModels";
+} from "@src/models/BasicAndTempModels";
 import { isEmpty, randomIntNumberInclusive } from "@utils/GeneralUtils";
 
 /* Parameters : 

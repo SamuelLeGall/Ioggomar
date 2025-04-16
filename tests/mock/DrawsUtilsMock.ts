@@ -1,4 +1,4 @@
-import { drawingResult } from "src/domain/models/BasicAndTempModels";
+import { drawingResult } from "@src/models/BasicAndTempModels";
 
 export const isSuccessMockedDrawResult = 40;
 export const drawingLimitsMock = {

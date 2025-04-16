@@ -1,4 +1,4 @@
-import { AppError, AppErrorCodes } from "@src/domain/models/BasicAndTempModels";
+import { AppError, AppErrorCodes } from "@src/models/BasicAndTempModels";
 import { TestCase } from "tests/Models/testsModels";
 
 const acceptQuestTestCases: TestCase[] = [

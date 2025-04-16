@@ -1,6 +1,6 @@
-import { GameService } from "@src/domain/services/GameService";
-import { PlayerService } from "@src/domain/services/PlayerService";
-import { QuestService } from "@src/domain/services/quests/QuestsService";
+import { GameService } from "@src/server/services/GameService";
+import { PlayerService } from "@src/server/services/PlayerService";
+import { QuestService } from "@src/server/services/quests/QuestsService";
 
 // no pinia store at root level only inside setup fonction.
 function initServices() {
@@ -19,7 +19,7 @@ export const save = async () => {
   const { gameService, questsService, playerService } = initServices();
   const saveData = {
     GameStore: gameService.exportGameState(),
-    PlayerStore: playerService.exportQuestsState(),
+    PlayerStore: playerService.exportPlayerState(),
     QuestsStore: questsService.exportQuestsState(),
   };
   const isSaved = await window.electronAPI.saveGame(JSON.stringify(saveData));
