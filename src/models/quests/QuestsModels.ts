@@ -8,7 +8,11 @@ export enum questDifficulty {
   HARD = 3,
   PAIN = 4, // to allow to filter by ASC difficulty if needed
 }
-// Interface for an individual ongoing quest
+// Interface for an individual active quest
+export interface QuestItemProgressionUpdateRequest {
+  idItem: string;
+  quantityToAdd: number;
+}
 export interface QuestItemProgression {
   idItem: string;
   currentQuantity: number;
@@ -16,12 +20,21 @@ export interface QuestItemProgression {
 }
 
 
-// Interface for the ongoing quests data structure
-export interface OnGoingQuest {
+// Interface for the active quests data structure
+export interface ActiveQuestForFrontend {
   id: string;
+  staticQuestId: string;
+  difficultyChosen: number;
+  canComplete: boolean;
   data: QuestItemProgression[];
 }
-export type OnGoingQuests = OnGoingQuest[];
+export interface ActiveQuest {
+  id: string;
+  staticQuestId: string;
+  difficultyChosen: number;
+  data: QuestItemProgression[];
+}
+export type ActiveQuests = ActiveQuest[];
 
 /** to use mostly for bonus/more difficults objectives */
 export interface questGoalItemRequirements {
@@ -60,12 +73,22 @@ export interface QuestGoalConfig {
   goals: QuestGoalSubConfig[]; // This contains the possible goals for each config
 }
 
+export interface QuestItemForFrontend {
+  id: string;
+  name: string;
+  description: string;
+  illustration: string;
+  difficulty?: number;
+  rewards?: questRewards;
+  penalities?: questPenalities;
+}
 // Interface for a single quest in the list
 export interface QuestItem {
   id: string;
   locationId: string;
   name: string;
   description: string;
+  illustration: string;
   typeQuest: questType;
   configs: QuestGoalConfig[];
 }
@@ -73,7 +96,7 @@ export type Quests = QuestItem[];
 
 // Interface for the overall quest state
 export interface QuestState {
-  onGoingQuests: OnGoingQuests;
+  activeQuests: ActiveQuests;
   completedQuests: string[]; // Array of quest IDs
   listQuests: Quests;
 }

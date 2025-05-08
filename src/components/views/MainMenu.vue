@@ -7,15 +7,15 @@
     <p>Player level {{ playerLevel }}</p>
     <button @click="updatePlayerLevel(1)">lvl + 1</button>
     <router-link :to="{ name: 'HELLO_WORLD' }"> HelloWorld </router-link>
-    <button>
-      {{ libelles("MainMenuMessage.MainMenu.resumeButton") }}
+    <button disabled>
+      {{ libelles("MainMenuMessage.MainMenu.resumeButton") }} (disabled)
     </button>
-    <button @click="save">
-      {{ libelles("MainMenuMessage.MainMenu.saveButton") }}
-    </button>
-    <button @click="load">
-      {{ libelles("MainMenuMessage.MainMenu.loadButton") }}
-    </button>
+<!--    <button @click="save">-->
+<!--      {{ libelles("MainMenuMessage.MainMenu.saveButton") }}-->
+<!--    </button>-->
+<!--    <button @click="load">-->
+<!--      {{ libelles("MainMenuMessage.MainMenu.loadButton") }}-->
+<!--    </button>-->
     <select-change-data
       :options="settingsMapping.game.localization"
       type="localization"
@@ -32,36 +32,43 @@
       :model-value="currentDataTheme"
       @update:model-value="currentDataTheme = $event"
     />
+
+    <QuestsList />
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from "vue";
-import { save, load } from "@utils/SaveSystem";
+// import { save, load } from "@utils/SaveSystem";
 import settingsMapping from "@config/mappings/settingsMapping.json";
 import SelectChangeData from "@components/UI/UIElements/inputs/Special/SelectChangeData/SelectChangeData.vue";
-import { GameService } from "@src/server/services/GameService";
-import { PlayerService } from "@src/server/services/PlayerService";
+import QuestsList from "@components/UI/modules/QuestsList.vue";
+import { PlayerApiService } from "@src/services/player/PlayerApi.service";
+import { PlayerStoreService } from "@src/services/player/PlayerStore.service";
+import { GameStoreService } from "@src/services/game/GameStore.service";
 
 export default defineComponent({
   name: "MainMenu",
   components: {
+    QuestsList,
     SelectChangeData,
   },
   setup() {
-    const gameService = new GameService();
-    const playerService = new PlayerService();
-    const currentLocalization = gameService.getCurrentLocalization();
-    const currentDataTheme = gameService.getCurrentTheme();
-    const libelles = gameService.getCurrentLocalizationLibelles();
+    const gameStoreService = new GameStoreService();
+    const playerApiService = new PlayerApiService();
+    const playerStoreService = new PlayerStoreService();
+    const currentLocalization = gameStoreService.getLocalization();
+    const currentDataTheme = gameStoreService.getDataTheme();
+    const libelles = gameStoreService.getLocalizationLibelle();
 
     const updatePlayerLevel = (nbLevelsToAdd: number) => {
-      playerService.updatePlayerLevel(nbLevelsToAdd);
+      playerApiService.updatePlayerLevel(nbLevelsToAdd);
+      playerStoreService.syncPlayerLevel();
     };
 
-    const playerLevel = computed(()=>{
-      return playerService.getPlayerLevel();
-    })
+    const playerLevel = computed(() => {
+      return playerStoreService.getPlayerLevel();
+    });
 
     return {
       libelles,
@@ -70,8 +77,8 @@ export default defineComponent({
       currentDataTheme,
       playerLevel,
       updatePlayerLevel,
-      save,
-      load,
+      // save,
+      // load,
     };
   },
 });

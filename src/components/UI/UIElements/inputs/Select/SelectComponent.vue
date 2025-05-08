@@ -54,7 +54,7 @@
 import { defineComponent, PropType, ref, computed, onMounted, Ref } from "vue";
 import clickOutsideEvent from "@directives/clickOutsideEvent";
 import { OptionConfig } from "@src/models/BasicAndTempModels";
-import { GameService } from "@src/server/services/GameService";
+import { GameStoreService } from "@src/services/game/GameStore.service";
 
 export default defineComponent({
   name: "SelectComponent",
@@ -82,7 +82,7 @@ export default defineComponent({
   },
   emits: ["update:model-value"],
   setup(props: any, { emit }: any) {
-    const libelles = new GameService().getCurrentLocalizationLibelles()
+    const libelles = new GameStoreService().getLocalizationLibelle()
 
     // state
     const showOptions = ref(false);

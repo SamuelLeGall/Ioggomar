@@ -16,14 +16,14 @@ const acceptQuestTestCases: TestCase[] = [
     },
   },
   {
-    name: "quest id exist but is already ongoing - return an error and no data",
+    name: "quest id exist but is already active - return an error and no data",
     params: {
       questId: "loc1_quest002",
     },
     expected: {
       result: null,
       error: new AppError(
-        `Quest with id loc1_quest002 already ongoing`,
+        `Quest with id loc1_quest002 already active`,
         AppErrorCodes.ACTION_NOT_ALLOWED_DATA_CONSISTENCY
       ),
     },
@@ -49,26 +49,26 @@ const cancelQuestTestCases: TestCase[] = [
     expected: {
       result: null,
       error: new AppError(
-        `No ongoing quest found for id TEST_NON_PRESENT`,
+        `No active quest found for id TEST_NON_PRESENT`,
         AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT
       ),
     },
   },
   {
-    name: "quest id exist but is not ongoing - return an error and no data",
+    name: "quest id exist but is not active - return an error and no data",
     params: {
       questId: "loc1_quest001",
     },
     expected: {
       result: null,
       error: new AppError(
-        `No ongoing quest found for id loc1_quest001`,
+        `No active quest found for id loc1_quest001`,
         AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT
       ),
     },
   },
   {
-    name: "quest id exist and is ongoing - return the data and no error",
+    name: "quest id exist and is active - return the data and no error",
     params: {
       questId: "loc1_quest002",
     },

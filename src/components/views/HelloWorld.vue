@@ -6,12 +6,12 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import { PlayerService } from "@src/server/services/PlayerService";
+import { PlayerStoreService } from "@src/services/player/PlayerStore.service";
 
 export default defineComponent({
   name: "HelloWorld",
   setup() {
-    const playerService = new PlayerService();
+    const playerService = new PlayerStoreService();
     const playerLevel = playerService.getPlayerLevel();
     return {
       playerLevel,

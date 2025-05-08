@@ -11,10 +11,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
-import SelectComponent from "@components/UI/UIElements/inputs/Select/SelectComponent.vue";
+import { defineComponent, PropType, watch } from "vue";
 import { OptionConfig } from "@src/models/BasicAndTempModels";
-import { GameService } from "@src/server/services/GameService";
+import { GameStoreService } from "@src/services/game/GameStore.service";
+import { GameApiService } from "@src/services/game/GameApi.service";
+import SelectComponent from "@components/UI/UIElements/inputs/Select/SelectComponent.vue";
 
 export default defineComponent({
   name: "SelectChangeData",
@@ -46,7 +47,8 @@ export default defineComponent({
   emits: ["update:model-value"],
   setup(props: any, { emit }: any) {
     // STORE
-    const gameService  = new GameService();
+    const gameStoreService  = new GameStoreService();
+    const gameApiService  = new GameApiService();
 
     // METHODS
     const changeData = (option: OptionConfig) => {
@@ -65,12 +67,13 @@ export default defineComponent({
     };
 
     const changeLocalization = async (newLocalization: OptionConfig) => {
-      gameService.changeLocalization(newLocalization)
+      gameApiService.changeLocalization(newLocalization)
+      gameStoreService.syncLocalization();
     };
 
     const changeTheme = async (newTheme: OptionConfig) => {
-      gameService.changeTheme(newTheme)
-      document.documentElement.setAttribute("data-theme", newTheme.key);
+      gameApiService.changeTheme(newTheme)
+      gameStoreService.syncTheme();
     };
 
     return {

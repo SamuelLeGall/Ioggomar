@@ -6,6 +6,10 @@ declare module "*.vue" {
   const component: DefineComponent<{}, {}, any>;
   export default component;
 }
-interface Window {
-  electronAPI: any;
+interface ElectronAPI {
+  saveGame: (data: any) => Promise<boolean>;
+  loadGame: () => Promise<any>;
+}
+interface Window extends Window {
+  electronAPI: ElectronAPI;
 }
