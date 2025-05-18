@@ -5,14 +5,16 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import { PlayerStoreService } from "@src/services/player/PlayerStore.service";
 
 export default defineComponent({
   name: "HelloWorld",
   setup() {
     const playerService = new PlayerStoreService();
-    const playerLevel = playerService.getPlayerLevel();
+    const playerLevel = computed(() => {
+      return playerService.getPlayer().level;
+    });
     return {
       playerLevel,
     };

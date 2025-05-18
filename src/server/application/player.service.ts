@@ -1,4 +1,7 @@
 import { PlayerRepository } from "@src/server/infrastructure/repositories/PlayerRepository";
+import { PlayerForFrontend } from "@src/models/player/PlayerModels";
+import { AppError, AppErrorCodes, Result } from "@src/models/BasicAndTempModels";
+import { toPlayerForFrontend } from "@src/server/domain/mappers/PlayerMappers";
 
 export class PlayerService {
   private repository: PlayerRepository;
@@ -7,34 +10,44 @@ export class PlayerService {
     this.repository = repository;
   }
 
+  getPlayer(): Result<PlayerForFrontend>{
+    try {
+      const player = this.repository.get();
+      return [
+        toPlayerForFrontend(player),
+        null,
+      ];
+    }catch (e) {
+      console.error("getPlayer - unexpected error:", e);
+      return [
+        null,
+        new AppError(
+          "getPlayer - unexpected error:",
+          AppErrorCodes.ERROR_NOT_FOUND
+        ),
+      ];
+    }
+  }
+
+  levelUp(nbLevelsToAdd: number):Result<true> {
+    try {
+      const player = this.repository.get();
+      player.levelUp(nbLevelsToAdd);
+      this.repository.update(player);
+      return [true,null]
+    }catch (e) {
+      return [
+        null,
+        new AppError(
+          "Player - levelUp - unexpected error:",
+          AppErrorCodes.ERROR_NOT_FOUND
+        ),
+      ]
+    }
+  }
+
   engageDiscussion() {
     // TODO
     return true;
   }
-
-  getPlayerLevel():number{
-    try {
-      return this.repository.getPlayerLevel();
-    }catch (e) {
-      console.error("getPlayerLevel - unexpected error:", e);
-      return 0;
-    }
-  }
-  updatePlayerLevel(nbLevelsToAdd:number):void{
-    try {
-      this.repository.updatePlayerLevel(nbLevelsToAdd);
-    }catch (e) {
-      console.error("updatePlayerLevel - unexpected error:", e);
-    }
-  }
-
-  // exportPlayerState() {
-  //   return this.repository.getPlayerStoreState();
-  // }
-  //
-  // initializePlayerState(data: any) {
-  //   this.repository.setPlayerStoreState(data);
-  // }
-
-  // player-specific actions
 }

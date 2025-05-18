@@ -62,12 +62,12 @@ export default defineComponent({
     const libelles = gameStoreService.getLocalizationLibelle();
 
     const updatePlayerLevel = (nbLevelsToAdd: number) => {
-      playerApiService.updatePlayerLevel(nbLevelsToAdd);
-      playerStoreService.syncPlayerLevel();
+      playerApiService.levelUp(nbLevelsToAdd);
+      playerStoreService.syncPlayer();
     };
 
     const playerLevel = computed(() => {
-      return playerStoreService.getPlayerLevel();
+      return playerStoreService.getPlayer().level;
     });
 
     return {

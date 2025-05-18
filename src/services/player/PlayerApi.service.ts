@@ -1,4 +1,5 @@
 import { PlayerService } from "@src/server/application/player.service";
+import { PlayerForFrontend } from "@src/models/player/PlayerModels";
 
 export class PlayerApiService {
   private backendService: PlayerService;
@@ -10,11 +11,17 @@ export class PlayerApiService {
     this.backendService = backendService;
   }
 
-  getPlayerLevel(): number {
-    return this.backendService.getPlayerLevel();
+  getPlayer(): PlayerForFrontend | undefined {
+    const [player] =  this.backendService.getPlayer();
+    if (!player) {
+      return;
+    }
+    return player;
   }
-  updatePlayerLevel(nbLevelsToAdd: number): void {
-    this.backendService.updatePlayerLevel(nbLevelsToAdd);
+
+  levelUp(nbLevelsToAdd: number): boolean {
+    const [success] = this.backendService.levelUp(nbLevelsToAdd);
+    return Boolean(success)
   }
 
   // player-specific actions

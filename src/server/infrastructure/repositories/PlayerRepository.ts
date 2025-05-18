@@ -1,39 +1,33 @@
 import { Document } from "@src/server/infrastructure/db/Document";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
+import { PlayerEntity } from "@src/server/domain/entities/PlayerEntity";
+import { PlayerI } from "@src/models/player/PlayerModels";
 
 export class PlayerRepository {
-  private database: Document<{ playerLevel: number }>;
+  private database: Document<PlayerI>;
 
   constructor(database = new LocalDatabase()) {
     this.database = database.player;
   }
 
-  // TODO ATTENTION A CombatEntitiesService qui semble etre un peu comme ce playerRepository/service....
-  // et semble avoir des méthodes mal placés ?
-
-  /** Getters **/
-  getPlayerLevel():number{
-    return this.database.get().playerLevel;
+  /** Private Getters */
+  private toDB(entity: PlayerEntity): PlayerI {
+    return {
+      playerLevel:entity.getLevel()
+    };
   }
 
-  updatePlayerLevel(nbLevelsToAdd:number){
-    this.database.update((doc) => {
-      return {
-        ...doc,
-        playerLevel: doc.playerLevel + nbLevelsToAdd,
-      }
-    });
+  private toEntity(data: PlayerI): PlayerEntity {
+    return PlayerEntity.fromData(data);
   }
 
-  /** Technical Actions - no actual high level user-action at this level **/
-  engageDiscussion() {
-    // TODO (ceci est une fonction example)
+  public get():PlayerEntity{
+    return this.toEntity(this.database.get());
   }
 
-  getPlayerStoreState() {
-    return {};
-  }
-  setPlayerStoreState(data: any) {
-    // TODO
+  public update(entity:PlayerEntity):void{
+    this.database.update(()=>{
+      return this.toDB(entity)
+    })
   }
 }

@@ -13,6 +13,6 @@ onMounted(()=>{
 
   gameStoreService.syncLocalization();
   gameStoreService.syncTheme();
-  playerStoreService.syncPlayerLevel();
+  playerStoreService.syncPlayer();
 })
 </script>

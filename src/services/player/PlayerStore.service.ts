@@ -1,5 +1,6 @@
 import { usePlayerStore } from "@src/store/player";
 import { PlayerApiService } from "@src/services/player/PlayerApi.service";
+import { PlayerForFrontend } from "@src/models/player/PlayerModels";
 
 export class PlayerStoreService {
   private store;
@@ -10,10 +11,14 @@ export class PlayerStoreService {
     this.api = api;
   }
 
-  getPlayerLevel(): number {
-    return this.store.playerLevel;
+  getPlayer():PlayerForFrontend  {
+    return this.store.player;
   }
-  syncPlayerLevel() {
-    this.store.playerLevel = this.api.getPlayerLevel();
+  syncPlayer() {
+    const newValue = this.api.getPlayer();
+    if (!newValue) {
+      return;
+    }
+    this.store.player = newValue;
   }
 }

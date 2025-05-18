@@ -14,6 +14,7 @@ import {
 import { Combatant } from "@src/models/entitiesStats/CombatantModels";
 import { Collection } from "@src/server/infrastructure/db/Collection";
 import {Document} from "@src/server/infrastructure/db/Document";
+import { PlayerI } from "@src/models/player/PlayerModels";
 
 export type GameDatabase = {
   readonly: {
@@ -22,7 +23,7 @@ export type GameDatabase = {
   };
   session: {
     activeQuests: ActiveQuests;
-    player: { playerLevel: number };
+    player: PlayerI;
     gameSettings: gameCollectionModel;
   };
 };
@@ -66,7 +67,7 @@ export class LocalDatabase {
     }
   );
 
-  readonly player = new Document<{ playerLevel: number }>(
+  readonly player = new Document<PlayerI>(
     () => this.load().session.player,
     (data) => {
       const db = this.load();
