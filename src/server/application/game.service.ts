@@ -49,30 +49,30 @@ export class GameService {
     }
   }
 
-  // initializeGameState(savedState: MainSettings) {
-  //   try {
-  //     if (savedState) {
-  //       this.repository.setGameStoreState(savedState);
-  //     } else {
-  //       // Optionally set default state if no saved state exists
-  //       this.repository.setCurrentLocalization({
-  //         key: "en_US",
-  //         value: "English",
-  //       });
-  //       this.repository.setCurrentDataTheme({ key: "light", value: "Light" });
-  //     }
-  //   }catch (e) {
-  //     console.error("initializeGameState - unexpected error:", e);
-  //   }
-  // }
+  initializeGameState(savedState: MainSettings) {
+    try {
+      if (savedState) {
+        this.repository.setGameStoreState(savedState);
+      } else {
+        // Optionally set default state if no saved state exists
+        this.repository.setCurrentLocalization({
+          key: "en_US",
+          value: "English",
+        });
+        this.repository.setCurrentDataTheme({ key: "light", value: "Light" });
+      }
+    }catch (e) {
+      console.error("initializeGameState - unexpected error:", e);
+    }
+  }
 
-  // exportGameState(): MainSettings {
-  //   return this.repository.getGameStoreState();
-  // }
+  exportGameState(): MainSettings {
+    return this.repository.getGameStoreState();
+  }
 
-  // resetGameSettings() {
-  //   // Reset to default values
-  //   this.repository.setCurrentLocalization({ key: "en_US", value: "English" });
-  //   this.repository.setCurrentDataTheme({ key: "light", value: "Light" });
-  // }
+  resetGameSettings() {
+    // Reset to default values
+    this.repository.setCurrentLocalization({ key: "en_US", value: "English" });
+    this.repository.setCurrentDataTheme({ key: "light", value: "Light" });
+  }
 }

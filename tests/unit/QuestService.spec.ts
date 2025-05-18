@@ -1,7 +1,8 @@
-import { QuestService } from "@src/server/application/quests/QuestsService";
 import { acceptQuestTestCases } from "tests/mock/QuestServiceMock";
 import { TestCase } from "tests/Models/testsModels";
-import { setActivePinia, createPinia } from "pinia";
+import { createPinia, setActivePinia } from "pinia";
+import { QuestService } from "@src/server/application/quests/quest.service";
+import { questDifficulty } from "@src/models/quests/QuestsModels";
 
 describe("Test of QuestService - acceptQuest", () => {
   beforeEach(() => {
@@ -14,7 +15,10 @@ describe("Test of QuestService - acceptQuest", () => {
 
       // when
       const questInstance = new QuestService();
-      const [result, error] = questInstance.acceptQuest(questId);
+      const [result, error] = questInstance.acceptQuest(
+        questId,
+        questDifficulty.MEDIUM
+      );
 
       // then
       if (testCase.expected.error) {

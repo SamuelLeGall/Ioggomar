@@ -1,21 +1,23 @@
-import { gameCollection } from "@src/server/infrastructure/db/game";
 import { OptionConfig } from "@src/models/BasicAndTempModels";
 import { MainSettings } from "@src/models/game/SettingsModels";
+import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
+import { gameCollectionModel } from "@src/server/infrastructure/db/collections/defaultValues/game.default";
+import {Document} from "@src/server/infrastructure/db/Document";
 
 export class GameRepository {
-  private database;
+  private database: Document<gameCollectionModel>;
 
-  constructor(database = gameCollection) {
-    this.database = database;
+  constructor(database = new LocalDatabase()) {
+    this.database = database.gameSettings;
   }
 
   /** Getters **/
   getLocalizationText(): string {
-    return this.database.currentLocalization.value;
+    return this.database.get().currentLocalization.value;
   }
 
   getLocalizationKey(): string {
-    return this.database.currentLocalization.key;
+    return this.database.get().currentLocalization.key;
   }
 
   getLocalization(): OptionConfig {
@@ -26,11 +28,11 @@ export class GameRepository {
   }
 
   getDataThemeText(): string {
-    return this.database.currentDataTheme.value;
+    return this.database.get().currentDataTheme.value;
   }
 
   getDataThemeKey(): string {
-    return this.database.currentDataTheme.key;
+    return this.database.get().currentDataTheme.key;
   }
 
   getDataTheme(): OptionConfig {
@@ -42,11 +44,22 @@ export class GameRepository {
 
   /** Technical Actions - no actual high level user-action at this level **/
   setCurrentLocalization(newLocalization: OptionConfig): void {
-    this.database.currentLocalization = newLocalization;
+    this.database.update((doc:gameCollectionModel) => {
+      return {
+        ...doc,
+        currentLocalization: newLocalization
+      }
+    });
   }
 
   setCurrentDataTheme(newDataTheme: OptionConfig): void {
-    this.database.currentDataTheme = newDataTheme;
+    // we update the DB
+    this.database.update((doc:gameCollectionModel) => {
+      return {
+        ...doc,
+        currentDataTheme: newDataTheme
+      }
+    });
   }
 
   getGameStoreState(): MainSettings {
@@ -55,6 +68,7 @@ export class GameRepository {
       currentDataTheme: this.getDataTheme(),
     };
   }
+
   setGameStoreState(data: MainSettings): void {
     this.setCurrentLocalization(data.currentLocalization);
     this.setCurrentDataTheme(data.currentDataTheme);

@@ -1,29 +1,21 @@
-import { ActiveQuest, ActiveQuests } from "@src/models/quests/QuestsModels";
+import { ActiveQuest } from "@src/models/quests/QuestsModels";
 import {
   AppError,
   AppErrorCodes,
   Result,
 } from "@src/models/BasicAndTempModels";
 import { ActiveQuestEntity } from "@src/server/domain/entities/OnGoingQuestEntity";
+import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
+import { Collection } from "@src/server/infrastructure/db/Collection";
 
 export class ActiveQuestRepository {
-  private storage: Storage;
-  private keyDB = "activeQuests";
+  private database: Collection<ActiveQuest>;
 
-  constructor(localStorageParam = localStorage) {
-    this.storage = localStorageParam;
+  constructor(database = new LocalDatabase()) {
+    this.database = database.activeQuests;
   }
 
   /** Private Getters */
-  private getActiveQuestsDB(): ActiveQuests {
-    const questsDB = this.storage.getItem(this.keyDB);
-    if (questsDB && Array.isArray(JSON.parse(questsDB))) {
-      return JSON.parse(questsDB);
-    }
-
-    return [];
-  }
-
   private toDB(entity: ActiveQuestEntity): ActiveQuest {
     return {
       id: entity.getId(),
@@ -40,16 +32,14 @@ export class ActiveQuestRepository {
   /** Public Getters */
   public getAll(): ActiveQuestEntity[] {
     const result: ActiveQuestEntity[] = [];
-    this.getActiveQuestsDB().forEach((questDB: ActiveQuest) => {
+    this.database.getAll().forEach((questDB: ActiveQuest) => {
       result.push(this.toEntity(questDB));
     });
     return result;
   }
 
   public getById(questId: string): Result<ActiveQuestEntity> {
-    const selectedQuest = this.getAll().find((quest: ActiveQuestEntity) => {
-      return quest.getId() === questId;
-    });
+    const selectedQuest = this.database.getById(questId);
     if (!selectedQuest) {
       return [
         null,
@@ -60,29 +50,17 @@ export class ActiveQuestRepository {
       ];
     }
 
-    return [selectedQuest, null];
+    return [this.toEntity(selectedQuest), null];
   }
 
   public removeById(questId: string): Result<true> {
-    const updated = this.getAll()
-      .filter((quest: ActiveQuestEntity) => {
-        return quest.getId() !== questId;
-      })
-      .map((questEntity) => this.toDB(questEntity));
-
-    // we update the DB
-    this.storage.setItem(this.keyDB, JSON.stringify(updated));
+    this.database.remove(questId)
 
     return [true, null];
   }
 
   public insert(quest: ActiveQuestEntity): Result<true> {
-    const quests = this.getActiveQuestsDB();
-    quests.push(this.toDB(quest));
-
-    // we update the DB
-    this.storage.setItem(this.keyDB, JSON.stringify(quests));
-    this.getActiveQuestsDB();
+    this.database.add(this.toDB(quest))
 
     return [true, null];
   }
@@ -106,11 +84,7 @@ export class ActiveQuestRepository {
       ];
     }
 
-    const state = this.getActiveQuestsDB();
-    state[selectedQuestIndex] = this.toDB(questUpdated);
-
-    // we update the DB
-    this.storage.setItem(this.keyDB, JSON.stringify(state));
+    this.database.update(questId, this.toDB(questUpdated))
 
     return [true, null];
   }

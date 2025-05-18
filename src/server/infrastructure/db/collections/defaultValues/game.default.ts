@@ -1,9 +1,10 @@
 import { OptionConfig } from "@src/models/BasicAndTempModels";
 
-interface gameCollectionModel {
+export interface gameCollectionModel {
   currentLocalization: OptionConfig;
   currentDataTheme: OptionConfig;
 }
+/** Default state - it is readonly **/
 export const gameCollection: gameCollectionModel = {
   currentLocalization: {
     key: "fr_FR",

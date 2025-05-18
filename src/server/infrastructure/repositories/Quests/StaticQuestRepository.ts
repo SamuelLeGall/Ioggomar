@@ -3,14 +3,15 @@ import {
   AppErrorCodes,
   Result,
 } from "@src/models/BasicAndTempModels";
-import { QuestItem, Quests } from "@src/models/quests/QuestsModels";
-import { questsCollection } from "@src/server/infrastructure/db/quests";
+import { QuestItem } from "@src/models/quests/QuestsModels";
 import { StaticQuestEntity } from "@src/server/domain/entities/StaticQuestEntity";
-questsCollection.listQuests
+import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
+import { Collection } from "@src/server/infrastructure/db/Collection";
+
 export class StaticQuestRepository {
-  private readonly listQuestsDB: Quests;
-  constructor(database = questsCollection.listQuests) {
-    this.listQuestsDB = database;
+  private readonly database: Collection<QuestItem>;
+  constructor(database = new LocalDatabase()) {
+    this.database = database.quests;
   }
   /** Private Getters */
   private toDB(entity: StaticQuestEntity): QuestItem {
@@ -32,16 +33,14 @@ export class StaticQuestRepository {
   /** Public Getters */
   public getAll(): StaticQuestEntity[] {
     const result: StaticQuestEntity[] = [];
-    this.listQuestsDB.forEach((questDB: QuestItem) => {
+    this.database.getAll().forEach((questDB: QuestItem) => {
       result.push(this.toEntity(questDB));
     });
     return result;
   }
 
   public getById(questId: string): Result<StaticQuestEntity> {
-    const selectedQuest = this.getAll().find((quest: StaticQuestEntity) => {
-      return quest.getQuestId() === questId;
-    });
+    const selectedQuest = this.database.getById(questId);
     if (!selectedQuest) {
       return [
         null,
@@ -52,6 +51,6 @@ export class StaticQuestRepository {
       ];
     }
 
-    return [selectedQuest, null];
+    return [this.toEntity(selectedQuest), null];
   }
 }

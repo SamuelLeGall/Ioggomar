@@ -1,10 +1,11 @@
-import { playerCollection } from "@src/server/infrastructure/db/player";
+import { Document } from "@src/server/infrastructure/db/Document";
+import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 
 export class PlayerRepository {
-  private collection;
+  private database: Document<{ playerLevel: number }>;
 
-  constructor(collection = playerCollection) {
-    this.collection = collection;
+  constructor(database = new LocalDatabase()) {
+    this.database = database.player;
   }
 
   // TODO ATTENTION A CombatEntitiesService qui semble etre un peu comme ce playerRepository/service....
@@ -12,11 +13,16 @@ export class PlayerRepository {
 
   /** Getters **/
   getPlayerLevel():number{
-    return this.collection.playerLevel;
+    return this.database.get().playerLevel;
   }
 
   updatePlayerLevel(nbLevelsToAdd:number){
-    this.collection.playerLevel += nbLevelsToAdd;
+    this.database.update((doc) => {
+      return {
+        ...doc,
+        playerLevel: doc.playerLevel + nbLevelsToAdd,
+      }
+    });
   }
 
   /** Technical Actions - no actual high level user-action at this level **/

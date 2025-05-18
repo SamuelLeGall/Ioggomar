@@ -22,13 +22,22 @@ export class GameApiService {
   }
 
   /** MUTATIONS */
-
   changeLocalization(newLocalization: OptionConfig) {
     this.backendService.changeLocalization(newLocalization);
   }
 
   changeTheme(newTheme: OptionConfig) {
     this.backendService.changeTheme(newTheme);
+  }
+
+  public async save(){
+// TODO
+    this.backendService
+  }
+
+  public async load(){
+// TODO
+
   }
 
   }

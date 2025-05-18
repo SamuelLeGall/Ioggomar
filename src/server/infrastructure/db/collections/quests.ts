@@ -1,14 +1,10 @@
 import {
-  questDifficulty,
   Quests,
-  questType,
+  questDifficulty,
+  questType
 } from "@src/models/quests/QuestsModels";
 
-interface questsCollectionModel {
-  listQuests:Quests,
-}
-export const questsCollection: questsCollectionModel = {
-  listQuests:[
+export const questsCollection: Quests = [
     {
       id: "loc1_quest001",
       name: "Quests.loc1_quest001.name",
@@ -77,5 +73,4 @@ export const questsCollection: questsCollectionModel = {
         },
       ],
     },
-  ],
-};
+  ]
