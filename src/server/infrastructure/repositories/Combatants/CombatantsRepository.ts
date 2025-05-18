@@ -4,18 +4,19 @@ import {
   Result,
 } from "@src/models/BasicAndTempModels";
 import { Combatant } from "@src/models/entitiesStats/CombatantModels";
-import { combatantsCollection } from "@src/server/infrastructure/db/combatants";
+import { Collection } from "@src/server/infrastructure/db/Collection";
+import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 
 export class CombatantsRepository {
-  private database;
+  private database:Collection<Combatant>;
 
-  constructor(database = combatantsCollection) {
-    this.database = database;
+  constructor(database = new LocalDatabase()) {
+    this.database = database.combatants;
   }
 
   /** Getters **/
   getAllCombatants(): Combatant[] {
-    return this.database.combatants;
+    return this.database.getAll();
   }
 
   getAllEnnemies(): Combatant[] {
@@ -34,9 +35,7 @@ export class CombatantsRepository {
    * Any logic related to a single combatant MUST go into CombatantInstanceRepository.
    */
   getCombatantById(combatantId: string): Result<Combatant> {
-    const currentCombatant = this.database.combatants.find((combatant) => {
-      return combatant.id === combatantId;
-    });
+    const currentCombatant = this.database.getById(combatantId);
 
     if (!currentCombatant) {
       return [
@@ -54,12 +53,12 @@ export class CombatantsRepository {
   /** Technical Actions - no actual high level user-action at this level **/
   // player stats, equiped equipement/items are not taken into account here
 
-  getCombatantStoreState() {
-    return { combatants: this.database.combatants };
-  }
-
-  setCombatantStoreState(data: Combatant[]) {
-    // TODO
-    this.database.combatants = data;
-  }
+  // getCombatantStoreState() {
+  //   return { combatants: this.database.combatants };
+  // }
+  //
+  // setCombatantStoreState(data: Combatant[]) {
+  //   // TODO
+  //   this.database.combatants = data;
+  // }
 }

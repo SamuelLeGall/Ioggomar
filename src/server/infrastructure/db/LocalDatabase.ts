@@ -50,6 +50,12 @@ export class LocalDatabase {
       throw new Error("Readonly data cannot be updated");
     }
   );
+  readonly combatants = new Collection<Combatant>(
+    () => this.load().readonly.combatants,
+    () => {
+      throw new Error("Readonly data cannot be updated");
+    }
+  );
 
   readonly activeQuests = new Collection<ActiveQuest>(
     () => this.load().session.activeQuests,
