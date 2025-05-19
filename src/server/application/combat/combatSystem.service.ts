@@ -21,6 +21,8 @@ class CombatSystemService {
    * Voir comment le front gère "l'intance du combat en court pour chaque tour ?
    * peut etre pareil stocket dans la partie session et recup depuis la base
    * a chaque action ?
+   *
+   * Voir un peu different --> cf sur le fonctionnement du système de combat actuel
    */
   constructor(
     allies: CombatantEntity[],
