@@ -23,6 +23,11 @@ class CombatSystemService {
    * a chaque action ?
    *
    * Voir un peu different --> cf sur le fonctionnement du système de combat actuel
+   *
+   * Voir une fois que une actions a lieu si on retourne la data a jour ou si on sync
+   * en se basant sur la base.
+   *
+   * voir aussi pour la migration entity -> dataFront de cette partie
    */
   constructor(
     allies: CombatantEntity[],
