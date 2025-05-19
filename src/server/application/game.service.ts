@@ -1,11 +1,12 @@
 import {
   AppError,
   AppErrorCodes,
-  OptionConfig, Result
+  OptionConfig,
+  Result,
 } from "@src/models/BasicAndTempModels";
-import { MainSettings } from "@src/models/game/SettingsModels";
 import { GameRepository } from "@src/server/infrastructure/repositories/GameRepository";
 import { gameCollection } from "@src/server/infrastructure/db/collections/defaultValues/game.default";
+import { toDataThemeForFrontend, toLocalizationForFrontend } from "@src/server/domain/mappers/GameSettingsMappers";
 
 export class GameService {
   private repository: GameRepository;
@@ -18,32 +19,30 @@ export class GameService {
   getCurrentLocalization(): Result<OptionConfig> {
     try {
       const settings = this.repository.get();
-      return [settings.getLocalization(),null];
-    }catch (e) {
-      console.error("getCurrentLocalization - unexpected error:", e);
+      return [toLocalizationForFrontend(settings), null];
+    } catch (e) {
       return [
         null,
         new AppError(
           "getCurrentLocalization - unexpected error:",
           AppErrorCodes.ERROR_NOT_FOUND
         ),
-      ]
+      ];
     }
   }
 
   getCurrentTheme(): Result<OptionConfig> {
     try {
       const settings = this.repository.get();
-      return [settings.getDataTheme(),null];
-    }catch (e) {
-      console.error("getCurrentTheme - unexpected error:", e);
+      return [toDataThemeForFrontend(settings), null];
+    } catch (e) {
       return [
         null,
         new AppError(
           "getCurrentLocalization - unexpected error:",
           AppErrorCodes.ERROR_NOT_FOUND
         ),
-      ]
+      ];
     }
   }
 
@@ -52,24 +51,32 @@ export class GameService {
       const settings = this.repository.get();
       settings.changeLocalization(newLocalization);
       this.repository.update(settings);
-      return [true,null]
+      return [true, null];
     } catch (e) {
-      return [null, new AppError(
-        "changeLocalization - unexpected error:",
-        AppErrorCodes.ERROR_NOT_FOUND)]
+      return [
+        null,
+        new AppError(
+          "changeLocalization - unexpected error:",
+          AppErrorCodes.ERROR_NOT_FOUND
+        ),
+      ];
     }
   }
 
-  changeTheme(newTheme: OptionConfig):Result<boolean> {
+  changeTheme(newTheme: OptionConfig): Result<boolean> {
     try {
       const settings = this.repository.get();
       settings.changeTheme(newTheme);
       this.repository.update(settings);
-      return [true,null]
+      return [true, null];
     } catch (e) {
-      return [null, new AppError(
-        "changeTheme - unexpected error:",
-        AppErrorCodes.ERROR_NOT_FOUND)]
+      return [
+        null,
+        new AppError(
+          "changeTheme - unexpected error:",
+          AppErrorCodes.ERROR_NOT_FOUND
+        ),
+      ];
     }
   }
 
@@ -90,11 +97,11 @@ export class GameService {
   //   }
   // }
 
-  resetGameSettings():Result<true> {
+  resetGameSettings(): Result<true> {
     const settings = this.repository.get();
     settings.changeLocalization(gameCollection.currentLocalization);
     settings.changeTheme(gameCollection.currentDataTheme);
     this.repository.update(settings);
-    return [true,null];
+    return [true, null];
   }
 }

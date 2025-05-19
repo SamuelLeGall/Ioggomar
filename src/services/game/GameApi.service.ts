@@ -12,7 +12,6 @@ export class GameApiService {
   }
 
   /** GETTERS */
-
   getCurrentLocalization() {
     return this.backendService.getCurrentLocalization()
   }
@@ -32,7 +31,6 @@ export class GameApiService {
 
   public async save(){
 // TODO
-    this.backendService
   }
 
   public async load(){
