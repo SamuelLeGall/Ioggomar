@@ -1,11 +1,7 @@
-import { OptionConfig } from "@src/models/BasicAndTempModels";
+import { MainSettings } from "@src/models/game/SettingsModels";
 
-export interface gameCollectionModel {
-  currentLocalization: OptionConfig;
-  currentDataTheme: OptionConfig;
-}
 /** Default state - it is readonly **/
-export const gameCollection: gameCollectionModel = {
+export const gameCollection: MainSettings = {
   currentLocalization: {
     key: "fr_FR",
     value: "Français",

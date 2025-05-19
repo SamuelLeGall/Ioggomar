@@ -1,10 +1,11 @@
 import {
   AppError,
   AppErrorCodes,
-  OptionConfig,
+  OptionConfig, Result
 } from "@src/models/BasicAndTempModels";
 import { MainSettings } from "@src/models/game/SettingsModels";
 import { GameRepository } from "@src/server/infrastructure/repositories/GameRepository";
+import { gameCollection } from "@src/server/infrastructure/db/collections/defaultValues/game.default";
 
 export class GameService {
   private repository: GameRepository;
@@ -13,66 +14,88 @@ export class GameService {
     this.repository = repository;
   }
   /** High-level Actions **/
-  changeLocalization(newLocalization: OptionConfig) {
+  // TODO voir si on reste sur des methodes séparés ou si on retourne un Result<MainSettingsForFrontend> ?
+  getCurrentLocalization(): Result<OptionConfig> {
     try {
-      // Perform any additional logic before setting the new localization
-      this.repository.setCurrentLocalization(newLocalization);
-    } catch (e) {
-      console.error("changeLocalization - unexpected error:", e);
-    }
-  }
-
-  changeTheme(newTheme: OptionConfig) {
-    try {
-      // Perform any additional logic before setting the new theme
-      this.repository.setCurrentDataTheme(newTheme);
-    } catch (e) {
-      console.error("changeTheme - unexpected error:", e);
-    }
-  }
-
-  getCurrentLocalization(): OptionConfig {
-    try {
-      return this.repository.getLocalization();
+      const settings = this.repository.get();
+      return [settings.getLocalization(),null];
     }catch (e) {
       console.error("getCurrentLocalization - unexpected error:", e);
-      return this.repository.getLocalization();
+      return [
+        null,
+        new AppError(
+          "getCurrentLocalization - unexpected error:",
+          AppErrorCodes.ERROR_NOT_FOUND
+        ),
+      ]
     }
   }
 
-  getCurrentTheme(): OptionConfig {
+  getCurrentTheme(): Result<OptionConfig> {
     try {
-      return this.repository.getDataTheme();
+      const settings = this.repository.get();
+      return [settings.getDataTheme(),null];
     }catch (e) {
       console.error("getCurrentTheme - unexpected error:", e);
-      return this.repository.getDataTheme();
+      return [
+        null,
+        new AppError(
+          "getCurrentLocalization - unexpected error:",
+          AppErrorCodes.ERROR_NOT_FOUND
+        ),
+      ]
     }
   }
 
-  initializeGameState(savedState: MainSettings) {
+  changeLocalization(newLocalization: OptionConfig): Result<true> {
     try {
-      if (savedState) {
-        this.repository.setGameStoreState(savedState);
-      } else {
-        // Optionally set default state if no saved state exists
-        this.repository.setCurrentLocalization({
-          key: "en_US",
-          value: "English",
-        });
-        this.repository.setCurrentDataTheme({ key: "light", value: "Light" });
-      }
-    }catch (e) {
-      console.error("initializeGameState - unexpected error:", e);
+      const settings = this.repository.get();
+      settings.changeLocalization(newLocalization);
+      this.repository.update(settings);
+      return [true,null]
+    } catch (e) {
+      return [null, new AppError(
+        "changeLocalization - unexpected error:",
+        AppErrorCodes.ERROR_NOT_FOUND)]
     }
   }
 
-  exportGameState(): MainSettings {
-    return this.repository.getGameStoreState();
+  changeTheme(newTheme: OptionConfig):Result<boolean> {
+    try {
+      const settings = this.repository.get();
+      settings.changeTheme(newTheme);
+      this.repository.update(settings);
+      return [true,null]
+    } catch (e) {
+      return [null, new AppError(
+        "changeTheme - unexpected error:",
+        AppErrorCodes.ERROR_NOT_FOUND)]
+    }
   }
 
-  resetGameSettings() {
-    // Reset to default values
-    this.repository.setCurrentLocalization({ key: "en_US", value: "English" });
-    this.repository.setCurrentDataTheme({ key: "light", value: "Light" });
+
+  // initializeGameState(savedState: MainSettings) {
+  //   try {
+  //     if (savedState) {
+  //       this.repository.setGameStoreState(savedState);
+  //     } else {
+  //       // Optionally set default state if no saved state exists
+  //       this.repository.setCurrentLocalization({
+  //         key: "en_US",
+  //         value: "English",
+  //       });
+  //       this.repository.setCurrentDataTheme({ key: "light", value: "Light" });
+  //     }
+  //   }catch (e) {
+  //     console.error("initializeGameState - unexpected error:", e);
+  //   }
+  // }
+
+  resetGameSettings():Result<true> {
+    const settings = this.repository.get();
+    settings.changeLocalization(gameCollection.currentLocalization);
+    settings.changeTheme(gameCollection.currentDataTheme);
+    this.repository.update(settings);
+    return [true,null];
   }
 }
