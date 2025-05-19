@@ -33,27 +33,7 @@ export class GameRepository {
     })
   }
 
-
   /** Technical Actions - no actual high level user-action at this level **/
-  // setCurrentLocalization(newLocalization: OptionConfig): void {
-  //   this.database.update((doc:MainSettings) => {
-  //     return {
-  //       ...doc,
-  //       currentLocalization: newLocalization
-  //     }
-  //   });
-  // }
-  //
-  // setCurrentDataTheme(newDataTheme: OptionConfig): void {
-  //   // we update the DB
-  //   this.database.update((doc:MainSettings) => {
-  //     return {
-  //       ...doc,
-  //       currentDataTheme: newDataTheme
-  //     }
-  //   });
-  // }
-  //
   // getGameStoreState(): MainSettings {
   //   return {
   //     currentLocalization: this.getLocalization(),
