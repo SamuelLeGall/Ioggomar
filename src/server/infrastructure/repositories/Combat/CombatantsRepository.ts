@@ -6,6 +6,7 @@ import {
 import { Combatant } from "@src/models/entitiesStats/CombatantModels";
 import { Collection } from "@src/server/infrastructure/db/Collection";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
+import { CombatantEntity } from "@src/server/domain/entities/combatantEntity";
 
 export class CombatantsRepository {
   private database:Collection<Combatant>;
@@ -14,27 +15,50 @@ export class CombatantsRepository {
     this.database = database.combatants;
   }
 
+  /** Private Getters */
+  private toDB(entity: CombatantEntity): Combatant {
+    return {
+      id: entity.getId(),
+      type:entity.getType(),
+      name: entity.getName(),
+      element: entity.getElementalType(),
+      baseStats: entity.getBaseStats(),
+      level: entity.getLevel(),
+      exp: entity.getXp(),
+      equipementSlots: entity.getEquipments()
+    };
+  }
+
+  private toEntity(data: Combatant): CombatantEntity {
+    return CombatantEntity.fromData(data);
+  }
+
   /** Getters **/
-  getAllCombatants(): Combatant[] {
-    return this.database.getAll();
+  getAllCombatants(): CombatantEntity[] {
+    const combatants: CombatantEntity[] = [];
+    this.database.getAll().forEach((combatant: Combatant) => {
+      combatants.push(this.toEntity(combatant))
+    });
+    return combatants;
   }
 
-  getAllEnnemies(): Combatant[] {
+  getAllEnnemies(): CombatantEntity[] {
     return this.getAllCombatants().filter((combatant) => {
-      return combatant.type === "ENNEMY";
+      return combatant.getType() === "ENNEMY";
     });
   }
 
-  getAllAllies(): Combatant[] {
+  getAllAllies(): CombatantEntity[] {
     return this.getAllCombatants().filter((combatant) => {
-      return combatant.type === "ALLY";
+      return combatant.getType() === "ALLY";
     });
   }
+
   /**
    * Fetch a single combatant from the list. Use only for scoping.
    * Any logic related to a single combatant MUST go into CombatantInstanceRepository.
    */
-  getCombatantById(combatantId: string): Result<Combatant> {
+  getCombatantById(combatantId: string): Result<CombatantEntity> {
     const currentCombatant = this.database.getById(combatantId);
 
     if (!currentCombatant) {
@@ -47,18 +71,6 @@ export class CombatantsRepository {
       ];
     }
 
-    return [currentCombatant, null];
+    return [this.toEntity(currentCombatant), null];
   }
-
-  /** Technical Actions - no actual high level user-action at this level **/
-  // player stats, equiped equipement/items are not taken into account here
-
-  // getCombatantStoreState() {
-  //   return { combatants: this.database.combatants };
-  // }
-  //
-  // setCombatantStoreState(data: Combatant[]) {
-  //   // TODO
-  //   this.database.combatants = data;
-  // }
 }

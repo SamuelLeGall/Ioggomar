@@ -2,7 +2,6 @@ import { questsCollection } from "@src/server/infrastructure/db/collections/ques
 import { playerCollection } from "@src/server/infrastructure/db/collections/defaultValues/player.default";
 import {
   gameCollection,
-  gameCollectionModel,
 } from "@src/server/infrastructure/db/collections/defaultValues/game.default";
 import { combatantsCollection } from "@src/server/infrastructure/db/collections/combatants";
 import {
@@ -15,6 +14,7 @@ import { Combatant } from "@src/models/entitiesStats/CombatantModels";
 import { Collection } from "@src/server/infrastructure/db/Collection";
 import {Document} from "@src/server/infrastructure/db/Document";
 import { PlayerI } from "@src/models/player/PlayerModels";
+import { MainSettings } from "@src/models/game/SettingsModels";
 
 export type GameDatabase = {
   readonly: {
@@ -24,7 +24,7 @@ export type GameDatabase = {
   session: {
     activeQuests: ActiveQuests;
     player: PlayerI;
-    gameSettings: gameCollectionModel;
+    gameSettings: MainSettings;
   };
 };
 
@@ -76,7 +76,7 @@ export class LocalDatabase {
     }
   );
 
-  readonly gameSettings = new Document<gameCollectionModel>(
+  readonly gameSettings = new Document<MainSettings>(
     () => this.load().session.gameSettings,
     (data) => {
       const db = this.load();
