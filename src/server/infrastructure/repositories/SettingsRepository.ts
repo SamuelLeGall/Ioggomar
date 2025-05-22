@@ -1,9 +1,9 @@
 import { MainSettings } from "@src/models/game/SettingsModels";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 import {Document} from "@src/server/infrastructure/db/Document";
-import { GameSettingsEntity } from "@src/server/domain/entities/GameSettingsEntity";
+import { SettingsEntity } from "@src/server/domain/entities/SettingsEntity";
 
-export class GameRepository {
+export class SettingsRepository {
   private database: Document<MainSettings>;
 
   constructor(database = new LocalDatabase()) {
@@ -11,23 +11,23 @@ export class GameRepository {
   }
 
   /** Private Getters */
-  private toDB(entity: GameSettingsEntity): MainSettings {
+  private toDB(entity: SettingsEntity): MainSettings {
     return {
       currentLocalization: entity.getLocalization(),
       currentDataTheme: entity.getDataTheme()
     };
   }
 
-  private toEntity(data: MainSettings): GameSettingsEntity {
-    return GameSettingsEntity.fromData(data);
+  private toEntity(data: MainSettings): SettingsEntity {
+    return SettingsEntity.fromData(data);
   }
 
   /** Getters **/
-  public get():GameSettingsEntity{
+  public get():SettingsEntity{
     return this.toEntity(this.database.get());
   }
 
-  public update(entity:GameSettingsEntity):void{
+  public update(entity:SettingsEntity):void{
     this.database.update(()=>{
       return this.toDB(entity)
     })

@@ -41,7 +41,7 @@ import {
 } from "@src/models/quests/QuestsModels";
 import { QuestApiService } from "@src/services/quests/QuestApi.service";
 import { ref } from "vue";
-import { GameStoreService } from "@src/services/game/GameStore.service";
+import { SettingsStoreService } from "@src/services/game/SettingsStore.service";
 
 const props = defineProps<{
   quest: QuestItemForFrontend;
@@ -52,7 +52,7 @@ const emit = defineEmits<{
 }>();
 
 const questApiService = new QuestApiService();
-const libelles = new GameStoreService().getLocalizationLibelle();
+const libelles = new SettingsStoreService().getLocalizationLibelle();
 // const difficulty = ref<OptionConfigDifficulty | null>(null);
 const showError = ref<boolean>(false);
 

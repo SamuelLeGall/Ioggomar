@@ -1,9 +1,9 @@
-import { GameSettingsEntity } from "@src/server/domain/entities/GameSettingsEntity";
+import { SettingsEntity } from "@src/server/domain/entities/SettingsEntity";
 import { MainSettingsForFrontend } from "@src/models/game/SettingsModels";
 import { OptionConfig } from "@src/models/BasicAndTempModels";
 
 export function toGameSettingsForFrontend(
-  entity: GameSettingsEntity
+  entity: SettingsEntity
 ): MainSettingsForFrontend {
   return {
     currentLocalization: toLocalizationForFrontend(entity),
@@ -12,12 +12,12 @@ export function toGameSettingsForFrontend(
 }
 
 export function toLocalizationForFrontend(
-  entity: GameSettingsEntity
+  entity: SettingsEntity
 ): OptionConfig {
   return  entity.getLocalization();
 }
 export function toDataThemeForFrontend(
-  entity: GameSettingsEntity
+  entity: SettingsEntity
 ): OptionConfig {
   return  entity.getDataTheme();
 }

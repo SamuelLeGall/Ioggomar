@@ -61,7 +61,7 @@
 <script setup lang="ts">
 import { ActiveQuestForFrontend, QuestItemForFrontend } from "@src/models/quests/QuestsModels";
 import { QuestApiService } from "@src/services/quests/QuestApi.service";
-import { GameStoreService } from "@src/services/game/GameStore.service";
+import { SettingsStoreService } from "@src/services/game/SettingsStore.service";
 
 const props = defineProps<{
   activeQuest: ActiveQuestForFrontend;
@@ -73,7 +73,7 @@ const emit = defineEmits<{
 }>();
 
 const questApiService = new QuestApiService();
-const libelles = new GameStoreService().getLocalizationLibelle()
+const libelles = new SettingsStoreService().getLocalizationLibelle()
 
 const onCancel = () => {
   questApiService.cancel(props.activeQuest.id);

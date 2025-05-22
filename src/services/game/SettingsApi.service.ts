@@ -1,10 +1,10 @@
-import { GameService } from "@src/server/application/game.service";
+import { SettingsService } from "@src/server/application/settings.service";
 import { OptionConfig } from "@src/models/BasicAndTempModels";
 
-export class GameApiService {
-  private backendService: GameService;
+export class SettingsApiService {
+  private backendService: SettingsService;
 
-  constructor(backendService = new GameService()) {
+  constructor(backendService = new SettingsService()) {
     // This class may seem redundant for now, but it’s here to enforce a clean separation between
     // the frontend API interface and "backend" logic. In the future, it can easily be replaced
     // with real API calls without needing to refactor the entire codebase.

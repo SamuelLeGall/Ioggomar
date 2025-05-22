@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { GameStoreService } from "@src/services/game/GameStore.service";
+import { SettingsStoreService } from "@src/services/game/SettingsStore.service";
 export default defineComponent({
   name: "PageNotFound",
   props: {
@@ -20,7 +20,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const libelles = new GameStoreService().getLocalizationLibelle()
+    const libelles = new SettingsStoreService().getLocalizationLibelle()
     return {
       props,
       libelles,

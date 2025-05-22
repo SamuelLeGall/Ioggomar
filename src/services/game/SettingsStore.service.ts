@@ -1,15 +1,15 @@
 import { useGameStore } from "@src/store/game";
 import { useI18n } from "vue-i18n";
 import { OptionConfig } from "@src/models/BasicAndTempModels";
-import { GameApiService } from "@src/services/game/GameApi.service";
+import { SettingsApiService } from "@src/services/game/SettingsApi.service";
 
-export class GameStoreService {
+export class SettingsStoreService {
   private store;
   private locale;
   private libelles;
-  private api:GameApiService;
+  private api:SettingsApiService;
 
-  constructor(store = useGameStore(),api = new GameApiService()) {
+  constructor(store = useGameStore(),api = new SettingsApiService()) {
     const { t, locale } = useI18n({ useScope: "global" });
     this.store = store;
     this.locale = locale;

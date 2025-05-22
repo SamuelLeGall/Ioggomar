@@ -13,8 +13,8 @@
 <script lang="ts">
 import { defineComponent, PropType, watch } from "vue";
 import { OptionConfig } from "@src/models/BasicAndTempModels";
-import { GameStoreService } from "@src/services/game/GameStore.service";
-import { GameApiService } from "@src/services/game/GameApi.service";
+import { SettingsStoreService } from "@src/services/game/SettingsStore.service";
+import { SettingsApiService } from "@src/services/game/SettingsApi.service";
 import SelectComponent from "@components/UI/UIElements/inputs/Select/SelectComponent.vue";
 
 export default defineComponent({
@@ -47,8 +47,8 @@ export default defineComponent({
   emits: ["update:model-value"],
   setup(props: any, { emit }: any) {
     // STORE
-    const gameStoreService  = new GameStoreService();
-    const gameApiService  = new GameApiService();
+    const settingsStoreService  = new SettingsStoreService();
+    const settingsApiService  = new SettingsApiService();
 
     // METHODS
     const changeData = (option: OptionConfig) => {
@@ -67,13 +67,13 @@ export default defineComponent({
     };
 
     const changeLocalization = async (newLocalization: OptionConfig) => {
-      gameApiService.changeLocalization(newLocalization)
-      gameStoreService.syncLocalization();
+      settingsApiService.changeLocalization(newLocalization)
+      settingsStoreService.syncLocalization();
     };
 
     const changeTheme = async (newTheme: OptionConfig) => {
-      gameApiService.changeTheme(newTheme)
-      gameStoreService.syncTheme();
+      settingsApiService.changeTheme(newTheme)
+      settingsStoreService.syncTheme();
     };
 
     return {

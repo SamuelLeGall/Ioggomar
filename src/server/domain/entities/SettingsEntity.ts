@@ -1,7 +1,7 @@
 import { MainSettings } from "@src/models/game/SettingsModels";
 import { OptionConfig } from "@src/models/BasicAndTempModels";
 
-export class GameSettingsEntity {
+export class SettingsEntity {
   private readonly gameSettings: MainSettings;
 
   private constructor(gameSettings: MainSettings) {
@@ -9,8 +9,8 @@ export class GameSettingsEntity {
   }
 
   // For recreating from raw/persisted data
-  public static fromData(data: MainSettings): GameSettingsEntity {
-    return new GameSettingsEntity(data);
+  public static fromData(data: MainSettings): SettingsEntity {
+    return new SettingsEntity(data);
   }
 
   /** Getters **/

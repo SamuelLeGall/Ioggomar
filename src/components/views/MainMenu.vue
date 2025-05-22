@@ -45,7 +45,7 @@ import SelectChangeData from "@components/UI/UIElements/inputs/Special/SelectCha
 import QuestsList from "@components/UI/modules/QuestsList.vue";
 import { PlayerApiService } from "@src/services/player/PlayerApi.service";
 import { PlayerStoreService } from "@src/services/player/PlayerStore.service";
-import { GameStoreService } from "@src/services/game/GameStore.service";
+import { SettingsStoreService } from "@src/services/game/SettingsStore.service";
 
 export default defineComponent({
   name: "MainMenu",
@@ -54,12 +54,12 @@ export default defineComponent({
     SelectChangeData,
   },
   setup() {
-    const gameStoreService = new GameStoreService();
+    const settingsStoreService = new SettingsStoreService();
     const playerApiService = new PlayerApiService();
     const playerStoreService = new PlayerStoreService();
-    const currentLocalization = gameStoreService.getLocalization();
-    const currentDataTheme = gameStoreService.getDataTheme();
-    const libelles = gameStoreService.getLocalizationLibelle();
+    const currentLocalization = settingsStoreService.getLocalization();
+    const currentDataTheme = settingsStoreService.getDataTheme();
+    const libelles = settingsStoreService.getLocalizationLibelle();
 
     const updatePlayerLevel = (nbLevelsToAdd: number) => {
       playerApiService.levelUp(nbLevelsToAdd);

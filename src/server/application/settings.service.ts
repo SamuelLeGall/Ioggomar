@@ -4,14 +4,14 @@ import {
   OptionConfig,
   Result,
 } from "@src/models/BasicAndTempModels";
-import { GameRepository } from "@src/server/infrastructure/repositories/GameRepository";
+import { SettingsRepository } from "@src/server/infrastructure/repositories/SettingsRepository";
 import { gameCollection } from "@src/server/infrastructure/db/collections/defaultValues/game.default";
-import { toDataThemeForFrontend, toLocalizationForFrontend } from "@src/server/domain/mappers/GameSettingsMappers";
+import { toDataThemeForFrontend, toLocalizationForFrontend } from "@src/server/domain/mappers/SettingsMappers";
 
-export class GameService {
-  private repository: GameRepository;
+export class SettingsService {
+  private repository: SettingsRepository;
 
-  constructor(repository = new GameRepository()) {
+  constructor(repository = new SettingsRepository()) {
     this.repository = repository;
   }
   /** High-level Actions **/
