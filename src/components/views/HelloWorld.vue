@@ -1,20 +1,28 @@
 <template>
   <div class="hello-world-main-container">
     <p>Player level {{ playerLevel }}</p>
-    <router-link :to="{ name: 'MAIN_MENU' }"> MainMenu </router-link>
+    <router-link :to="{ name: 'TEST_GROUND' }"> MainMenu </router-link>
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, onBeforeMount } from "vue";
 import { PlayerStoreService } from "@src/services/player/PlayerStore.service";
 
 export default defineComponent({
   name: "HelloWorld",
   setup() {
-    const playerService = new PlayerStoreService();
+    // STORE
+    const playerStoreService = new PlayerStoreService();
+
+    // COMPUTED
     const playerLevel = computed(() => {
-      return playerService.getPlayer().level;
+      return playerStoreService.getPlayer().level;
     });
+
+    // HOOKS
+    onBeforeMount(() => {
+      playerStoreService.syncPlayer()
+    })
     return {
       playerLevel,
     };

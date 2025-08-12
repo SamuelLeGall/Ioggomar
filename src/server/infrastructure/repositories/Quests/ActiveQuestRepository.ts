@@ -88,4 +88,10 @@ export class ActiveQuestRepository {
 
     return [true, null];
   }
+
+  /** DON'T use this method except when loading/saving the game   */
+  public restoreDefault():Result<true>{
+    this.database._forceReset();
+    return [true, null];
+  }
 }

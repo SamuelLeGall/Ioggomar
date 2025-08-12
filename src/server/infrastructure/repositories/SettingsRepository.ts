@@ -1,6 +1,6 @@
 import { MainSettings } from "@src/models/game/SettingsModels";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
-import {Document} from "@src/server/infrastructure/db/Document";
+import { Document } from "@src/server/infrastructure/db/Document";
 import { SettingsEntity } from "@src/server/domain/entities/SettingsEntity";
 
 export class SettingsRepository {
@@ -14,7 +14,7 @@ export class SettingsRepository {
   private toDB(entity: SettingsEntity): MainSettings {
     return {
       currentLocalization: entity.getLocalization(),
-      currentDataTheme: entity.getDataTheme()
+      currentDataTheme: entity.getDataTheme(),
     };
   }
 
@@ -23,26 +23,18 @@ export class SettingsRepository {
   }
 
   /** Getters **/
-  public get():SettingsEntity{
+  public get(): SettingsEntity {
     return this.toEntity(this.database.get());
   }
 
-  public update(entity:SettingsEntity):void{
-    this.database.update(()=>{
-      return this.toDB(entity)
-    })
+  public update(entity: SettingsEntity): void {
+    this.database.update(() => {
+      return this.toDB(entity);
+    });
   }
 
-  /** Technical Actions - no actual high level user-action at this level **/
-  // getGameStoreState(): MainSettings {
-  //   return {
-  //     currentLocalization: this.getLocalization(),
-  //     currentDataTheme: this.getDataTheme(),
-  //   };
-  // }
-  //
-  // setGameStoreState(data: MainSettings): void {
-  //   this.setCurrentLocalization(data.currentLocalization);
-  //   this.setCurrentDataTheme(data.currentDataTheme);
-  // }
+  /** ONLY use for save/load */
+  public restoreDefault() {
+    this.database._forceReset();
+  }
 }

@@ -1,8 +1,6 @@
 import { questsCollection } from "@src/server/infrastructure/db/collections/quests";
 import { playerCollection } from "@src/server/infrastructure/db/collections/defaultValues/player.default";
-import {
-  gameCollection,
-} from "@src/server/infrastructure/db/collections/defaultValues/game.default";
+import { gameCollection } from "@src/server/infrastructure/db/collections/defaultValues/game.default";
 import { combatantsCollection } from "@src/server/infrastructure/db/collections/combatants";
 import {
   ActiveQuest,
@@ -12,7 +10,7 @@ import {
 } from "@src/models/quests/QuestsModels";
 import { Combatant } from "@src/models/entitiesStats/CombatantModels";
 import { Collection } from "@src/server/infrastructure/db/Collection";
-import {Document} from "@src/server/infrastructure/db/Document";
+import { Document } from "@src/server/infrastructure/db/Document";
 import { PlayerI } from "@src/models/player/PlayerModels";
 import { MainSettings } from "@src/models/game/SettingsModels";
 
@@ -45,44 +43,83 @@ export class LocalDatabase {
   }
 
   // Repositories
-  readonly quests = new Collection<QuestItem>(
-    () => this.load().readonly.quests,
-    () => {
-      throw new Error("Readonly data cannot be updated");
-    }
-  );
   readonly combatants = new Collection<Combatant>(
     () => this.load().readonly.combatants,
-    () => {
-      throw new Error("Readonly data cannot be updated");
-    }
-  );
+    (_, options) => {
+      if (options?.force) {
+        const db = this.load();
+        db.readonly.combatants = this.getDefault().readonly.combatants;
+        this.save(db);
+        return;
+      }
 
+      throw new Error("Readonly data cannot be updated");
+    },
+    () => this.getDefault().readonly.combatants
+  );
+  readonly quests = new Collection<QuestItem>(
+    () => this.load().readonly.quests,
+    (_, options) => {
+      if (options?.force) {
+        const db = this.load();
+        db.readonly.quests = this.getDefault().readonly.quests;
+        this.save(db);
+        return;
+      }
+
+      throw new Error("Readonly data cannot be updated");
+    },
+    () => this.getDefault().readonly.quests
+  );
   readonly activeQuests = new Collection<ActiveQuest>(
     () => this.load().session.activeQuests,
-    (data) => {
+    (data, options) => {
+      if (options?.force) {
+        const db = this.load();
+        db.session.activeQuests = this.getDefault().session.activeQuests;
+        this.save(db);
+        return;
+      }
+
       const db = this.load();
       db.session.activeQuests = data;
       this.save(db);
-    }
+    },
+    () => this.getDefault().session.activeQuests
   );
 
   readonly player = new Document<PlayerI>(
     () => this.load().session.player,
-    (data) => {
+    (data, options) => {
+      if (options?.force) {
+        const db = this.load();
+        db.session.player = this.getDefault().session.player;
+        this.save(db);
+        return;
+      }
+
       const db = this.load();
       db.session.player = data;
       this.save(db);
-    }
+    },
+    () => this.getDefault().session.player
   );
 
   readonly gameSettings = new Document<MainSettings>(
     () => this.load().session.gameSettings,
-    (data) => {
+    (data, options) => {
+      if (options?.force) {
+        const db = this.load();
+        db.session.gameSettings = this.getDefault().session.gameSettings;
+        this.save(db);
+        return;
+      }
+
       const db = this.load();
       db.session.gameSettings = data;
       this.save(db);
-    }
+    },
+    () => this.getDefault().session.gameSettings
   );
 
   private getDefault(): GameDatabase {
@@ -97,5 +134,14 @@ export class LocalDatabase {
         gameSettings: gameCollection, // single document
       },
     };
+  }
+
+  /** DO NOT use this method except for save/load */
+  public _DumpDB(): GameDatabase {
+    return this.load();
+  }
+  /** DO NOT use this method except for save/load */
+  public _RestoreDB(data: GameDatabase): void {
+    this.save(data);
   }
 }

@@ -46,7 +46,9 @@ export default defineComponent({
   },
   emits: ["update:model-value"],
   setup(props: any, { emit }: any) {
-    // STORE
+    // STATE
+
+    // COMPOSABLES
     const settingsStoreService  = new SettingsStoreService();
     const settingsApiService  = new SettingsApiService();
 

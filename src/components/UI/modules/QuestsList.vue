@@ -11,7 +11,7 @@
           v-if="staticQuestsMap[quest.id]"
           :active-quest="quest"
           :static-quest="staticQuestsMap[quest.id]"
-          @updated="syncQuests"
+          @quest-state-changed="questStoreService.refreshAllQuests"
         />
         <div v-else>
           <p>Invalid Active quest with id {{ quest.id }}.</p>
@@ -28,7 +28,7 @@
         v-for="quest in quests"
         :key="quest.id"
         :quest="quest"
-        @updated="syncQuests"
+        @quest-state-changed="questStoreService.refreshAllQuests"
       />
     </div>
   </div>
@@ -44,6 +44,15 @@ import { QuestStoreService } from "@src/services/quests/QuestStore.service";
 import QuestItem from "@components/UI/modules/QuestItem.vue";
 import ActiveQuestItem from "@components/UI/modules/ActiveQuestItem.vue";
 
+
+// STATE
+
+// API
+
+// STORE
+const questStoreService = new QuestStoreService();
+
+// COMPUTED
 const activeQuests = computed<ActiveQuestForFrontend[]>(() => {
   return questStoreService.getAllActiveQuests();
 });
@@ -51,29 +60,24 @@ const activeQuests = computed<ActiveQuestForFrontend[]>(() => {
 const quests = computed<QuestItemForFrontend[]>(() => {
   return questStoreService.getAllQuests();
 });
-const staticQuestsMap = ref<Record<string, QuestItemForFrontend>>({});
-const questStoreService = new QuestStoreService();
 
-const syncQuests = () => {
-  console.log('sync quests')
-  // 1. Sync all Active quests of the store
-  questStoreService.syncAllActiveQuests();
+const staticQuestsMap = computed<Record<string, QuestItemForFrontend>>(() => {
+  return Object.fromEntries(
+    activeQuests.value
+      .map((q) => {
+        const staticData = quests.value.find(
+          (quest) => quest.id === q.staticQuestId
+        );
+        return staticData ? [q.id, staticData] : null;
+      })
+      .filter((entry): entry is [string, QuestItemForFrontend] => entry !== null)
+  );
+});
 
-  // 2. sync static quest config for each quest
-  questStoreService.syncAllQuests();
-  const entries = questStoreService.getAllActiveQuests().reduce((acc, q) => {
-    const staticData = questStoreService.getQuestById(q.staticQuestId);
-    if (staticData) {
-      acc.push([q.id, staticData]);
-    }
-    return acc;
-  }, [] as [string, QuestItemForFrontend][]);
+// METHODS
 
-  // 3. Map them for lookup
-  staticQuestsMap.value = Object.fromEntries(entries);
-};
-
+// HOOKS
 onMounted(() => {
-  syncQuests();
+  questStoreService.refreshAllQuests()
 });
 </script>

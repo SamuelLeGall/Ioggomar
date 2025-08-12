@@ -70,15 +70,4 @@ export class SettingsStoreService {
     this.store.currentDataTheme = newDataTheme;
     document.documentElement.setAttribute("data-theme", newDataTheme.key);
   }
-
-  // getGameStoreState(): MainSettings {
-  //   return {
-  //     currentLocalization: this.getLocalization(),
-  //     currentDataTheme: this.getDataTheme(),
-  //   };
-  // }
-  // setGameStoreState(data: MainSettings): void {
-  //   this.setCurrentLocalization(data.currentLocalization);
-  //   this.setCurrentDataTheme(data.currentDataTheme);
-  // }
 }

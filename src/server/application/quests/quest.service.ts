@@ -278,12 +278,9 @@ export class QuestService {
     }
   }
 
-  /** STATE DUMP (save/load) */
-  // public initializeQuestsState(data: QuestState) {
-  //   return this.repository.setQuestsStoreState(data);
-  // }
-  //
-  // public exportQuestsState(): QuestState {
-  //   return this.repository.getQuestsStoreState();
-  // }
+  initializeQuests(): Result<true> {
+    this.staticQuestRepo.restoreDefault();
+    this.activeQuestRepo.restoreDefault();
+    return [true, null];
+  }
 }

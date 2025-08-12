@@ -50,4 +50,9 @@ export class PlayerService {
     // TODO
     return true;
   }
+
+  initializePlayer(): Result<true> {
+    this.repository.restoreDefault()
+    return [true, null];
+  }
 }

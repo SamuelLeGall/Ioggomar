@@ -5,7 +5,6 @@ import {
   Result,
 } from "@src/models/BasicAndTempModels";
 import { SettingsRepository } from "@src/server/infrastructure/repositories/SettingsRepository";
-import { gameCollection } from "@src/server/infrastructure/db/collections/defaultValues/game.default";
 import { toDataThemeForFrontend, toLocalizationForFrontend } from "@src/server/domain/mappers/SettingsMappers";
 
 export class SettingsService {
@@ -80,28 +79,8 @@ export class SettingsService {
     }
   }
 
-  // initializeGameState(savedState: MainSettings) {
-  //   try {
-  //     if (savedState) {
-  //       this.repository.setGameStoreState(savedState);
-  //     } else {
-  //       // Optionally set default state if no saved state exists
-  //       this.repository.setCurrentLocalization({
-  //         key: "en_US",
-  //         value: "English",
-  //       });
-  //       this.repository.setCurrentDataTheme({ key: "light", value: "Light" });
-  //     }
-  //   }catch (e) {
-  //     console.error("initializeGameState - unexpected error:", e);
-  //   }
-  // }
-
-  resetGameSettings(): Result<true> {
-    const settings = this.repository.get();
-    settings.changeLocalization(gameCollection.currentLocalization);
-    settings.changeTheme(gameCollection.currentDataTheme);
-    this.repository.update(settings);
+  initializeSettings(): Result<true> {
+    this.repository.restoreDefault()
     return [true, null];
   }
 }

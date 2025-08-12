@@ -53,4 +53,11 @@ export class StaticQuestRepository {
 
     return [this.toEntity(selectedQuest), null];
   }
+
+  /** DON'T use this method except when loading/saving the game   */
+  public restoreDefault():Result<true>{
+    this.database._forceReset();
+
+    return [true, null];
+  }
 }

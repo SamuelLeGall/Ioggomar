@@ -48,24 +48,33 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "updated"): void;
+  (e: "quest-state-changed"): void;
 }>();
-
-const questApiService = new QuestApiService();
-const libelles = new SettingsStoreService().getLocalizationLibelle();
-// const difficulty = ref<OptionConfigDifficulty | null>(null);
-const showError = ref<boolean>(false);
 
 interface OptionConfigDifficulty {
   key: questDifficulty;
   value: string;
 }
+
+// STATE
+const showError = ref<boolean>(false);
+// const difficulty = ref<OptionConfigDifficulty | null>(null);
+
+// API
+const questApiService = new QuestApiService();
+
+// STORE
+const libelles = new SettingsStoreService().getLocalizationLibelle();
+
+
+// COMPUTED
 // const difficultiesAsOptions = computed<OptionConfigDifficulty[]>(()=>{
 //   return Object.entries(questDifficulty).map(([key,value]) => {
 //     return {  key:value, value: key.toLowerCase()};
 //   }) as OptionConfigDifficulty[];
 // });
 
+// METHODS
 const onAccept = () => {
   // if (difficulty.value === null) {
   //   showError.value = true;
@@ -76,8 +85,12 @@ const onAccept = () => {
 
   // TEMP
   questApiService.accept(props.quest.id, questDifficulty.MEDIUM);
-  emit("updated");
+  emit("quest-state-changed");
 };
+
+// HOOKS
+
+
 </script>
 
 <style scoped>

@@ -20,7 +20,11 @@ export default defineComponent({
     },
   },
   setup(props) {
+    // STATE
+
+    // COMPOSABLES
     const libelles = new SettingsStoreService().getLocalizationLibelle()
+
     return {
       props,
       libelles,

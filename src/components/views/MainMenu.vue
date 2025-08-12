@@ -4,18 +4,15 @@
     class="display-flex flex-direction-column flex-fill gap-1em flex-center"
   >
     <h1>{{ libelles("MainMenuMessage.MainMenu.title") }}</h1>
-    <p>Player level {{ playerLevel }}</p>
-    <button @click="updatePlayerLevel(1)">lvl + 1</button>
-    <router-link :to="{ name: 'HELLO_WORLD' }"> HelloWorld </router-link>
-    <button disabled>
-      {{ libelles("MainMenuMessage.MainMenu.resumeButton") }} (disabled)
+    <button @click="newGame">
+      {{ libelles("MainMenuMessage.MainMenu.newButton") }}
     </button>
-<!--    <button @click="save">-->
-<!--      {{ libelles("MainMenuMessage.MainMenu.saveButton") }}-->
-<!--    </button>-->
-<!--    <button @click="load">-->
-<!--      {{ libelles("MainMenuMessage.MainMenu.loadButton") }}-->
-<!--    </button>-->
+    <button @click="resumeGame">
+      {{ libelles("MainMenuMessage.MainMenu.resumeButton") }}
+    </button>
+    <button @click="load">
+      {{ libelles("MainMenuMessage.MainMenu.loadButton") }}
+    </button>
     <select-change-data
       :options="settingsMapping.game.localization"
       type="localization"
@@ -32,53 +29,83 @@
       :model-value="currentDataTheme"
       @update:model-value="currentDataTheme = $event"
     />
-
-    <QuestsList />
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
-// import { save, load } from "@utils/SaveSystem";
+import { defineComponent, onBeforeMount, ref } from "vue";
 import settingsMapping from "@config/mappings/settingsMapping.json";
 import SelectChangeData from "@components/UI/UIElements/inputs/Special/SelectChangeData/SelectChangeData.vue";
-import QuestsList from "@components/UI/modules/QuestsList.vue";
-import { PlayerApiService } from "@src/services/player/PlayerApi.service";
-import { PlayerStoreService } from "@src/services/player/PlayerStore.service";
 import { SettingsStoreService } from "@src/services/game/SettingsStore.service";
+import { GameContextApiService } from "@src/services/game/GameContextApi.service";
+import { useRouter } from "vue-router";
+import { PlayerStoreService } from "@src/services/player/PlayerStore.service";
+import { QuestStoreService } from "@src/services/quests/QuestStore.service";
 
 export default defineComponent({
   name: "MainMenu",
   components: {
-    QuestsList,
     SelectChangeData,
   },
   setup() {
+    // COMPOSABLES
+    const router = useRouter()
+
+    // API
+    const gameApiService = new GameContextApiService();
+
+    // STORE
     const settingsStoreService = new SettingsStoreService();
-    const playerApiService = new PlayerApiService();
     const playerStoreService = new PlayerStoreService();
-    const currentLocalization = settingsStoreService.getLocalization();
-    const currentDataTheme = settingsStoreService.getDataTheme();
-    const libelles = settingsStoreService.getLocalizationLibelle();
+    const questStoreService = new QuestStoreService();
 
-    const updatePlayerLevel = (nbLevelsToAdd: number) => {
-      playerApiService.levelUp(nbLevelsToAdd);
-      playerStoreService.syncPlayer();
-    };
+    // STATE
+    const currentLocalization = ref();
+    const currentDataTheme = ref();
+    const libelles = ref();
 
-    const playerLevel = computed(() => {
-      return playerStoreService.getPlayer().level;
-    });
+    // METHODS
+    const goToTestGround = ()=>{
+      router.push({
+        name: 'TEST_GROUND',
+      })
+    }
+    const load = async () => {
+      const succeess = await gameApiService.load();
+      if (succeess) {
+        settingsStoreService.syncLocalization();
+        settingsStoreService.syncTheme();
+        playerStoreService.syncPlayer();
+        questStoreService.syncAllActiveQuests();
+        questStoreService.syncAllQuests();
+      }
+    }
+    const newGame = () =>{
+      gameApiService.initialize();
+      goToTestGround();
+    }
+    const resumeGame = () =>{
+      gameApiService.resume();
+      goToTestGround();
+    }
+
+    // HOOKS
+    onBeforeMount(()=>{
+      settingsStoreService.syncLocalization();
+      settingsStoreService.syncTheme();
+      currentLocalization.value = settingsStoreService.getLocalization();
+      currentDataTheme.value = settingsStoreService.getDataTheme();
+      libelles.value = settingsStoreService.getLocalizationLibelle();
+    })
 
     return {
       libelles,
       settingsMapping,
       currentLocalization,
       currentDataTheme,
-      playerLevel,
-      updatePlayerLevel,
-      // save,
-      // load,
+      load,
+      resumeGame,
+      newGame
     };
   },
 });

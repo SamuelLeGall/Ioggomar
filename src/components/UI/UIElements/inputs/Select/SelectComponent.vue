@@ -84,7 +84,7 @@ export default defineComponent({
   setup(props: any, { emit }: any) {
     const libelles = new SettingsStoreService().getLocalizationLibelle()
 
-    // state
+    // STATE
     const showOptions = ref(false);
     const inputText = ref("");
     const selectedOptions: Ref<Array<OptionConfig>> = ref([]);

@@ -29,13 +29,4 @@ export class SettingsApiService {
     this.backendService.changeTheme(newTheme);
   }
 
-  public async save(){
-// TODO
-  }
-
-  public async load(){
-// TODO
-
-  }
-
   }

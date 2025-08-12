@@ -13,7 +13,7 @@ export class PlayerRepository {
   /** Private Getters */
   private toDB(entity: PlayerEntity): PlayerI {
     return {
-      playerLevel:entity.getLevel()
+      playerLevel: entity.getLevel(),
     };
   }
 
@@ -21,13 +21,18 @@ export class PlayerRepository {
     return PlayerEntity.fromData(data);
   }
 
-  public get():PlayerEntity{
+  public get(): PlayerEntity {
     return this.toEntity(this.database.get());
   }
 
-  public update(entity:PlayerEntity):void{
-    this.database.update(()=>{
-      return this.toDB(entity)
-    })
+  public update(entity: PlayerEntity): void {
+    this.database.update(() => {
+      return this.toDB(entity);
+    });
+  }
+
+  /** ONLY use for save/load */
+  public restoreDefault() {
+    this.database._forceReset();
   }
 }

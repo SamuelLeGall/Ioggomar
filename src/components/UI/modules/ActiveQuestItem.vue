@@ -69,15 +69,23 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "updated"): void;
+  (e: "quest-state-changed"): void;
 }>();
 
+// STATE
+
+// API
 const questApiService = new QuestApiService();
+
+// STORE
 const libelles = new SettingsStoreService().getLocalizationLibelle()
 
+// COMPUTED
+
+// METHODS
 const onCancel = () => {
   questApiService.cancel(props.activeQuest.id);
-  emit("updated");
+  emit("quest-state-changed");
 };
 
 const onIncrement = () => {
@@ -86,13 +94,17 @@ const onIncrement = () => {
     quantityToAdd: 1,
   }));
   questApiService.incrementProgress(props.activeQuest.id, items);
-  emit("updated");
+  emit("quest-state-changed");
 };
 
 const onComplete = () => {
   questApiService.complete(props.activeQuest.id);
-  emit("updated");
+  emit("quest-state-changed");
 };
+
+// HOOKS
+
+
 </script>
 
 <style scoped>
