@@ -8,10 +8,10 @@
     <hr />
     <router-link :to="{ name: 'HELLO_WORLD' }"> HelloWorld </router-link>
 
-    <button @click="save">
+    <button @click="$emit('save')">
       {{ libelles("MainMenuMessage.MainMenu.saveButton") }}
     </button>
-    <button @click="load">
+    <button @click="$emit('load')">
       {{ libelles("MainMenuMessage.MainMenu.loadButton") }}
     </button>
     <hr />
@@ -20,28 +20,25 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, ref } from "vue";
+import { computed, defineComponent } from "vue";
 import QuestsList from "@components/UI/modules/QuestsList.vue";
 import { PlayerApiService } from "@src/services/player/PlayerApi.service";
 import { PlayerStoreService } from "@src/services/player/PlayerStore.service";
 import { SettingsStoreService } from "@src/services/game/SettingsStore.service";
-import { GameContextApiService } from "@src/services/game/GameContextApi.service";
-import { GameContextStoreService } from "@src/services/game/GameContextStore.service";
 
 export default defineComponent({
   name: "MainMenu",
   components: {
     QuestsList,
   },
+  emits: ["save","load"],
   setup() {
     // API
     const playerApiService = new PlayerApiService();
-    const gameApiService = new GameContextApiService();
 
     // STORE
     const settingsStoreService = new SettingsStoreService();
     const playerStoreService = new PlayerStoreService();
-    const gameContextStoreService = new GameContextStoreService()
 
     // STATE
 
@@ -49,16 +46,6 @@ export default defineComponent({
     const updatePlayerLevel = (nbLevelsToAdd: number) => {
       playerApiService.levelUp(nbLevelsToAdd);
       playerStoreService.syncPlayer();
-    };
-
-    const save = async () => {
-      await gameApiService.save();
-    };
-    const load = async () => {
-      const success = await gameApiService.load();
-      if (success) {
-        gameContextStoreService.initialSyncAfterLoad()
-      }
     };
 
     // COMPUTED
@@ -70,17 +57,10 @@ export default defineComponent({
       return playerStoreService.getPlayer().level;
     });
 
-    // HOOKS
-    onBeforeMount(() => {
-      gameContextStoreService.initialSyncAfterLoad()
-    });
-
     return {
       libelles,
       playerLevel,
       updatePlayerLevel,
-      save,
-      load,
     };
   },
 });

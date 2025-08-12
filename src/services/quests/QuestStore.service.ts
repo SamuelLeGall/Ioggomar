@@ -20,7 +20,6 @@ export class QuestStoreService {
   }
   syncAllQuests(): void {
     const listUpdated =  this.api.getAllQuests();
-    console.log('syncAllQuests',listUpdated);
     if (!listUpdated) {
       return;
     }
@@ -32,7 +31,6 @@ export class QuestStoreService {
   }
   syncAllActiveQuests(): void {
     const listUpdated =  this.api.getAllActiveQuests();
-    console.log('syncAllActiveQuests',listUpdated);
     if (!listUpdated) {
       return;
     }
