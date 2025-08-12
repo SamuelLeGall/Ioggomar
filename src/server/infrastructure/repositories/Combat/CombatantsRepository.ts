@@ -9,7 +9,7 @@ import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 import { CombatantEntity } from "@src/server/domain/entities/combatantEntity";
 
 export class CombatantsRepository {
-  private database:Collection<Combatant>;
+  private database: Collection<Combatant>;
 
   constructor(database = new LocalDatabase()) {
     this.database = database.combatants;
@@ -19,13 +19,13 @@ export class CombatantsRepository {
   private toDB(entity: CombatantEntity): Combatant {
     return {
       id: entity.getId(),
-      type:entity.getType(),
+      type: entity.getType(),
       name: entity.getName(),
       element: entity.getElementalType(),
       baseStats: entity.getBaseStats(),
       level: entity.getLevel(),
       exp: entity.getXp(),
-      equipementSlots: entity.getEquipments()
+      equipementSlots: entity.getEquipments(),
     };
   }
 
@@ -37,7 +37,7 @@ export class CombatantsRepository {
   getAllCombatants(): CombatantEntity[] {
     const combatants: CombatantEntity[] = [];
     this.database.getAll().forEach((combatant: Combatant) => {
-      combatants.push(this.toEntity(combatant))
+      combatants.push(this.toEntity(combatant));
     });
     return combatants;
   }
@@ -66,7 +66,7 @@ export class CombatantsRepository {
         null,
         new AppError(
           "Can't find the combatant for this Id",
-          AppErrorCodes.RESOURCE_NOT_FOUND
+          AppErrorCodes.RESOURCE_NOT_FOUND,
         ),
       ];
     }

@@ -55,7 +55,7 @@ export class LocalDatabase {
 
       throw new Error("Readonly data cannot be updated");
     },
-    () => this.getDefault().readonly.combatants
+    () => this.getDefault().readonly.combatants,
   );
   readonly quests = new Collection<QuestItem>(
     () => this.load().readonly.quests,
@@ -69,7 +69,7 @@ export class LocalDatabase {
 
       throw new Error("Readonly data cannot be updated");
     },
-    () => this.getDefault().readonly.quests
+    () => this.getDefault().readonly.quests,
   );
   readonly activeQuests = new Collection<ActiveQuest>(
     () => this.load().session.activeQuests,
@@ -85,7 +85,7 @@ export class LocalDatabase {
       db.session.activeQuests = data;
       this.save(db);
     },
-    () => this.getDefault().session.activeQuests
+    () => this.getDefault().session.activeQuests,
   );
 
   readonly player = new Document<PlayerI>(
@@ -102,7 +102,7 @@ export class LocalDatabase {
       db.session.player = data;
       this.save(db);
     },
-    () => this.getDefault().session.player
+    () => this.getDefault().session.player,
   );
 
   readonly gameSettings = new Document<MainSettings>(
@@ -119,7 +119,7 @@ export class LocalDatabase {
       db.session.gameSettings = data;
       this.save(db);
     },
-    () => this.getDefault().session.gameSettings
+    () => this.getDefault().session.gameSettings,
   );
 
   private getDefault(): GameDatabase {

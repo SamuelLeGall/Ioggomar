@@ -1,11 +1,15 @@
 import { CombatantEntity } from "@src/server/domain/entities/combatantEntity";
-import { ElementalTypeConfig, ElementalTypesInteractions } from "@src/models/fight/ElementalTypesModels";
+import {
+  ElementalTypeConfig,
+  ElementalTypesInteractions,
+} from "@src/models/fight/ElementalTypesModels";
 import {
   defaultElementalTypeConfig,
-  elementalTypesGlobalConfig
+  elementalTypesGlobalConfig,
 } from "@config/globalConstants/fighting/Elements/elementTypesConfig";
 
 /** FOR SOME GOOD MATHEMATICAL FONCTION FOR GRAPH (experience/damagedealt etc) - https://easings.net/ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class CombatSystemService {
   private allies: CombatantEntity[];
   private ennemies: CombatantEntity[];
@@ -29,10 +33,7 @@ class CombatSystemService {
    *
    * voir aussi pour la migration entity -> dataFront de cette partie
    */
-  constructor(
-    allies: CombatantEntity[],
-    ennemies: CombatantEntity[]
-  ) {
+  constructor(allies: CombatantEntity[], ennemies: CombatantEntity[]) {
     this.allies = allies;
     this.ennemies = ennemies;
     this.combatants = [...this.allies, ...this.ennemies];
@@ -46,7 +47,7 @@ class CombatSystemService {
   }
   initializeFight() {
     const sortedCombatants = this.combatants.sort(
-      (a, b) => a.getTimeBeforeNextAction() - b.getTimeBeforeNextAction()
+      (a, b) => a.getTimeBeforeNextAction() - b.getTimeBeforeNextAction(),
     );
 
     while (this.isFightOngoing()) {
@@ -61,7 +62,7 @@ class CombatSystemService {
       this.combatants.forEach((combatant) => {
         if (combatant !== currentCombatant && combatant.isAlive()) {
           combatant.updateTimeBeforeNextAction(
-            currentCombatant.getTimeBeforeNextAction()
+            currentCombatant.getTimeBeforeNextAction(),
           );
         }
       });
@@ -77,7 +78,7 @@ class CombatSystemService {
   performAction(
     action: string,
     attacker: CombatantEntity,
-    target: CombatantEntity
+    target: CombatantEntity,
   ): void {
     switch (action) {
       case "attack":
@@ -89,17 +90,14 @@ class CombatSystemService {
     }
   }
 
-  private attack(
-    attacker: CombatantEntity,
-    target: CombatantEntity
-  ): void {
+  private attack(attacker: CombatantEntity, target: CombatantEntity): void {
     const damage = target.calculateDamageReceived(attacker);
     target.updateHealth(damage);
   }
 
   getElementalTypeConfig(
     attacker: CombatantEntity,
-    target: CombatantEntity
+    target: CombatantEntity,
   ): ElementalTypeConfig {
     // if the attacker element is not in the global config --> we return a default config that will not give any bonus/malus
     if (!elementalTypesGlobalConfig[attacker.getElementalType()]) {

@@ -3,16 +3,16 @@ import { createTestingPinia } from "@pinia/testing";
 import { createI18n } from "vue-i18n";
 import router from "@router/index";
 import MainMenu from "@components/views/MainMenu.vue";
-import * as messagesFr from "@localizations/fr_FR/UI/Menus/MainMenuMessage.json";
+import * as messagesFr from "@localizations/fr-FR/UI/Menus/MainMenuMessage.json";
 
 test("mount MainMenu", async () => {
   expect(MainMenu).toBeTruthy();
   const i18n = createI18n({
     legacy: false,
-    locale: "fr_FR", // set locale
-    fallbackLocale: "en_US", // set fallback locale
+    locale: "fr-FR", // set locale
+    fallbackLocale: "en-US", // set fallback locale
     messages: {
-      fr_FR: { MainMenuMessage: { MainMenu: messagesFr.MainMenu } },
+      "fr-FR": { MainMenuMessage: { MainMenu: messagesFr.MainMenu } },
     }, // set locale messages
   });
   const wrapper = mount(MainMenu, {

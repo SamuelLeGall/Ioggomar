@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import {
   ActiveQuestForFrontend,
-  QuestItemForFrontend
+  QuestItemForFrontend,
 } from "../models/quests/QuestsModels";
 
 export const useQuestStore = defineStore("quest", () => {

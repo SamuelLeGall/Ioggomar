@@ -4,7 +4,6 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import electron, { onstart } from "vite-plugin-electron";
 import pkg from "./package.json";
-import eslintPlugin from "vite-plugin-eslint";
 
 rmSync("dist", { recursive: true, force: true }); // v14.14.0
 
@@ -27,7 +26,6 @@ export default defineConfig({
     },
   },
   plugins: [
-    eslintPlugin(),
     vue(),
     electron({
       main: {

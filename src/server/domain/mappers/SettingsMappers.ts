@@ -3,7 +3,7 @@ import { MainSettingsForFrontend } from "@src/models/game/SettingsModels";
 import { OptionConfig } from "@src/models/BasicAndTempModels";
 
 export function toGameSettingsForFrontend(
-  entity: SettingsEntity
+  entity: SettingsEntity,
 ): MainSettingsForFrontend {
   return {
     currentLocalization: toLocalizationForFrontend(entity),
@@ -12,12 +12,10 @@ export function toGameSettingsForFrontend(
 }
 
 export function toLocalizationForFrontend(
-  entity: SettingsEntity
+  entity: SettingsEntity,
 ): OptionConfig {
-  return  entity.getLocalization();
+  return entity.getLocalization();
 }
-export function toDataThemeForFrontend(
-  entity: SettingsEntity
-): OptionConfig {
-  return  entity.getDataTheme();
+export function toDataThemeForFrontend(entity: SettingsEntity): OptionConfig {
+  return entity.getDataTheme();
 }

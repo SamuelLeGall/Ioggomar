@@ -1,9 +1,0 @@
-{
-  "MainMenu": {
-    "title": "Main menu",
-    "newButton": "New",
-    "saveButton": "Save",
-    "loadButton": "Load",
-    "resumeButton": "Resume"
-  }
-}

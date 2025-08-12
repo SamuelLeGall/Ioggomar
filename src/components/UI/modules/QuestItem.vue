@@ -51,10 +51,13 @@ const emit = defineEmits<{
   (e: "quest-state-changed"): void;
 }>();
 
+/*
 interface OptionConfigDifficulty {
   key: questDifficulty;
   value: string;
 }
+
+ */
 
 // STATE
 const showError = ref<boolean>(false);
@@ -64,8 +67,7 @@ const showError = ref<boolean>(false);
 const questApiService = new QuestApiService();
 
 // STORE
-const settingsStoreService = new SettingsStoreService()
-
+const settingsStoreService = new SettingsStoreService();
 
 // COMPUTED
 // const difficultiesAsOptions = computed<OptionConfigDifficulty[]>(()=>{
@@ -75,9 +77,9 @@ const settingsStoreService = new SettingsStoreService()
 // });
 
 // METHODS
-const getLabel = (key: string) :string=> {
+const getLabel = (key: string): string => {
   return settingsStoreService.getLabel(key);
-}
+};
 
 const onAccept = () => {
   // if (difficulty.value === null) {
@@ -93,8 +95,6 @@ const onAccept = () => {
 };
 
 // HOOKS
-
-
 </script>
 
 <style scoped>

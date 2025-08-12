@@ -23,7 +23,7 @@ export class QuestService {
 
   constructor(
     activeQuestRepo = new ActiveQuestRepository(),
-    staticQuestRepo = new StaticQuestRepository()
+    staticQuestRepo = new StaticQuestRepository(),
   ) {
     this.activeQuestRepo = activeQuestRepo;
     this.staticQuestRepo = staticQuestRepo;
@@ -48,7 +48,7 @@ export class QuestService {
         null,
         new AppError(
           "getAllQuests - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND
+          AppErrorCodes.ERROR_NOT_FOUND,
         ),
       ];
     }
@@ -61,13 +61,13 @@ export class QuestService {
         return [null, errorGetQuest];
       }
       return [toQuestItemForFrontend(quest), null];
-    }catch (e) {
+    } catch (e) {
       console.error("getQuestById - unexpected error:", e);
       return [
         null,
         new AppError(
           "getQuestById - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND
+          AppErrorCodes.ERROR_NOT_FOUND,
         ),
       ];
     }
@@ -82,33 +82,35 @@ export class QuestService {
         }),
         null,
       ];
-    }catch (e) {
+    } catch (e) {
       console.error("getAllActiveQuests - unexpected error:", e);
       return [
         null,
         new AppError(
           "getAllActiveQuests - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND
+          AppErrorCodes.ERROR_NOT_FOUND,
         ),
       ];
     }
-
   }
   public getActiveQuestById(questId: string): Result<ActiveQuestForFrontend> {
     try {
       const [quest, errorGetQuest] = this.activeQuestRepo.getById(questId);
       if (errorGetQuest) {
-        console.error("getActiveQuestById - error from repo", errorGetQuest.message);
+        console.error(
+          "getActiveQuestById - error from repo",
+          errorGetQuest.message,
+        );
         return [null, errorGetQuest];
       }
       return [toActiveQuestForFrontend(quest), null];
-    }catch (e) {
+    } catch (e) {
       console.error("getActiveQuestById - unexpected error:", e);
       return [
         null,
         new AppError(
           "getActiveQuestById - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND
+          AppErrorCodes.ERROR_NOT_FOUND,
         ),
       ];
     }
@@ -117,13 +119,16 @@ export class QuestService {
   /** MUTATIONS */
   public acceptQuest(
     questId: string,
-    difficulty: questDifficulty
+    difficulty: questDifficulty,
   ): Result<true> {
     try {
       // fetch the static config of the quest with the asked id
       const [quest, errorGetQuest] = this.staticQuestRepo.getById(questId);
       if (!quest) {
-        console.error("acceptQuest - getById - error from repo", errorGetQuest.message);
+        console.error(
+          "acceptQuest - getById - error from repo",
+          errorGetQuest.message,
+        );
         return [null, errorGetQuest];
       }
 
@@ -134,18 +139,21 @@ export class QuestService {
       const [isQuestAdded, errorAddQuest] =
         this.activeQuestRepo.insert(activeQuest);
       if (errorAddQuest) {
-        console.error("acceptQuest - insert - error from repo", errorAddQuest.message);
+        console.error(
+          "acceptQuest - insert - error from repo",
+          errorAddQuest.message,
+        );
         return [null, errorAddQuest];
       }
 
       return [isQuestAdded, null];
-    }catch (e) {
+    } catch (e) {
       console.error("acceptQuest - unexpected error:", e);
       return [
         null,
         new AppError(
           "acceptQuest - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND
+          AppErrorCodes.ERROR_NOT_FOUND,
         ),
       ];
     }
@@ -156,20 +164,23 @@ export class QuestService {
         this.activeQuestRepo.removeById(questId);
 
       if (errorRemoveQuest) {
-        console.error("cancelQuest - removeById - error from repo", errorRemoveQuest.message);
+        console.error(
+          "cancelQuest - removeById - error from repo",
+          errorRemoveQuest.message,
+        );
         return [null, errorRemoveQuest];
       }
 
       // Additional logic for canceling a quest can go here
 
       return [isQuestRemovedFromActive, null];
-    }catch (e) {
+    } catch (e) {
       console.error("cancelQuest - unexpected error:", e);
       return [
         null,
         new AppError(
           "cancelQuest - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND
+          AppErrorCodes.ERROR_NOT_FOUND,
         ),
       ];
     }
@@ -186,18 +197,21 @@ export class QuestService {
         this.activeQuestRepo.removeById(questId);
 
       if (errorRemoveQuest) {
-        console.error("completeQuest - removeById - error from repo", errorRemoveQuest.message);
+        console.error(
+          "completeQuest - removeById - error from repo",
+          errorRemoveQuest.message,
+        );
         return [null, errorRemoveQuest];
       }
 
       return [isQuestRemovedFromActive, null];
-    }catch (e) {
+    } catch (e) {
       console.error("completeQuest - unexpected error:", e);
       return [
         null,
         new AppError(
           "completeQuest - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND
+          AppErrorCodes.ERROR_NOT_FOUND,
         ),
       ];
     }
@@ -210,20 +224,23 @@ export class QuestService {
         this.activeQuestRepo.removeById(questId);
 
       if (errorRemoveQuest) {
-        console.error("failQuest - removeById - error from repo", errorRemoveQuest.message);
+        console.error(
+          "failQuest - removeById - error from repo",
+          errorRemoveQuest.message,
+        );
         return [null, errorRemoveQuest];
       }
       // eventual processing because quest failed
       // TODO we deal with giving the failure penalities to the player
 
       return [isQuestRemovedFromActive, null];
-    }catch (e) {
+    } catch (e) {
       console.error("failQuest - unexpected error:", e);
       return [
         null,
         new AppError(
           "failQuest - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND
+          AppErrorCodes.ERROR_NOT_FOUND,
         ),
       ];
     }
@@ -231,16 +248,16 @@ export class QuestService {
 
   public incrementProgress(
     questId: string,
-    progressUpdate: QuestItemProgressionUpdateRequest[]
+    progressUpdate: QuestItemProgressionUpdateRequest[],
   ): Result<true> {
     try {
       if (!Array.isArray(progressUpdate) || progressUpdate.length === 0) {
-        console.error("incrementProgress - Bad request",progressUpdate);
+        console.error("incrementProgress - Bad request", progressUpdate);
         return [
           null,
           new AppError(
             `Bad Request`,
-            AppErrorCodes.ACTION_NOT_ALLOWED_BAD_REQUEST
+            AppErrorCodes.ACTION_NOT_ALLOWED_BAD_REQUEST,
           ),
         ];
       }
@@ -248,7 +265,10 @@ export class QuestService {
       // we fetch the current activeQuest
       const [quest, errorGetQuest] = this.activeQuestRepo.getById(questId);
       if (errorGetQuest || !quest) {
-        console.error("incrementProgress - getById - error from repo", errorGetQuest.message);
+        console.error(
+          "incrementProgress - getById - error from repo",
+          errorGetQuest.message,
+        );
         return [null, errorGetQuest];
       }
 
@@ -258,21 +278,24 @@ export class QuestService {
 
       const [isUpdated, errorUpdateQuest] = this.activeQuestRepo.updateById(
         questId,
-        quest
+        quest,
       );
       if (errorUpdateQuest) {
-        console.error("incrementProgress - updateById - error from repo", errorUpdateQuest.message);
+        console.error(
+          "incrementProgress - updateById - error from repo",
+          errorUpdateQuest.message,
+        );
         return [null, errorUpdateQuest];
       }
 
       return [isUpdated, null];
-    }catch (e) {
+    } catch (e) {
       console.error("incrementProgress - unexpected error:", e);
       return [
         null,
         new AppError(
           "incrementProgress - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND
+          AppErrorCodes.ERROR_NOT_FOUND,
         ),
       ];
     }

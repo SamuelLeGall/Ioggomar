@@ -1,23 +1,45 @@
 <template>
-  <div class="quest-card p-4 rounded-2xl shadow-md bg-white flex flex-col gap-4">
+  <div
+    class="quest-card p-4 rounded-2xl shadow-md bg-white flex flex-col gap-4"
+  >
     <div class="flex gap-4">
-      <img :src="staticQuest.illustration" alt="Quest Image" class="w-24 h-24 rounded-xl object-cover" />
+      <img
+        :src="staticQuest.illustration"
+        alt="Quest Image"
+        class="w-24 h-24 rounded-xl object-cover"
+      />
       <div class="flex flex-col">
         <h2 class="text-xl font-bold">
-          {{ getLabel(staticQuest.name) }}</h2>
-        <p class="text-gray-600 text-sm">{{ getLabel(staticQuest.description) }}</p>
+          {{ getLabel(staticQuest.name) }}
+        </h2>
+        <p class="text-gray-600 text-sm">
+          {{ getLabel(staticQuest.description) }}
+        </p>
         <div class="text-sm mt-2">
-          <div><strong>Difficulty:</strong> {{ activeQuest.difficultyChosen }}</div>
-          <div v-if=" staticQuest.rewards">
+          <div>
+            <strong>Difficulty:</strong> {{ activeQuest.difficultyChosen }}
+          </div>
+          <div v-if="staticQuest.rewards">
             <div><strong>Reward:</strong> {{ staticQuest.rewards.xp }} xp</div>
-            <div><strong>Reward:</strong> {{ staticQuest.rewards.gold }} gold</div>
-            <div><strong>Reward:</strong> {{ staticQuest.rewards.items }} item</div>
+            <div>
+              <strong>Reward:</strong> {{ staticQuest.rewards.gold }} gold
+            </div>
+            <div>
+              <strong>Reward:</strong> {{ staticQuest.rewards.items }} item
+            </div>
           </div>
           <div v-if="staticQuest.penalities">
             <strong>Penalties:</strong>
-              <p>xp reset ? {{staticQuest.penalities.xpReset ? 'Yes': 'No'}}</p>
-              <p>equipment loss ? {{staticQuest.penalities.equipementDropped ? 'Yes': 'No'}}</p>
-              <p v-if="staticQuest.penalities.levelsLost">nbre of level loss ? {{staticQuest.penalities.levelsLost}}</p>
+            <p>
+              xp reset ? {{ staticQuest.penalities.xpReset ? "Yes" : "No" }}
+            </p>
+            <p>
+              equipment loss ?
+              {{ staticQuest.penalities.equipementDropped ? "Yes" : "No" }}
+            </p>
+            <p v-if="staticQuest.penalities.levelsLost">
+              nbre of level loss ? {{ staticQuest.penalities.levelsLost }}
+            </p>
           </div>
         </div>
       </div>
@@ -59,7 +81,10 @@
 </template>
 
 <script setup lang="ts">
-import { ActiveQuestForFrontend, QuestItemForFrontend } from "@src/models/quests/QuestsModels";
+import {
+  ActiveQuestForFrontend,
+  QuestItemForFrontend,
+} from "@src/models/quests/QuestsModels";
 import { QuestApiService } from "@src/services/quests/QuestApi.service";
 import { SettingsStoreService } from "@src/services/game/SettingsStore.service";
 
@@ -78,14 +103,14 @@ const emit = defineEmits<{
 const questApiService = new QuestApiService();
 
 // STORE
-const settingsStoreService = new SettingsStoreService()
+const settingsStoreService = new SettingsStoreService();
 
 // COMPUTED
 
 // METHODS
-const getLabel = (key: string) :string=> {
+const getLabel = (key: string): string => {
   return settingsStoreService.getLabel(key);
-}
+};
 
 const onCancel = () => {
   questApiService.cancel(props.activeQuest.id);
@@ -107,8 +132,6 @@ const onComplete = () => {
 };
 
 // HOOKS
-
-
 </script>
 
 <style scoped>

@@ -32,16 +32,16 @@ npm run test
 
 ### Add a localization
 
-in main.ts : choose a tag for the new localization ex: fr_FR, then add this line :
+in main.ts : choose a tag for the new localization ex: fr-FR, then add this line :
 
 ```
-  fr_FR: localizationMessagesObject.fr_FR,
+  fr-FR: localizationMessagesObject.fr-FR,
 ```
 
 Add your chosen tag into src/config/mapping.json --> in game.localization
 You then need to go to src/localizations/
 
-Copy one of the folder, I recommend en_US or fr_FR and rename it as your tag name. Here the folder name is fr_FR.
+Copy one of the folder, I recommend en-US or fr-FR and rename it as your tag name. Here the folder name is fr-FR.
 
 Translate all json files in your folder. File look like this :
 

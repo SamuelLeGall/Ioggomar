@@ -81,9 +81,9 @@ export default defineComponent({
     },
   },
   emits: ["update:model-value"],
-  setup(props: any, { emit }: any) {
+  setup(props, { emit }) {
     // STORE
-    const settingsStoreService = new SettingsStoreService()
+    const settingsStoreService = new SettingsStoreService();
 
     // STATE
     const showOptions = ref(false);
@@ -103,20 +103,20 @@ export default defineComponent({
           }
           return previousValue;
         },
-        []
+        [],
       );
       if (props.sorted) {
         res.sort((a: OptionConfig, b: OptionConfig) =>
-          a.value.localeCompare(b.value)
+          a.value.localeCompare(b.value),
         );
       }
       return res;
     });
 
     // METHODS
-    const getLabel = (key: string) :string=> {
+    const getLabel = (key: string): string => {
       return settingsStoreService.getLabel(key);
-    }
+    };
 
     const emitModel = (newValue: OptionConfig | Array<OptionConfig>) => {
       emit("update:model-value", newValue);

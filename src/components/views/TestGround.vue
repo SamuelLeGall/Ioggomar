@@ -31,7 +31,7 @@ export default defineComponent({
   components: {
     QuestsList,
   },
-  emits: ["save","load"],
+  emits: ["save", "load"],
   setup() {
     // API
     const playerApiService = new PlayerApiService();
@@ -51,7 +51,7 @@ export default defineComponent({
     // COMPUTED
     const libelles = computed(() => {
       return settingsStoreService.getLocalizationLibelle();
-    })
+    });
 
     const playerLevel = computed(() => {
       return playerStoreService.getPlayer().level;

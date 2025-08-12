@@ -6,7 +6,7 @@ import {
 import { StaticQuestEntity } from "@src/server/domain/entities/StaticQuestEntity";
 
 export function toActiveQuestForFrontend(
-  entity: ActiveQuestEntity
+  entity: ActiveQuestEntity,
 ): ActiveQuestForFrontend {
   return {
     id: entity.getId(),
@@ -18,7 +18,7 @@ export function toActiveQuestForFrontend(
 }
 
 export function toQuestItemForFrontend(
-  entity: StaticQuestEntity
+  entity: StaticQuestEntity,
 ): QuestItemForFrontend {
   // TODO KO because we can call this method before a quest is chosen ...
   const [difficulty] = entity.getQuestDifficulty();
@@ -29,9 +29,8 @@ export function toQuestItemForFrontend(
     name: entity.getQuestName(),
     description: entity.getQuestDescription(),
     illustration: entity.getQuestIllustration(),
-    ...(difficulty && {difficulty:difficulty}),
-    ...(rewards && {rewards:rewards}),
-    ...(penalities && {penalities:penalities})
+    ...(difficulty && { difficulty: difficulty }),
+    ...(rewards && { rewards: rewards }),
+    ...(penalities && { penalities: penalities }),
   };
-
 }

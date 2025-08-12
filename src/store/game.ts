@@ -3,7 +3,7 @@ import { Ref, ref } from "vue";
 import { OptionConfig } from "@src/models/BasicAndTempModels";
 export const useGameStore = defineStore("game", () => {
   const currentLocalization: Ref<OptionConfig> = ref({
-    key: "fr_FR",
+    key: "fr-FR",
     value: "Français",
   });
   const currentDataTheme: Ref<OptionConfig> = ref({

@@ -1,7 +1,10 @@
 import { PlayerService } from "@src/server/application/player.service";
 import { QuestService } from "@src/server/application/quests/quest.service";
 import { SettingsService } from "@src/server/application/settings.service";
-import { GameDatabase, LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
+import {
+  GameDatabase,
+  LocalDatabase,
+} from "@src/server/infrastructure/db/LocalDatabase";
 
 export class GameService {
   private settingsService: SettingsService;
@@ -14,7 +17,7 @@ export class GameService {
     database = new LocalDatabase(),
     settingsService = new SettingsService(),
     playerService = new PlayerService(),
-    questService = new QuestService()
+    questService = new QuestService(),
   ) {
     this.database = database;
     this.settingsService = settingsService;
@@ -45,7 +48,7 @@ export class GameService {
   }
 
   public async load(): Promise<boolean> {
-    const gameData: GameDatabase = await window.electronAPI.loadGame();
+    const gameData = (await window.electronAPI.loadGame()) as GameDatabase;
     if (!gameData) {
       return false;
     }

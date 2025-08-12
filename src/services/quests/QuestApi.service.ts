@@ -1,8 +1,9 @@
 import { QuestService } from "@src/server/application/quests/quest.service";
 import {
   ActiveQuestForFrontend,
-  questDifficulty, QuestItemForFrontend,
-  QuestItemProgressionUpdateRequest
+  questDifficulty,
+  QuestItemForFrontend,
+  QuestItemProgressionUpdateRequest,
 } from "@src/models/quests/QuestsModels";
 
 export class QuestApiService {
@@ -17,28 +18,28 @@ export class QuestApiService {
 
   /** GETTERS */
 
-  getAllQuests():QuestItemForFrontend[] | undefined{
+  getAllQuests(): QuestItemForFrontend[] | undefined {
     const [quests] = this.backendService.getAllQuests();
     if (!quests) {
       return;
     }
     return quests;
   }
-  getQuestById(questId: string):QuestItemForFrontend | undefined{
+  getQuestById(questId: string): QuestItemForFrontend | undefined {
     const [quest] = this.backendService.getQuestById(questId);
     if (!quest) {
       return;
     }
     return quest;
   }
-  getAllActiveQuests():ActiveQuestForFrontend[] | undefined{
+  getAllActiveQuests(): ActiveQuestForFrontend[] | undefined {
     const [quests] = this.backendService.getAllActiveQuests();
     if (!quests) {
       return;
     }
     return quests;
   }
-  getActiveQuestById(questId: string):ActiveQuestForFrontend | undefined{
+  getActiveQuestById(questId: string): ActiveQuestForFrontend | undefined {
     const [quest] = this.backendService.getActiveQuestById(questId);
     if (!quest) {
       return;
@@ -64,10 +65,12 @@ export class QuestApiService {
 
   incrementProgress(
     questId: string,
-    progressUpdated: QuestItemProgressionUpdateRequest[]
+    progressUpdated: QuestItemProgressionUpdateRequest[],
   ): boolean {
-    const [success] = this.backendService.incrementProgress(questId, progressUpdated);
+    const [success] = this.backendService.incrementProgress(
+      questId,
+      progressUpdated,
+    );
     return Boolean(success);
   }
-
 }

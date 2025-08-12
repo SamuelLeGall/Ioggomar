@@ -3,7 +3,7 @@ export class Document<T> {
   constructor(
     private getState: () => T,
     private setState: (doc: T, options?: { force?: boolean }) => void,
-    private getDefaultState: () => T
+    private getDefaultState: () => T,
   ) {}
 
   get(): T {

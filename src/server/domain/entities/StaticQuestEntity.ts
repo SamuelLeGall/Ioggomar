@@ -5,10 +5,12 @@ import {
 } from "@src/models/BasicAndTempModels";
 import {
   questDifficulty,
-  QuestGoalConfig, QuestGoalSubConfig,
+  QuestGoalConfig,
+  QuestGoalSubConfig,
   QuestItem,
   questPenalities,
-  questRewards, questType
+  questRewards,
+  questType,
 } from "@src/models/quests/QuestsModels";
 
 export class StaticQuestEntity {
@@ -44,7 +46,7 @@ export class StaticQuestEntity {
         null,
         new AppError(
           `No diffulty selected for quest found with id ${this.getQuestId()}`,
-          AppErrorCodes.ACTION_NOT_ALLOWED_MISSING_DATA
+          AppErrorCodes.ACTION_NOT_ALLOWED_MISSING_DATA,
         ),
       ];
     }
@@ -57,14 +59,14 @@ export class StaticQuestEntity {
     return [...this.getQuestConfigurations()].sort(
       (questConfigA, questConfigB) => {
         return questConfigA.difficulty - questConfigB.difficulty;
-      }
+      },
     );
   }
   public getQuestConfigurationsByDifficultyDESC(): QuestGoalConfig[] {
     return [...this.getQuestConfigurations()].sort(
       (questConfigA, questConfigB) => {
         return questConfigB.difficulty - questConfigA.difficulty;
-      }
+      },
     );
   }
   public getQuestConfiguration(): Result<QuestGoalConfig> {
@@ -75,7 +77,7 @@ export class StaticQuestEntity {
 
     const allConfigs = this.getQuestConfigurations();
     const selectedConfiguration = allConfigs.find(
-      (el) => el.difficulty === difficulty
+      (el) => el.difficulty === difficulty,
     );
     if (!selectedConfiguration) {
       return [
@@ -84,7 +86,7 @@ export class StaticQuestEntity {
           `No configuration found for difficulty ${
             this.difficulty
           } in quest with id ${this.getQuestId()}`,
-          AppErrorCodes.ACTION_NOT_ALLOWED_MISSING_DATA
+          AppErrorCodes.ACTION_NOT_ALLOWED_MISSING_DATA,
         ),
       ];
     }

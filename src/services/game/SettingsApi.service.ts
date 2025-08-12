@@ -13,11 +13,11 @@ export class SettingsApiService {
 
   /** GETTERS */
   getCurrentLocalization() {
-    return this.backendService.getCurrentLocalization()
+    return this.backendService.getCurrentLocalization();
   }
 
   getCurrentTheme() {
-    return this.backendService.getCurrentTheme()
+    return this.backendService.getCurrentTheme();
   }
 
   /** MUTATIONS */
@@ -28,5 +28,4 @@ export class SettingsApiService {
   changeTheme(newTheme: OptionConfig) {
     this.backendService.changeTheme(newTheme);
   }
-
-  }
+}

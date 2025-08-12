@@ -1,6 +1,6 @@
 # localisation
 
-Pour la localisation, charger le EN_US par défaut puis ecraser tout ce qui est possible par la localisation choisie pour etre sur d'avoir toute les clés définie au moins une fois.
+Pour la localisation, charger le en-US par défaut puis ecraser tout ce qui est possible par la localisation choisie pour etre sur d'avoir toute les clés définie au moins une fois.
 
 ## reflexion with my rubber duck chatgpt
 

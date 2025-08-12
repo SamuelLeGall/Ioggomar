@@ -1,5 +1,10 @@
 <template>
-  <router-view @save="save" @load="load" @resume="resumeGame" @new-game="newGame" />
+  <router-view
+    @save="save"
+    @load="load"
+    @resume="resumeGame"
+    @new-game="newGame"
+  />
 </template>
 <script setup lang="ts">
 import { GameContextApiService } from "@src/services/game/GameContextApi.service";
@@ -8,22 +13,22 @@ import { onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 
 // COMPOSABLES
-const router = useRouter()
+const router = useRouter();
 
 // API
 const gameApiService = new GameContextApiService();
 
 // STORE
-const gameContextStoreService = new GameContextStoreService()
+const gameContextStoreService = new GameContextStoreService();
 
 // STATE
 
 // METHODS
-const goToTestGround = ()=>{
+const goToTestGround = () => {
   router.push({
-    name: 'TEST_GROUND',
-  })
-}
+    name: "TEST_GROUND",
+  });
+};
 const save = async () => {
   await gameApiService.save();
 };
@@ -31,23 +36,22 @@ const save = async () => {
 const load = async () => {
   const success = await gameApiService.load();
   if (success) {
-    gameContextStoreService.initialSyncAfterLoad()
+    gameContextStoreService.initialSyncAfterLoad();
     goToTestGround();
   }
 };
 
-const newGame = () =>{
+const newGame = () => {
   gameApiService.initialize();
   goToTestGround();
-}
-const resumeGame = () =>{
+};
+const resumeGame = () => {
   gameApiService.resume();
   goToTestGround();
-}
-
+};
 
 // HOOKS
 onBeforeMount(() => {
-  gameContextStoreService.initialSyncAfterLoad()
+  gameContextStoreService.initialSyncAfterLoad();
 });
 </script>

@@ -19,7 +19,6 @@ export interface QuestItemProgression {
   targetAmount: number;
 }
 
-
 // Interface for the active quests data structure
 export interface ActiveQuestForFrontend {
   id: string;
@@ -62,9 +61,9 @@ export interface questPenalities {
   levelsLost?: number;
 }
 export interface QuestGoalSubConfig {
-    idItem: string;
-    targetAmount: number;
-    requirements?: questGoalItemRequirements;
+  idItem: string;
+  targetAmount: number;
+  requirements?: questGoalItemRequirements;
 }
 export interface QuestGoalConfig {
   difficulty: questDifficulty;

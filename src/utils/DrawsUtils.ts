@@ -9,7 +9,7 @@ import { isEmpty, randomIntNumberInclusive } from "@utils/GeneralUtils";
   The function convert success rate into the successMinNumber used in isSuccess
 */
 export const convertPercentSuccessIntoSuccessMinNumber = (
-  percentSucessvalue: number
+  percentSucessvalue: number,
 ) => {
   if (percentSucessvalue < 0) {
     return 100;
@@ -29,14 +29,14 @@ export const convertPercentSuccessIntoSuccessMinNumber = (
 export const isSuccess = (
   successMinNumber: number,
   useExtendingDrawingResult = false,
-  extendingDrawingLimits?: ExtendingDrawingLimits
+  extendingDrawingLimits?: ExtendingDrawingLimits,
 ): drawingResult => {
   const minimum = 0;
   const maximum = 100;
   if (isEmpty(successMinNumber)) {
     console.error(
       "[isSuccess] Error : invalid successMinNumber ",
-      successMinNumber
+      successMinNumber,
     );
     return drawingResult.SUCCESS;
   }

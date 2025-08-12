@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { onMounted, computed } from "vue";
 import {
   ActiveQuestForFrontend,
   QuestItemForFrontend,
@@ -43,7 +43,6 @@ import {
 import { QuestStoreService } from "@src/services/quests/QuestStore.service";
 import QuestItem from "@components/UI/modules/QuestItem.vue";
 import ActiveQuestItem from "@components/UI/modules/ActiveQuestItem.vue";
-
 
 // STATE
 
@@ -66,11 +65,13 @@ const staticQuestsMap = computed<Record<string, QuestItemForFrontend>>(() => {
     activeQuests.value
       .map((q) => {
         const staticData = quests.value.find(
-          (quest) => quest.id === q.staticQuestId
+          (quest) => quest.id === q.staticQuestId,
         );
         return staticData ? [q.id, staticData] : null;
       })
-      .filter((entry): entry is [string, QuestItemForFrontend] => entry !== null)
+      .filter(
+        (entry): entry is [string, QuestItemForFrontend] => entry !== null,
+      ),
   );
 });
 
@@ -78,6 +79,6 @@ const staticQuestsMap = computed<Record<string, QuestItemForFrontend>>(() => {
 
 // HOOKS
 onMounted(() => {
-  questStoreService.refreshAllQuests()
+  questStoreService.refreshAllQuests();
 });
 </script>

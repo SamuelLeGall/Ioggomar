@@ -182,7 +182,7 @@ export class CombatantEntity {
       luckyHitRate = maxLuckyHitRate;
     }
     const res: drawingResult = isSuccess(
-      convertPercentSuccessIntoSuccessMinNumber(luckyHitRate)
+      convertPercentSuccessIntoSuccessMinNumber(luckyHitRate),
     );
     return res === drawingResult.SUCCESS;
   };

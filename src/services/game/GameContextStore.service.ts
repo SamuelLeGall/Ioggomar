@@ -10,7 +10,7 @@ export class GameContextStoreService {
   constructor(
     settingsStoreService = new SettingsStoreService(),
     playerStoreService = new PlayerStoreService(),
-    questsStoreService = new QuestStoreService()
+    questsStoreService = new QuestStoreService(),
   ) {
     this.settings = settingsStoreService;
     this.player = playerStoreService;

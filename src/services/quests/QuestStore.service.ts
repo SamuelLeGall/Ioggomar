@@ -1,25 +1,24 @@
 import { QuestApiService } from "@src/services/quests/QuestApi.service";
 import { useQuestStore } from "@src/store/quest";
 import {
-  ActiveQuest,
   ActiveQuestForFrontend,
   QuestItemForFrontend,
 } from "@src/models/quests/QuestsModels";
 
 export class QuestStoreService {
   private store;
-  private api:QuestApiService;
+  private api: QuestApiService;
 
   constructor(store = useQuestStore(), api = new QuestApiService()) {
     this.store = store;
     this.api = api;
   }
 
-  getAllQuests():QuestItemForFrontend[] {
+  getAllQuests(): QuestItemForFrontend[] {
     return this.store.listQuests;
   }
   syncAllQuests(): void {
-    const listUpdated =  this.api.getAllQuests();
+    const listUpdated = this.api.getAllQuests();
     if (!listUpdated) {
       return;
     }
@@ -30,7 +29,7 @@ export class QuestStoreService {
     return this.store.activeQuests;
   }
   syncAllActiveQuests(): void {
-    const listUpdated =  this.api.getAllActiveQuests();
+    const listUpdated = this.api.getAllActiveQuests();
     if (!listUpdated) {
       return;
     }
@@ -45,13 +44,13 @@ export class QuestStoreService {
   }
   syncQuestById(questId: string): void {
     const questUpdated = this.api.getQuestById(questId);
-    if (!questUpdated){
+    if (!questUpdated) {
       // quest not found in backend
       return;
     }
 
     const index = this.getQuestIndexById(questId);
-    if (index===-1){
+    if (index === -1) {
       // quest not found in the store, we add it.
       this.store.listQuests.push(questUpdated);
       return;
@@ -69,13 +68,13 @@ export class QuestStoreService {
   }
   syncActiveQuestById(questId: string): void {
     const questUpdated = this.api.getActiveQuestById(questId);
-    if (!questUpdated){
+    if (!questUpdated) {
       // quest not found in backend
       return;
     }
 
     const index = this.getActiveQuestIndexById(questId);
-    if (index===-1){
+    if (index === -1) {
       // quest not found in the store, we add it.
       this.store.activeQuests.push(questUpdated);
       return;

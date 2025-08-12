@@ -45,7 +45,7 @@ export class ActiveQuestRepository {
         null,
         new AppError(
           `No active quest found for id ${questId}`,
-          AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT
+          AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT,
         ),
       ];
     }
@@ -54,43 +54,43 @@ export class ActiveQuestRepository {
   }
 
   public removeById(questId: string): Result<true> {
-    this.database.remove(questId)
+    this.database.remove(questId);
 
     return [true, null];
   }
 
   public insert(quest: ActiveQuestEntity): Result<true> {
-    this.database.add(this.toDB(quest))
+    this.database.add(this.toDB(quest));
 
     return [true, null];
   }
 
   public updateById(
     questId: string,
-    questUpdated: ActiveQuestEntity
+    questUpdated: ActiveQuestEntity,
   ): Result<true> {
     const selectedQuestIndex = this.getAll().findIndex(
       (quest: ActiveQuestEntity) => {
         return quest.getId() === questId;
-      }
+      },
     );
     if (selectedQuestIndex === -1) {
       return [
         null,
         new AppError(
           `No active quest found for id ${questId}`,
-          AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT
+          AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT,
         ),
       ];
     }
 
-    this.database.update(questId, this.toDB(questUpdated))
+    this.database.update(questId, this.toDB(questUpdated));
 
     return [true, null];
   }
 
   /** DON'T use this method except when loading/saving the game   */
-  public restoreDefault():Result<true>{
+  public restoreDefault(): Result<true> {
     this.database._forceReset();
     return [true, null];
   }

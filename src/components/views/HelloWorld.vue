@@ -21,8 +21,8 @@ export default defineComponent({
 
     // HOOKS
     onBeforeMount(() => {
-      playerStoreService.syncPlayer()
-    })
+      playerStoreService.syncPlayer();
+    });
     return {
       playerLevel,
     };

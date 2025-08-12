@@ -44,20 +44,20 @@ export default defineComponent({
     },
   },
   emits: ["update:model-value"],
-  setup(props: any, { emit }: any) {
+  setup(props, { emit }) {
     // STATE
 
     // COMPOSABLES
-    const settingsApiService  = new SettingsApiService();
+    const settingsApiService = new SettingsApiService();
 
     // METHODS
     const changeData = (option: OptionConfig) => {
       switch (props.type) {
         case "localization":
-          settingsApiService.changeLocalization(option)
+          settingsApiService.changeLocalization(option);
           break;
         case "theme":
-          settingsApiService.changeTheme(option)
+          settingsApiService.changeTheme(option);
           break;
         default:
           break;

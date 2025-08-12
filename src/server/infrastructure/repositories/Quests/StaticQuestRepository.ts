@@ -46,7 +46,7 @@ export class StaticQuestRepository {
         null,
         new AppError(
           `No quest found for id ${questId}`,
-          AppErrorCodes.RESOURCE_NOT_FOUND
+          AppErrorCodes.RESOURCE_NOT_FOUND,
         ),
       ];
     }
@@ -55,7 +55,7 @@ export class StaticQuestRepository {
   }
 
   /** DON'T use this method except when loading/saving the game   */
-  public restoreDefault():Result<true>{
+  public restoreDefault(): Result<true> {
     this.database._forceReset();
 
     return [true, null];

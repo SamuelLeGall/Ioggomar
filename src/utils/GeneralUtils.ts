@@ -4,7 +4,7 @@ export const randomIntNumberInclusive = (minimum: number, maximum: number) => {
   return crypto.randomInt(minimum, maximum + 1);
 };
 
-export function isEmpty(value: any): boolean {
+export function isEmpty(value: unknown): boolean {
   if (value === null || value === undefined) {
     return true;
   }

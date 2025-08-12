@@ -26,9 +26,9 @@ export default defineComponent({
     const settingsStoreService = new SettingsStoreService();
 
     // METHODS
-    const getLabel = (key: string) :string=> {
+    const getLabel = (key: string): string => {
       return settingsStoreService.getLabel(key);
-    }
+    };
 
     return {
       props,

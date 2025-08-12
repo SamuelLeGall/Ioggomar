@@ -2,11 +2,11 @@
   "game": {
     "localization": [
       {
-        "key": "fr_FR",
+        "key": "fr-FR",
         "value": "Français"
       },
       {
-        "key": "en_US",
+        "key": "en-US",
         "value": "English"
       }
     ],

@@ -2,7 +2,7 @@ import { ActiveQuest, questDifficulty } from "@src/models/quests/QuestsModels";
 import { StaticQuestEntity } from "@src/server/domain/entities/StaticQuestEntity";
 
 export class ActiveQuestEntity {
-  private readonly quest:ActiveQuest;
+  private readonly quest: ActiveQuest;
 
   private constructor(quest: ActiveQuest) {
     this.quest = quest;
@@ -16,7 +16,7 @@ export class ActiveQuestEntity {
   // For creating a new active quest from static quest + difficulty
   public static fromStaticQuest(
     quest: StaticQuestEntity,
-    difficulty: questDifficulty
+    difficulty: questDifficulty,
   ): ActiveQuestEntity {
     quest.setDifficulty(difficulty);
     const [questGoals, errorGetGoals] = quest.getQuestCompletionGoals();
@@ -48,17 +48,15 @@ export class ActiveQuestEntity {
     return this.quest.difficultyChosen;
   }
 
-  public canBeCompleted():boolean {
+  public canBeCompleted(): boolean {
     let result = true;
     this.quest.data.forEach((quest) => {
-      if (quest.currentQuantity < quest.targetAmount){
+      if (quest.currentQuantity < quest.targetAmount) {
         result = false;
       }
-    })
+    });
     return result;
   }
-
-
 
   public getProgress() {
     return this.quest.data;

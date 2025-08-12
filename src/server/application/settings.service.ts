@@ -5,7 +5,10 @@ import {
   Result,
 } from "@src/models/BasicAndTempModels";
 import { SettingsRepository } from "@src/server/infrastructure/repositories/SettingsRepository";
-import { toDataThemeForFrontend, toLocalizationForFrontend } from "@src/server/domain/mappers/SettingsMappers";
+import {
+  toDataThemeForFrontend,
+  toLocalizationForFrontend,
+} from "@src/server/domain/mappers/SettingsMappers";
 
 export class SettingsService {
   private repository: SettingsRepository;
@@ -24,7 +27,7 @@ export class SettingsService {
         null,
         new AppError(
           "getCurrentLocalization - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND
+          AppErrorCodes.ERROR_NOT_FOUND,
         ),
       ];
     }
@@ -39,7 +42,7 @@ export class SettingsService {
         null,
         new AppError(
           "getCurrentLocalization - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND
+          AppErrorCodes.ERROR_NOT_FOUND,
         ),
       ];
     }
@@ -56,7 +59,7 @@ export class SettingsService {
         null,
         new AppError(
           "changeLocalization - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND
+          AppErrorCodes.ERROR_NOT_FOUND,
         ),
       ];
     }
@@ -73,14 +76,14 @@ export class SettingsService {
         null,
         new AppError(
           "changeTheme - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND
+          AppErrorCodes.ERROR_NOT_FOUND,
         ),
       ];
     }
   }
 
   initializeSettings(): Result<true> {
-    this.repository.restoreDefault()
+    this.repository.restoreDefault();
     return [true, null];
   }
 }

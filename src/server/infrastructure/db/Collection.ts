@@ -3,7 +3,7 @@ export class Collection<T extends { id: string }> {
   constructor(
     private getState: () => T[],
     private setState: (data: T[], options?: { force?: boolean }) => void,
-    private getDefaultState: () => T[]
+    private getDefaultState: () => T[],
   ) {}
 
   getAll(): T[] {

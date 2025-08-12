@@ -12,7 +12,7 @@ export class PlayerApiService {
   }
 
   getPlayer(): PlayerForFrontend | undefined {
-    const [player] =  this.backendService.getPlayer();
+    const [player] = this.backendService.getPlayer();
     if (!player) {
       return;
     }
@@ -21,7 +21,7 @@ export class PlayerApiService {
 
   levelUp(nbLevelsToAdd: number): boolean {
     const [success] = this.backendService.levelUp(nbLevelsToAdd);
-    return Boolean(success)
+    return Boolean(success);
   }
 
   // player-specific actions
