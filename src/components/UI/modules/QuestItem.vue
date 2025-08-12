@@ -9,8 +9,8 @@
         class="w-24 h-24 rounded-xl object-cover"
       />
       <div class="flex flex-col">
-        <h2 class="text-xl font-bold">{{ libelles(quest.name) }}</h2>
-        <p class="text-gray-600 text-sm">{{ libelles(quest.description) }}</p>
+        <h2 class="text-xl font-bold">{{ getLabel(quest.name) }}</h2>
+        <p class="text-gray-600 text-sm">{{ getLabel(quest.description) }}</p>
       </div>
     </div>
     <div v-if="showError">
@@ -64,7 +64,7 @@ const showError = ref<boolean>(false);
 const questApiService = new QuestApiService();
 
 // STORE
-const libelles = new SettingsStoreService().getLocalizationLibelle();
+const settingsStoreService = new SettingsStoreService()
 
 
 // COMPUTED
@@ -75,6 +75,10 @@ const libelles = new SettingsStoreService().getLocalizationLibelle();
 // });
 
 // METHODS
+const getLabel = (key: string) :string=> {
+  return settingsStoreService.getLabel(key);
+}
+
 const onAccept = () => {
   // if (difficulty.value === null) {
   //   showError.value = true;

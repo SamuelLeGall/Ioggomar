@@ -7,9 +7,9 @@ export class SettingsStoreService {
   private store;
   private locale;
   private libelles;
-  private api:SettingsApiService;
+  private api: SettingsApiService;
 
-  constructor(store = useGameStore(),api = new SettingsApiService()) {
+  constructor(store = useGameStore(), api = new SettingsApiService()) {
     const { t, locale } = useI18n({ useScope: "global" });
     this.store = store;
     this.locale = locale;
@@ -17,6 +17,9 @@ export class SettingsStoreService {
     this.api = api;
   }
   /** Getters **/
+  getLabel(key: string): string {
+    return this.libelles(key) ?? key;
+  }
   getLocalizationText(): string {
     return this.store.currentLocalization.value;
   }

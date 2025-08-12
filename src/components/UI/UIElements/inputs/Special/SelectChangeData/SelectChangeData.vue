@@ -11,9 +11,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, watch } from "vue";
+import { defineComponent, PropType } from "vue";
 import { OptionConfig } from "@src/models/BasicAndTempModels";
-import { SettingsStoreService } from "@src/services/game/SettingsStore.service";
 import { SettingsApiService } from "@src/services/game/SettingsApi.service";
 import SelectComponent from "@components/UI/UIElements/inputs/Select/SelectComponent.vue";
 
@@ -49,33 +48,22 @@ export default defineComponent({
     // STATE
 
     // COMPOSABLES
-    const settingsStoreService  = new SettingsStoreService();
     const settingsApiService  = new SettingsApiService();
 
     // METHODS
     const changeData = (option: OptionConfig) => {
       switch (props.type) {
         case "localization":
-          changeLocalization(option);
+          settingsApiService.changeLocalization(option)
           break;
         case "theme":
-          changeTheme(option);
+          settingsApiService.changeTheme(option)
           break;
         default:
           break;
       }
       // we update the model
       emit("update:model-value", option);
-    };
-
-    const changeLocalization = async (newLocalization: OptionConfig) => {
-      settingsApiService.changeLocalization(newLocalization)
-      settingsStoreService.syncLocalization();
-    };
-
-    const changeTheme = async (newTheme: OptionConfig) => {
-      settingsApiService.changeTheme(newTheme)
-      settingsStoreService.syncTheme();
     };
 
     return {

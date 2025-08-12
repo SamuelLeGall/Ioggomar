@@ -4,8 +4,8 @@
       <img :src="staticQuest.illustration" alt="Quest Image" class="w-24 h-24 rounded-xl object-cover" />
       <div class="flex flex-col">
         <h2 class="text-xl font-bold">
-          {{ libelles(staticQuest.name) }}</h2>
-        <p class="text-gray-600 text-sm">{{ libelles(staticQuest.description) }}</p>
+          {{ getLabel(staticQuest.name) }}</h2>
+        <p class="text-gray-600 text-sm">{{ getLabel(staticQuest.description) }}</p>
         <div class="text-sm mt-2">
           <div><strong>Difficulty:</strong> {{ activeQuest.difficultyChosen }}</div>
           <div v-if=" staticQuest.rewards">
@@ -29,7 +29,7 @@
         :key="index"
         class="flex justify-between text-sm text-gray-800"
       >
-        <p>Item: {{ libelles(`Loot.${goal.idItem}.name`) }}</p>
+        <p>Item: {{ getLabel(`Loot.${goal.idItem}.name`) }}</p>
         <p>{{ goal.currentQuantity }} / {{ goal.targetAmount }}</p>
       </div>
     </div>
@@ -78,11 +78,15 @@ const emit = defineEmits<{
 const questApiService = new QuestApiService();
 
 // STORE
-const libelles = new SettingsStoreService().getLocalizationLibelle()
+const settingsStoreService = new SettingsStoreService()
 
 // COMPUTED
 
 // METHODS
+const getLabel = (key: string) :string=> {
+  return settingsStoreService.getLabel(key);
+}
+
 const onCancel = () => {
   questApiService.cancel(props.activeQuest.id);
   emit("quest-state-changed");

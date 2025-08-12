@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h1>{{ libelles("ErrorsMessage.PageNotFound.title") }}</h1>
+    <h1>{{ getLabel("ErrorsMessage.PageNotFound.title") }}</h1>
     <p>{{ errorMessage }}</p>
     <router-link :to="{ name: 'MAIN_MENU' }">
-      {{ libelles("ErrorsMessage.PageNotFound.goBackMainMenu") }}
+      {{ getLabel("ErrorsMessage.PageNotFound.goBackMainMenu") }}
     </router-link>
   </div>
 </template>
@@ -22,12 +22,17 @@ export default defineComponent({
   setup(props) {
     // STATE
 
-    // COMPOSABLES
-    const libelles = new SettingsStoreService().getLocalizationLibelle()
+    // STORE
+    const settingsStoreService = new SettingsStoreService();
+
+    // METHODS
+    const getLabel = (key: string) :string=> {
+      return settingsStoreService.getLabel(key);
+    }
 
     return {
       props,
-      libelles,
+      getLabel,
     };
   },
 });

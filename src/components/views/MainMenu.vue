@@ -3,15 +3,15 @@
     id="main-menu-container"
     class="display-flex flex-direction-column flex-fill gap-1em flex-center"
   >
-    <h1>{{ libelles("MainMenuMessage.MainMenu.title") }}</h1>
+    <h1>{{ getLabel("MainMenuMessage.MainMenu.title") }}</h1>
     <button @click="$emit('new-game')">
-      {{ libelles("MainMenuMessage.MainMenu.newButton") }}
+      {{ getLabel("MainMenuMessage.MainMenu.newButton") }}
     </button>
     <button @click="$emit('resume')">
-      {{ libelles("MainMenuMessage.MainMenu.resumeButton") }}
+      {{ getLabel("MainMenuMessage.MainMenu.resumeButton") }}
     </button>
     <button @click="$emit('load')">
-      {{ libelles("MainMenuMessage.MainMenu.loadButton") }}
+      {{ getLabel("MainMenuMessage.MainMenu.loadButton") }}
     </button>
     <select-change-data
       :options="settingsMapping.game.localization"
@@ -37,20 +37,14 @@ import { computed, defineComponent } from "vue";
 import settingsMapping from "@config/mappings/settingsMapping.json";
 import SelectChangeData from "@components/UI/UIElements/inputs/Special/SelectChangeData/SelectChangeData.vue";
 import { SettingsStoreService } from "@src/services/game/SettingsStore.service";
-import { SettingsApiService } from "@src/services/game/SettingsApi.service";
-import { OptionConfig } from "@src/models/BasicAndTempModels";
-import { update } from "lodash";
 
 export default defineComponent({
   name: "MainMenu",
   components: {
     SelectChangeData,
   },
-  emits: ["resume","load","new-game"],
+  emits: ["resume", "load", "new-game"],
   setup() {
-    // API
-    const settingsApiService = new SettingsApiService();
-
     // STORE
     const settingsStoreService = new SettingsStoreService();
 
@@ -58,37 +52,36 @@ export default defineComponent({
 
     // COMPUTED
     const currentLocalization = computed(() => {
-      return settingsStoreService.getLocalization()
-    })
+      return settingsStoreService.getLocalization();
+    });
     const currentDataTheme = computed(() => {
-      return settingsStoreService.getDataTheme()
-    })
-    const libelles = computed(() => {
-      return settingsStoreService.getLocalizationLibelle()
-    })
+      return settingsStoreService.getDataTheme();
+    });
 
     // METHODS
-    const updateLocalization = (value :OptionConfig) =>{
-      settingsApiService.changeLocalization(value);
-    }
+    const getLabel = (key: string): string => {
+      return settingsStoreService.getLabel(key);
+    };
 
-    const updateTheme = (value :OptionConfig) =>{
-      settingsApiService.changeTheme(value);
-    }
+    const updateLocalization = () => {
+      settingsStoreService.syncLocalization();
+    };
 
+    const updateTheme = () => {
+      settingsStoreService.syncTheme();
+    };
 
     // HOOKS
 
     return {
-      libelles,
       settingsMapping,
       currentLocalization,
       currentDataTheme,
       updateLocalization,
       updateTheme,
+      getLabel,
     };
   },
-  methods: { update },
 });
 </script>
 <style lang="scss" scoped></style>

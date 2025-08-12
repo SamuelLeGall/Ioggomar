@@ -43,7 +43,7 @@
       </div>
       <div v-else>
         <div class="select-option-container padding-10">
-          {{ libelles("SelectComponent.noResult") }}
+          {{ getLabel("SelectComponent.noResult") }}
         </div>
       </div>
     </div>
@@ -82,7 +82,8 @@ export default defineComponent({
   },
   emits: ["update:model-value"],
   setup(props: any, { emit }: any) {
-    const libelles = new SettingsStoreService().getLocalizationLibelle()
+    // STORE
+    const settingsStoreService = new SettingsStoreService()
 
     // STATE
     const showOptions = ref(false);
@@ -113,6 +114,10 @@ export default defineComponent({
     });
 
     // METHODS
+    const getLabel = (key: string) :string=> {
+      return settingsStoreService.getLabel(key);
+    }
+
     const emitModel = (newValue: OptionConfig | Array<OptionConfig>) => {
       emit("update:model-value", newValue);
     };
@@ -167,7 +172,6 @@ export default defineComponent({
 
     return {
       props,
-      libelles,
       selectedOptions,
       showOptions,
       inputText,
@@ -176,6 +180,7 @@ export default defineComponent({
       removeSelectedvalueByKey,
       updateShowOptions,
       updateSelectedOption,
+      getLabel,
     };
   },
 });
