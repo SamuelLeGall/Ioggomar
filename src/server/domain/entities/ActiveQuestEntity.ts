@@ -1,5 +1,6 @@
 import { ActiveQuest, questDifficulty } from "@src/models/quests/QuestsModels";
 import { StaticQuestEntity } from "@src/server/domain/entities/StaticQuestEntity";
+import { ErrorFactory, Result } from "@src/models/BasicAndTempModels";
 
 export class ActiveQuestEntity {
   private readonly quest: ActiveQuest;

@@ -11,7 +11,7 @@ import {
 } from "@src/models/quests/QuestsModels";
 import { StaticQuestRepository } from "@src/server/infrastructure/repositories/Quests/StaticQuestRepository";
 import { ActiveQuestRepository } from "@src/server/infrastructure/repositories/Quests/ActiveQuestRepository";
-import { ActiveQuestEntity } from "@src/server/domain/entities/OnGoingQuestEntity";
+import { ActiveQuestEntity } from "@src/server/domain/entities/ActiveQuestEntity";
 import {
   toActiveQuestForFrontend,
   toQuestItemForFrontend,

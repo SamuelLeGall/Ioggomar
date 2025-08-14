@@ -4,7 +4,7 @@ import {
   AppErrorCodes,
   Result,
 } from "@src/models/BasicAndTempModels";
-import { ActiveQuestEntity } from "@src/server/domain/entities/OnGoingQuestEntity";
+import { ActiveQuestEntity } from "@src/server/domain/entities/ActiveQuestEntity";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 import { Collection } from "@src/server/infrastructure/db/Collection";
 

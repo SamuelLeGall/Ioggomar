@@ -1,4 +1,4 @@
-import { ActiveQuestEntity } from "@src/server/domain/entities/OnGoingQuestEntity";
+import { ActiveQuestEntity } from "@src/server/domain/entities/ActiveQuestEntity";
 import {
   ActiveQuestForFrontend,
   QuestItemForFrontend,
