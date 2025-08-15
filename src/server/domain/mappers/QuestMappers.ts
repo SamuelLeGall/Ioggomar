@@ -4,33 +4,128 @@ import {
   QuestItemForFrontend,
 } from "@src/models/quests/QuestsModels";
 import { StaticQuestEntity } from "@src/server/domain/entities/StaticQuestEntity";
+import {
+  ErrorFactory,
+  Result,
+  ResultFactory,
+} from "@src/models/BasicAndTempModels";
 
 export function toActiveQuestForFrontend(
   entity: ActiveQuestEntity,
-): ActiveQuestForFrontend {
-  return {
-    id: entity.getId(),
-    staticQuestId: entity.getStaticQuestId(),
-    difficultyChosen: entity.getDifficultyChosen(),
-    canComplete: entity.canBeCompleted(),
-    data: entity.getProgress(),
-  };
+): Result<ActiveQuestForFrontend> {
+  try {
+    const result: ActiveQuestForFrontend = {
+      id: entity.getId(),
+      staticQuestId: entity.getStaticQuestId(),
+      difficultyChosen: entity.getDifficultyChosen(),
+      data: entity.getProgress(),
+      canComplete: false,
+    };
+
+    const resBeCompleted = entity.canBeCompleted();
+    if (ResultFactory.isError(resBeCompleted)) {
+      const [, errorBeCompleted] = resBeCompleted;
+      return [
+        null,
+        ErrorFactory.chainError(
+          errorBeCompleted,
+          ErrorFactory.createContext("Mapper", "toActiveQuestForFrontend", {
+            questId: entity.getId(),
+            staticQuestId: entity.getStaticQuestId(),
+          }),
+        ),
+      ];
+    }
+
+    const [canBeCompleted] = resBeCompleted;
+    result.canComplete = canBeCompleted;
+
+    return [result, null];
+  } catch (e) {
+    return [
+      null,
+      ErrorFactory.unexpectedError(
+        ErrorFactory.createContext("Mapper", "toActiveQuestForFrontend", {
+          questId: entity.getId(),
+          staticQuestId: entity.getStaticQuestId(),
+        }),
+        e,
+      ),
+    ];
+  }
 }
 
 export function toQuestItemForFrontend(
   entity: StaticQuestEntity,
-): QuestItemForFrontend {
-  // TODO KO because we can call this method before a quest is chosen ...
-  const [difficulty] = entity.getQuestDifficulty();
-  const [rewards] = entity.getQuestRewards();
-  const [penalities] = entity.getQuestPenalities();
-  return {
-    id: entity.getQuestId(),
-    name: entity.getQuestName(),
-    description: entity.getQuestDescription(),
-    illustration: entity.getQuestIllustration(),
-    ...(difficulty && { difficulty: difficulty }),
-    ...(rewards && { rewards: rewards }),
-    ...(penalities && { penalities: penalities }),
-  };
+): Result<QuestItemForFrontend> {
+  try {
+    const questItem: QuestItemForFrontend = {
+      id: entity.getQuestId(),
+      name: entity.getQuestName(),
+      description: entity.getQuestDescription(),
+      illustration: entity.getQuestIllustration(),
+    };
+
+    const resGetDifficulty = entity.getQuestDifficulty();
+    if (ResultFactory.isError(resGetDifficulty)) {
+      const [, errorGetDifficulty] = resGetDifficulty;
+      return [
+        null,
+        ErrorFactory.chainError(
+          errorGetDifficulty,
+          ErrorFactory.createContext("Mapper", "toQuestItemForFrontend", {
+            questId: entity.getQuestId(),
+          }),
+        ),
+      ];
+    }
+    const [difficulty] = resGetDifficulty;
+    questItem.difficulty = difficulty;
+
+    const resGetRewards = entity.getQuestRewards();
+    if (ResultFactory.isError(resGetRewards)) {
+      const [, errorGetRewards] = resGetRewards;
+      return [
+        null,
+        ErrorFactory.chainError(
+          errorGetRewards,
+          ErrorFactory.createContext("Mapper", "toQuestItemForFrontend", {
+            questId: entity.getQuestId(),
+          }),
+        ),
+      ];
+    }
+    const [rewards] = resGetRewards;
+    questItem.rewards = rewards;
+
+    const resGetPenalities = entity.getQuestPenalities();
+    if (ResultFactory.isError(resGetPenalities)) {
+      const [, errorGetPenalities] = resGetPenalities;
+      return [
+        null,
+        ErrorFactory.chainError(
+          errorGetPenalities,
+          ErrorFactory.createContext("Mapper", "toQuestItemForFrontend", {
+            questId: entity.getQuestId(),
+          }),
+        ),
+      ];
+    }
+    const [penalities] = resGetPenalities;
+    if (penalities) {
+      questItem.penalities = penalities;
+    }
+
+    return [questItem, null];
+  } catch (e) {
+    return [
+      null,
+      ErrorFactory.unexpectedError(
+        ErrorFactory.createContext("Mapper", "toQuestItemForFrontend", {
+          questId: entity.getQuestId(),
+        }),
+        e,
+      ),
+    ];
+  }
 }

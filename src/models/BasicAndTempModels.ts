@@ -1,6 +1,7 @@
 import { questDifficulty } from "@src/models/quests/QuestsModels";
 
 export type Result<T> = [T, null] | [null, AppError];
+export type FrontendResult<T> = [T, null] | [null, string];
 
 // Helper type guards
 export class ResultFactory {
@@ -37,12 +38,13 @@ export interface OptionConfig {
 // This is a key principle: errors should be categorized by domain meaning, not technical implementation
 
 export type TLayer =
+  | "Service"
+  | "Mapper"
   | "Entity"
   | "Repository"
-  | "Service"
+  | "LocalDatabase"
   | "Collection"
-  | "Document"
-  | "LocalDatabase";
+  | "Document";
 
 export enum ErrorCategory {
   DOMAIN = "DOMAIN", // Business rule violations
