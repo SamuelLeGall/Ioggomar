@@ -1,4 +1,8 @@
-import { ErrorFactory, Result } from "@src/models/BasicAndTempModels";
+import {
+  ErrorFactory,
+  Result,
+  ResultFactory,
+} from "@src/models/BasicAndTempModels";
 import {
   questDifficulty,
   QuestGoalConfig,
@@ -98,8 +102,9 @@ export class StaticQuestEntity {
 
   public getQuestConfiguration(): Result<QuestGoalConfig> {
     try {
-      const [difficulty, errorDifficulty] = this.getQuestDifficulty();
-      if (errorDifficulty) {
+      const resultGetDifficulty = this.getQuestDifficulty();
+      if (ResultFactory.isError(resultGetDifficulty)) {
+        const [, errorDifficulty] = resultGetDifficulty;
         return [
           null,
           ErrorFactory.chainError(
@@ -110,6 +115,7 @@ export class StaticQuestEntity {
           ),
         ];
       }
+      const [difficulty] = resultGetDifficulty;
 
       const allConfigs = this.getQuestConfigurations();
       const selectedConfiguration = allConfigs.find(
@@ -140,8 +146,9 @@ export class StaticQuestEntity {
 
   public haveQuestPenalities(): Result<boolean> {
     try {
-      const [configuration, errorGetConfig] = this.getQuestConfiguration();
-      if (errorGetConfig) {
+      const resultGetConfig = this.getQuestConfiguration();
+      if (ResultFactory.isError(resultGetConfig)) {
+        const [, errorGetConfig] = resultGetConfig;
         return [
           null,
           ErrorFactory.chainError(
@@ -152,6 +159,7 @@ export class StaticQuestEntity {
           ),
         ];
       }
+      const [configuration] = resultGetConfig;
 
       return [Boolean(configuration.penalities), null];
     } catch (e) {
@@ -169,8 +177,9 @@ export class StaticQuestEntity {
 
   public getQuestRewards(): Result<questRewards> {
     try {
-      const [configuration, errorGetConfig] = this.getQuestConfiguration();
-      if (errorGetConfig) {
+      const resultGetConfig = this.getQuestConfiguration();
+      if (ResultFactory.isError(resultGetConfig)) {
+        const [, errorGetConfig] = resultGetConfig;
         return [
           null,
           ErrorFactory.chainError(
@@ -181,6 +190,7 @@ export class StaticQuestEntity {
           ),
         ];
       }
+      const [configuration] = resultGetConfig;
 
       return [configuration.rewards, null];
     } catch (e) {
@@ -198,8 +208,9 @@ export class StaticQuestEntity {
 
   public getQuestPenalities(): Result<questPenalities | null> {
     try {
-      const [configuration, errorGetConfig] = this.getQuestConfiguration();
-      if (errorGetConfig) {
+      const resultGetConfig = this.getQuestConfiguration();
+      if (ResultFactory.isError(resultGetConfig)) {
+        const [, errorGetConfig] = resultGetConfig;
         return [
           null,
           ErrorFactory.chainError(
@@ -210,10 +221,10 @@ export class StaticQuestEntity {
           ),
         ];
       }
+      const [configuration] = resultGetConfig;
 
       if (!configuration.penalities) {
-        // there may not be any penality for some quests, not an error.
-        // @Claude: i think there is no way to know if an error happen here or if it normal. I guess if an error happen it would be the getConfig above ?
+        // there may not be any penality for some quests, so not an error.
         return [null, null];
       }
 
@@ -233,8 +244,9 @@ export class StaticQuestEntity {
 
   public getQuestCompletionGoals(): Result<QuestGoalSubConfig[] | null> {
     try {
-      const [configuration, errorGetConfig] = this.getQuestConfiguration();
-      if (errorGetConfig) {
+      const resultGetConfig = this.getQuestConfiguration();
+      if (ResultFactory.isError(resultGetConfig)) {
+        const [, errorGetConfig] = resultGetConfig;
         return [
           null,
           ErrorFactory.chainError(
@@ -245,6 +257,7 @@ export class StaticQuestEntity {
           ),
         ];
       }
+      const [configuration] = resultGetConfig;
 
       if (!configuration.goals) {
         return [null, null];
@@ -266,8 +279,9 @@ export class StaticQuestEntity {
 
   public getQuestGold(): Result<number> {
     try {
-      const [rewards, errorGetRewards] = this.getQuestRewards();
-      if (errorGetRewards) {
+      const resultGetRewards = this.getQuestRewards();
+      if (ResultFactory.isError(resultGetRewards)) {
+        const [, errorGetRewards] = resultGetRewards;
         return [
           null,
           ErrorFactory.chainError(
@@ -278,6 +292,7 @@ export class StaticQuestEntity {
           ),
         ];
       }
+      const [rewards] = resultGetRewards;
 
       return [rewards.gold, null];
     } catch (e) {
@@ -295,8 +310,9 @@ export class StaticQuestEntity {
 
   public getQuestXP(): Result<number> {
     try {
-      const [rewards, errorGetRewards] = this.getQuestRewards();
-      if (errorGetRewards) {
+      const resultGetRewards = this.getQuestRewards();
+      if (ResultFactory.isError(resultGetRewards)) {
+        const [, errorGetRewards] = resultGetRewards;
         return [
           null,
           ErrorFactory.chainError(
@@ -307,6 +323,7 @@ export class StaticQuestEntity {
           ),
         ];
       }
+      const [rewards] = resultGetRewards;
 
       return [rewards.xp, null];
     } catch (e) {

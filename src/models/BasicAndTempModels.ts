@@ -1,6 +1,18 @@
 import { questDifficulty } from "@src/models/quests/QuestsModels";
 
 export type Result<T> = [T, null] | [null, AppError];
+
+// Helper type guards
+export class ResultFactory {
+  static isSuccess<T>(result: Result<T>): result is [T, null] {
+    return result[1] === null;
+  }
+
+  static isError<T>(result: Result<T>): result is [null, AppError] {
+    return result[1] !== null;
+  }
+}
+
 export interface ExtendingDrawingLimits {
   criticalFailureLimit?: number;
   marginalFailureLimit?: number;
