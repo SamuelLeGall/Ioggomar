@@ -251,6 +251,29 @@ export class ErrorFactory {
     );
   }
 
+  static questItemProgressionNotFound(
+    questId: string,
+    staticQuestId: string,
+    idItem: string,
+  ): AppError {
+    return new AppError(
+      `Quest progression data not found for quest ${questId} (static:${staticQuestId}) and progressionItem: ${idItem}`,
+      AppErrorCodes.MISSING_REQUIRED_DATA,
+      ErrorCategory.DOMAIN,
+      ErrorSeverity.MEDIUM,
+      ErrorFactory.createContext("Entity", "getItemProgressionById", {
+        questId: questId,
+        staticQuestId: staticQuestId,
+        idItem: idItem,
+      }),
+      {
+        userMessage:
+          "We could not find your progress for one objective of this quest. Please cancel it then try again.",
+        isRecoverable: true,
+      },
+    );
+  }
+
   // System errors (for unexpected exceptions)
   static unexpectedError(
     context: ErrorContext,

@@ -1,6 +1,14 @@
-import { ActiveQuest, questDifficulty } from "@src/models/quests/QuestsModels";
+import {
+  ActiveQuest,
+  questDifficulty,
+  QuestItemProgression,
+} from "@src/models/quests/QuestsModels";
 import { StaticQuestEntity } from "@src/server/domain/entities/StaticQuestEntity";
-import { ErrorFactory, Result } from "@src/models/BasicAndTempModels";
+import {
+  ErrorFactory,
+  Result,
+  ResultFactory,
+} from "@src/models/BasicAndTempModels";
 
 export class ActiveQuestEntity {
   private readonly quest: ActiveQuest;
@@ -21,8 +29,9 @@ export class ActiveQuestEntity {
   ): Result<ActiveQuestEntity> {
     try {
       quest.setDifficulty(difficulty);
-      const [questGoals, errorGetGoals] = quest.getQuestCompletionGoals();
-      if (errorGetGoals) {
+      const resultGetGoals = quest.getQuestCompletionGoals();
+      if (ResultFactory.isError(resultGetGoals)) {
+        const [, errorGetGoals] = resultGetGoals;
         return [
           null,
           ErrorFactory.chainError(
@@ -34,20 +43,21 @@ export class ActiveQuestEntity {
           ),
         ];
       }
-      if (!Array.isArray(questGoals) || questGoals.length === 0) {
-        throw errorGetGoals;
-      }
-
+      const [questGoals] = resultGetGoals;
       const questData: ActiveQuest = {
         id: crypto.randomUUID(),
         staticQuestId: quest.getQuestId(),
         difficultyChosen: difficulty,
-        data: questGoals.map((goal) => ({
+        data: [],
+      };
+
+      if (Array.isArray(questGoals) && questGoals.length > 0) {
+        questData.data = questGoals.map((goal) => ({
           idItem: goal.idItem,
           targetAmount: goal.targetAmount,
           currentQuantity: 0,
-        })),
-      };
+        }));
+      }
 
       const result = new ActiveQuestEntity(questData);
 
@@ -86,22 +96,49 @@ export class ActiveQuestEntity {
     return result;
   }
 
-  public getProgress() {
+  public getProgress(): QuestItemProgression[] {
     return this.quest.data;
   }
 
-  public incrementTarget(itemId: string, amount = 1): Result<boolean> {
-    try {
-      this.getProgress();
-      const target = this.quest.data.find((g) => g.idItem === itemId);
-      if (!target) {
-        // ErrorFactory.
+  public getItemProgressionById(idItem: string): Result<QuestItemProgression> {
+    const questProgress = this.getProgress();
+    const selectedItemProgession = questProgress.find(
+      (el) => el.idItem === idItem,
+    );
 
-        // TODO
-        return [true, null];
+    if (!selectedItemProgession) {
+      return [
+        null,
+        ErrorFactory.questItemProgressionNotFound(
+          this.getId(),
+          this.getStaticQuestId(),
+          idItem,
+        ),
+      ];
+    }
+
+    return [selectedItemProgession, null];
+  }
+
+  public incrementTarget(idItem: string, amount = 1): Result<boolean> {
+    try {
+      const resultGetItemProgress = this.getItemProgressionById(idItem);
+      if (ResultFactory.isError(resultGetItemProgress)) {
+        const [, errorGetItemProgress] = resultGetItemProgress;
+        return [
+          null,
+          ErrorFactory.chainError(
+            errorGetItemProgress,
+            ErrorFactory.createContext("Entity", "incrementTarget", {
+              idItem: idItem,
+              amountToAdd: amount,
+            }),
+          ),
+        ];
       }
 
-      target.currentQuantity += amount;
+      const [selectedIdItemProgression] = resultGetItemProgress;
+      selectedIdItemProgression.currentQuantity += amount;
       return [true, null];
     } catch (e) {
       return [
@@ -109,7 +146,7 @@ export class ActiveQuestEntity {
         ErrorFactory.unexpectedError(
           ErrorFactory.createContext("Entity", "incrementTarget", {
             questId: this.getId(),
-            itemId: itemId,
+            itemId: idItem,
           }),
           e,
         ),
