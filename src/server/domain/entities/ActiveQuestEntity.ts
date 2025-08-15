@@ -37,7 +37,8 @@ export class ActiveQuestEntity {
           ErrorFactory.chainError(
             errorGetGoals,
             ErrorFactory.createContext("Entity", "fromStaticQuest", {
-              questId: quest.getQuestId(),
+              questId: "NOT_DEFINED_YET",
+              staticQuestId: quest.getQuestId(),
               difficulty: difficulty,
             }),
           ),
@@ -67,7 +68,8 @@ export class ActiveQuestEntity {
         null,
         ErrorFactory.unexpectedError(
           ErrorFactory.createContext("Entity", "fromStaticQuest", {
-            questId: quest.getQuestId(),
+            questId: "NOT_DEFINED_YET",
+            staticQuestId: quest.getQuestId(),
             difficulty: difficulty,
           }),
           e,
@@ -86,14 +88,27 @@ export class ActiveQuestEntity {
     return this.quest.difficultyChosen;
   }
 
-  public canBeCompleted(): boolean {
-    let result = true;
-    this.quest.data.forEach((quest) => {
-      if (quest.currentQuantity < quest.targetAmount) {
-        result = false;
-      }
-    });
-    return result;
+  public canBeCompleted(): Result<boolean> {
+    try {
+      let result = true;
+      this.getProgress().forEach((quest) => {
+        if (quest.currentQuantity < quest.targetAmount) {
+          result = false;
+        }
+      });
+      return [result, null];
+    } catch (e) {
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Entity", "canBeCompleted", {
+            questId: this.getId(),
+            staticQuestId: this.getStaticQuestId(),
+          }),
+          e,
+        ),
+      ];
+    }
   }
 
   public getProgress(): QuestItemProgression[] {
@@ -101,23 +116,37 @@ export class ActiveQuestEntity {
   }
 
   public getItemProgressionById(idItem: string): Result<QuestItemProgression> {
-    const questProgress = this.getProgress();
-    const selectedItemProgession = questProgress.find(
-      (el) => el.idItem === idItem,
-    );
+    try {
+      const questProgress = this.getProgress();
+      const selectedItemProgession = questProgress.find(
+        (el) => el.idItem === idItem,
+      );
 
-    if (!selectedItemProgession) {
+      if (!selectedItemProgession) {
+        return [
+          null,
+          ErrorFactory.questItemProgressionNotFound(
+            this.getId(),
+            this.getStaticQuestId(),
+            idItem,
+          ),
+        ];
+      }
+
+      return [selectedItemProgession, null];
+    } catch (e) {
       return [
         null,
-        ErrorFactory.questItemProgressionNotFound(
-          this.getId(),
-          this.getStaticQuestId(),
-          idItem,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Entity", "getItemProgressionById", {
+            questId: this.getId(),
+            staticQuestId: this.getStaticQuestId(),
+            itemId: idItem,
+          }),
+          e,
         ),
       ];
     }
-
-    return [selectedItemProgession, null];
   }
 
   public incrementTarget(idItem: string, amount = 1): Result<boolean> {
@@ -132,6 +161,7 @@ export class ActiveQuestEntity {
             ErrorFactory.createContext("Entity", "incrementTarget", {
               idItem: idItem,
               amountToAdd: amount,
+              staticQuestId: this.getStaticQuestId(),
             }),
           ),
         ];
@@ -146,6 +176,7 @@ export class ActiveQuestEntity {
         ErrorFactory.unexpectedError(
           ErrorFactory.createContext("Entity", "incrementTarget", {
             questId: this.getId(),
+            staticQuestId: this.getStaticQuestId(),
             itemId: idItem,
           }),
           e,

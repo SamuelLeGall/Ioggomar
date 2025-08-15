@@ -1,6 +1,10 @@
 import { Combatant } from "@src/models/entitiesStats/CombatantModels";
 import { ElementalTypes } from "@src/models/fight/ElementalTypesModels";
-import { drawingResult } from "@src/models/BasicAndTempModels";
+import {
+  drawingResult,
+  ErrorFactory,
+  Result,
+} from "@src/models/BasicAndTempModels";
 import {
   convertPercentSuccessIntoSuccessMinNumber,
   isSuccess,
@@ -35,7 +39,7 @@ export class CombatantEntity {
   };
 
   getLevel = (): number => {
-    return this.combatant.level;
+    return this.combatant.level ?? 1;
   };
 
   getElementalType(): ElementalTypes {
@@ -159,31 +163,91 @@ export class CombatantEntity {
     return this.timerBeforeNextAction;
   };
 
-  updateTimeBeforeNextAction = (timeElapsedFromLastUpdate: number): void => {
-    this.timerBeforeNextAction -= timeElapsedFromLastUpdate;
+  updateTimeBeforeNextAction = (
+    timeElapsedFromLastUpdate: number,
+  ): Result<boolean> => {
+    try {
+      this.timerBeforeNextAction -= timeElapsedFromLastUpdate;
+      return [true, null];
+    } catch (e) {
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Entity", "updateTimeBeforeNextAction", {
+            id: this.getId,
+            timeElapsedFromLastUpdate,
+          }),
+          e,
+        ),
+      ];
+    }
   };
 
   resetTimeBeforeNextAction = (): void => {
     this.timerBeforeNextAction = this.getSpeed();
   };
 
-  calculateDamageReceived(attacker: CombatantEntity): number {
-    return attacker.getAttack() - this.getDefense();
-  }
-
-  updateHealth(amount: number): void {
-    this.currentHealth -= amount;
-  }
-
-  isLuckyHit = (): boolean => {
-    const maxLuckyHitRate = 30;
-    let luckyHitRate = Math.round((this.combatant.baseStats.luck + 5) / 100);
-    if (luckyHitRate > maxLuckyHitRate) {
-      luckyHitRate = maxLuckyHitRate;
+  calculateDamageReceived(attacker: CombatantEntity): Result<number> {
+    try {
+      const damages = attacker.getAttack() - this.getDefense();
+      return [damages, null];
+    } catch (e) {
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Entity", "calculateDamageReceived", {
+            attackerId: attacker.getId(),
+            defenderId: this.getId(),
+            attackerAttack: attacker.getAttack(),
+            defenderDefense: this.getDefense(),
+          }),
+          e,
+        ),
+      ];
     }
-    const res: drawingResult = isSuccess(
-      convertPercentSuccessIntoSuccessMinNumber(luckyHitRate),
-    );
-    return res === drawingResult.SUCCESS;
+  }
+
+  updateHealth(amount: number): Result<boolean> {
+    try {
+      this.currentHealth -= amount;
+      return [true, null];
+    } catch (e) {
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Entity", "updateHealth", {
+            healthToRemove: amount,
+            currentHealth: this.getHealth(),
+          }),
+          e,
+        ),
+      ];
+    }
+  }
+
+  isLuckyHit = (): Result<boolean> => {
+    try {
+      // TODO : NO magic numbers
+      const maxLuckyHitRate = 30;
+      let luckyHitRate = Math.round((this.getBaseStats().luck + 5) / 100);
+      if (luckyHitRate > maxLuckyHitRate) {
+        luckyHitRate = maxLuckyHitRate;
+      }
+      const res: drawingResult = isSuccess(
+        convertPercentSuccessIntoSuccessMinNumber(luckyHitRate),
+      );
+      return [res === drawingResult.SUCCESS, null];
+    } catch (e) {
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Entity", "isLuckyHit", {
+            id: this.getId(),
+            luck: this.getBaseStats().luck,
+          }),
+          e,
+        ),
+      ];
+    }
   };
 }

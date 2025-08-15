@@ -1,4 +1,5 @@
 import { PlayerI } from "@src/models/player/PlayerModels";
+import { ErrorFactory, Result } from "@src/models/BasicAndTempModels";
 
 export class PlayerEntity {
   private readonly player: PlayerI;
@@ -16,8 +17,21 @@ export class PlayerEntity {
     return this.player.playerLevel;
   }
 
-  public levelUp(nbLevelsToAdd = 1) {
-    this.player.playerLevel += nbLevelsToAdd;
+  public levelUp(nbLevelsToAdd = 1): Result<boolean> {
+    try {
+      this.player.playerLevel += nbLevelsToAdd;
+      return [true, null];
+    } catch (e) {
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Entity", "fromStaticQuest", {
+            nbLevelsToAdd: nbLevelsToAdd,
+          }),
+          e,
+        ),
+      ];
+    }
   }
 
   public engageDiscussion() {
