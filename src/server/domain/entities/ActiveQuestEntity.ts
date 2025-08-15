@@ -18,25 +18,52 @@ export class ActiveQuestEntity {
   public static fromStaticQuest(
     quest: StaticQuestEntity,
     difficulty: questDifficulty,
-  ): ActiveQuestEntity {
-    quest.setDifficulty(difficulty);
-    const [questGoals, errorGetGoals] = quest.getQuestCompletionGoals();
-    if (!Array.isArray(questGoals) || questGoals.length === 0) {
-      throw errorGetGoals;
+  ): Result<ActiveQuestEntity> {
+    try {
+      quest.setDifficulty(difficulty);
+      const [questGoals, errorGetGoals] = quest.getQuestCompletionGoals();
+      if (errorGetGoals) {
+        return [
+          null,
+          ErrorFactory.chainError(
+            errorGetGoals,
+            ErrorFactory.createContext("Entity", "fromStaticQuest", {
+              questId: quest.getQuestId(),
+              difficulty: difficulty,
+            }),
+          ),
+        ];
+      }
+      if (!Array.isArray(questGoals) || questGoals.length === 0) {
+        throw errorGetGoals;
+      }
+
+      const questData: ActiveQuest = {
+        id: crypto.randomUUID(),
+        staticQuestId: quest.getQuestId(),
+        difficultyChosen: difficulty,
+        data: questGoals.map((goal) => ({
+          idItem: goal.idItem,
+          targetAmount: goal.targetAmount,
+          currentQuantity: 0,
+        })),
+      };
+
+      const result = new ActiveQuestEntity(questData);
+
+      return [result, null];
+    } catch (e) {
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Entity", "fromStaticQuest", {
+            questId: quest.getQuestId(),
+            difficulty: difficulty,
+          }),
+          e,
+        ),
+      ];
     }
-
-    const questData: ActiveQuest = {
-      id: crypto.randomUUID(),
-      staticQuestId: quest.getQuestId(),
-      difficultyChosen: difficulty,
-      data: questGoals.map((goal) => ({
-        idItem: goal.idItem,
-        targetAmount: goal.targetAmount,
-        currentQuantity: 0,
-      })),
-    };
-
-    return new ActiveQuestEntity(questData);
   }
 
   public getId() {
@@ -63,10 +90,30 @@ export class ActiveQuestEntity {
     return this.quest.data;
   }
 
-  public incrementTarget(itemId: string, amount = 1) {
-    const target = this.quest.data.find((g) => g.idItem === itemId);
-    if (target) {
+  public incrementTarget(itemId: string, amount = 1): Result<boolean> {
+    try {
+      this.getProgress();
+      const target = this.quest.data.find((g) => g.idItem === itemId);
+      if (!target) {
+        // ErrorFactory.
+
+        // TODO
+        return [true, null];
+      }
+
       target.currentQuantity += amount;
+      return [true, null];
+    } catch (e) {
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Entity", "incrementTarget", {
+            questId: this.getId(),
+            itemId: itemId,
+          }),
+          e,
+        ),
+      ];
     }
   }
 }

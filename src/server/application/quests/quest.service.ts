@@ -1,6 +1,7 @@
 import {
   AppError,
   AppErrorCodes,
+  ErrorFactory,
   Result,
 } from "@src/models/BasicAndTempModels";
 import {
@@ -58,7 +59,13 @@ export class QuestService {
       const [quest, errorGetQuest] = this.staticQuestRepo.getById(questId);
       if (errorGetQuest) {
         console.error("getQuestById - error from repo", errorGetQuest.message);
-        return [null, errorGetQuest];
+        return [
+          null,
+          ErrorFactory.chainError(
+            errorGetQuest,
+            ErrorFactory.createContext("Service", "getQuestById", { questId }),
+          ),
+        ];
       }
       return [toQuestItemForFrontend(quest), null];
     } catch (e) {
