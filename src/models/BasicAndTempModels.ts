@@ -36,7 +36,13 @@ export interface OptionConfig {
 // ===== DOMAIN-SPECIFIC ERROR CATEGORIES =====
 // This is a key principle: errors should be categorized by domain meaning, not technical implementation
 
-export type TLayer = "Entity" | "Repository" | "Service";
+export type TLayer =
+  | "Entity"
+  | "Repository"
+  | "Service"
+  | "Collection"
+  | "Document"
+  | "LocalDatabase";
 
 export enum ErrorCategory {
   DOMAIN = "DOMAIN", // Business rule violations
@@ -50,6 +56,7 @@ export enum AppErrorCodes {
   RESOURCE_NOT_FOUND = "RESOURCE_NOT_FOUND",
   RESOURCE_CONFLICT = "RESOURCE_CONFLICT",
   EXTERNAL_SERVICE_ERROR = "EXTERNAL_SERVICE_ERROR",
+  STORAGE_UNAVAILABLE = "STORAGE_UNAVAILABLE",
 
   // Domain/Business
   ACTION_NOT_ALLOWED = "ACTION_NOT_ALLOWED",
@@ -235,22 +242,6 @@ export class ErrorFactory {
     );
   }
 
-  static questNotFound(questId: string): AppError {
-    return new AppError(
-      `Quest with id ${questId} not found`,
-      AppErrorCodes.RESOURCE_NOT_FOUND,
-      ErrorCategory.INFRASTRUCTURE,
-      ErrorSeverity.LOW,
-      ErrorFactory.createContext("Entity", "getQuestConfiguration", {
-        questId: questId,
-      }),
-      {
-        userMessage: "The requested quest could not be found.",
-        isRecoverable: false,
-      },
-    );
-  }
-
   static questItemProgressionNotFound(
     questId: string,
     staticQuestId: string,
@@ -270,6 +261,58 @@ export class ErrorFactory {
         userMessage:
           "We could not find your progress for one objective of this quest. Please cancel it then try again.",
         isRecoverable: true,
+      },
+    );
+  }
+
+  static resourceNotFound(
+    context: ErrorContext,
+    resourceType: string,
+    resourceId: string,
+    message?: string,
+  ): AppError {
+    return new AppError(
+      message ?? `${resourceType} with id ${resourceId} not found`,
+      AppErrorCodes.RESOURCE_NOT_FOUND,
+      ErrorCategory.INFRASTRUCTURE,
+      ErrorSeverity.LOW,
+      context,
+      {
+        userMessage: `The requested ${resourceType} could not be found.`,
+        isRecoverable: false,
+      },
+    );
+  }
+
+  static resourceConflict(
+    context: ErrorContext,
+    resourceType: string,
+    id: string,
+  ): AppError {
+    return new AppError(
+      `${resourceType} with id '${id}' already exists`,
+      AppErrorCodes.RESOURCE_CONFLICT,
+      ErrorCategory.INFRASTRUCTURE,
+      ErrorSeverity.MEDIUM,
+      context,
+      {
+        userMessage: `The requested ${resourceType} already exists.`,
+        isRecoverable: false,
+      },
+    );
+  }
+
+  // Database-specific errors
+  static storageUnavailable(context: ErrorContext): AppError {
+    return new AppError(
+      "Local storage is not available or full",
+      AppErrorCodes.STORAGE_UNAVAILABLE,
+      ErrorCategory.INFRASTRUCTURE,
+      ErrorSeverity.MEDIUM,
+      context,
+      {
+        userMessage: "An Error occured with the DB",
+        isRecoverable: false,
       },
     );
   }
