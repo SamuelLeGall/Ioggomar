@@ -1,8 +1,7 @@
 import {
-  AppError,
-  AppErrorCodes,
+  FrontendResult,
   OptionConfig,
-  Result,
+  ResultFactory,
 } from "@src/models/BasicAndTempModels";
 import { SettingsRepository } from "@src/server/infrastructure/repositories/SettingsRepository";
 import {
@@ -17,73 +16,138 @@ export class SettingsService {
     this.repository = repository;
   }
   /** High-level Actions **/
-  // TODO voir si on reste sur des methodes séparés ou si on retourne un Result<MainSettingsForFrontend> ?
-  getCurrentLocalization(): Result<OptionConfig> {
+  getCurrentLocalization(): FrontendResult<OptionConfig> {
     try {
-      const settings = this.repository.get();
-      return [toLocalizationForFrontend(settings), null];
+      const resultSettings = this.repository.get();
+      if (ResultFactory.isError(resultSettings)) {
+        const [, errorSettings] = resultSettings;
+        console.error(errorSettings);
+        return [null, errorSettings.getPublicMessage()];
+      }
+      const [settings] = resultSettings;
+
+      const resultFrontend = toLocalizationForFrontend(settings);
+      if (ResultFactory.isError(resultFrontend)) {
+        const [, errorMapperSetting] = resultFrontend;
+        console.error(errorMapperSetting);
+        return [null, errorMapperSetting.getPublicMessage()];
+      }
+      const [frontendSetting] = resultFrontend;
+
+      return [frontendSetting, null];
     } catch (e) {
-      return [
-        null,
-        new AppError(
-          "getCurrentLocalization - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
-        ),
-      ];
+      console.error(
+        `getCurrentLocalization - unexpected error: ${JSON.stringify(e)}`,
+      );
+      return [null, "Internal Server Error"];
     }
   }
 
-  getCurrentTheme(): Result<OptionConfig> {
+  getCurrentTheme(): FrontendResult<OptionConfig> {
     try {
-      const settings = this.repository.get();
-      return [toDataThemeForFrontend(settings), null];
+      const resultSettings = this.repository.get();
+      if (ResultFactory.isError(resultSettings)) {
+        const [, errorSettings] = resultSettings;
+        console.error(errorSettings);
+        return [null, errorSettings.getPublicMessage()];
+      }
+      const [settings] = resultSettings;
+
+      const resultFrontend = toDataThemeForFrontend(settings);
+      if (ResultFactory.isError(resultFrontend)) {
+        const [, errorMapperSetting] = resultFrontend;
+        console.error(errorMapperSetting);
+        return [null, errorMapperSetting.getPublicMessage()];
+      }
+      const [frontendSetting] = resultFrontend;
+
+      return [frontendSetting, null];
     } catch (e) {
-      return [
-        null,
-        new AppError(
-          "getCurrentLocalization - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
-        ),
-      ];
+      console.error(`getCurrentTheme - unexpected error: ${JSON.stringify(e)}`);
+      return [null, "Internal Server Error"];
     }
   }
 
-  changeLocalization(newLocalization: OptionConfig): Result<true> {
+  changeLocalization(newLocalization: OptionConfig): FrontendResult<true> {
     try {
-      const settings = this.repository.get();
-      settings.changeLocalization(newLocalization);
-      this.repository.update(settings);
+      const resultGetSettings = this.repository.get();
+      if (ResultFactory.isError(resultGetSettings)) {
+        const [, errorSettings] = resultGetSettings;
+        console.error(errorSettings);
+        return [null, errorSettings.getPublicMessage()];
+      }
+      const [settings] = resultGetSettings;
+
+      const resultChangeLocalization =
+        settings.changeLocalization(newLocalization);
+      if (ResultFactory.isError(resultChangeLocalization)) {
+        const [, errorChange] = resultChangeLocalization;
+        console.error(errorChange);
+        return [null, errorChange.getPublicMessage()];
+      }
+
+      const resultUpdateSaved = this.repository.save(settings);
+      if (ResultFactory.isError(resultUpdateSaved)) {
+        const [, errorUpdateSaved] = resultUpdateSaved;
+        console.error(errorUpdateSaved);
+        return [null, errorUpdateSaved.getPublicMessage()];
+      }
+
       return [true, null];
     } catch (e) {
-      return [
-        null,
-        new AppError(
-          "changeLocalization - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
-        ),
-      ];
+      console.error(
+        `changeLocalization - unexpected error: ${JSON.stringify(e)}`,
+      );
+      return [null, "Internal Server Error"];
     }
   }
 
-  changeTheme(newTheme: OptionConfig): Result<boolean> {
+  changeTheme(newTheme: OptionConfig): FrontendResult<boolean> {
     try {
-      const settings = this.repository.get();
-      settings.changeTheme(newTheme);
-      this.repository.update(settings);
+      const resultGetSettings = this.repository.get();
+      if (ResultFactory.isError(resultGetSettings)) {
+        const [, errorSettings] = resultGetSettings;
+        console.error(errorSettings);
+        return [null, errorSettings.getPublicMessage()];
+      }
+      const [settings] = resultGetSettings;
+
+      const resultChangeTheme = settings.changeTheme(newTheme);
+      if (ResultFactory.isError(resultChangeTheme)) {
+        const [, errorChange] = resultChangeTheme;
+        console.error(errorChange);
+        return [null, errorChange.getPublicMessage()];
+      }
+
+      const resultUpdateSaved = this.repository.save(settings);
+      if (ResultFactory.isError(resultUpdateSaved)) {
+        const [, errorUpdateSaved] = resultUpdateSaved;
+        console.error(errorUpdateSaved);
+        return [null, errorUpdateSaved.getPublicMessage()];
+      }
+
       return [true, null];
     } catch (e) {
-      return [
-        null,
-        new AppError(
-          "changeTheme - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
-        ),
-      ];
+      console.error(`changeTheme - unexpected error: ${JSON.stringify(e)}`);
+      return [null, "Internal Server Error"];
     }
   }
 
-  initializeSettings(): Result<true> {
-    this.repository.restoreDefault();
-    return [true, null];
+  initializeSettings(): FrontendResult<true> {
+    try {
+      const resultRestoreDefault = this.repository.restoreDefault();
+      if (ResultFactory.isError(resultRestoreDefault)) {
+        const [, errorRestore] = resultRestoreDefault;
+        console.error(errorRestore);
+        return [null, errorRestore.getPublicMessage()];
+      }
+
+      return [true, null];
+    } catch (e) {
+      console.error(
+        `initializeSettings - unexpected error: ${JSON.stringify(e)}`,
+      );
+      return [null, "Internal Server Error"];
+    }
   }
 }

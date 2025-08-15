@@ -1,5 +1,9 @@
 import { MainSettings } from "@src/models/game/SettingsModels";
-import { ErrorFactory, OptionConfig } from "@src/models/BasicAndTempModels";
+import {
+  ErrorFactory,
+  OptionConfig,
+  Result,
+} from "@src/models/BasicAndTempModels";
 
 export class SettingsEntity {
   private readonly gameSettings: MainSettings;
@@ -23,9 +27,10 @@ export class SettingsEntity {
   }
 
   /** Setters **/
-  public changeLocalization(newLocalization: OptionConfig) {
+  public changeLocalization(newLocalization: OptionConfig): Result<boolean> {
     try {
       this.gameSettings.currentLocalization = newLocalization;
+      return [true, null];
     } catch (e) {
       return [
         null,
@@ -39,9 +44,10 @@ export class SettingsEntity {
     }
   }
 
-  public changeTheme(newTheme: OptionConfig) {
+  public changeTheme(newTheme: OptionConfig): Result<boolean> {
     try {
       this.gameSettings.currentDataTheme = newTheme;
+      return [true, null];
     } catch (e) {
       return [
         null,

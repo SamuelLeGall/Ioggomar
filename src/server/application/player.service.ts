@@ -3,7 +3,8 @@ import { PlayerForFrontend } from "@src/models/player/PlayerModels";
 import {
   AppError,
   AppErrorCodes,
-  Result,
+  FrontendResult,
+  ResultFactory,
 } from "@src/models/BasicAndTempModels";
 import { toPlayerForFrontend } from "@src/server/domain/mappers/PlayerMappers";
 
@@ -14,46 +15,82 @@ export class PlayerService {
     this.repository = repository;
   }
 
-  getPlayer(): Result<PlayerForFrontend> {
+  getPlayer(): FrontendResult<PlayerForFrontend> {
     try {
-      const player = this.repository.get();
-      return [toPlayerForFrontend(player), null];
+      const resultGetPlayer = this.repository.get();
+      if (ResultFactory.isError(resultGetPlayer)) {
+        const [, errorGetPlayer] = resultGetPlayer;
+        console.error(errorGetPlayer);
+        return [null, errorGetPlayer.getPublicMessage()];
+      }
+      const [player] = resultGetPlayer;
+
+      const resultFrontend = toPlayerForFrontend(player);
+      if (ResultFactory.isError(resultFrontend)) {
+        const [, errorMapperSetting] = resultFrontend;
+        console.error(errorMapperSetting);
+        return [null, errorMapperSetting.getPublicMessage()];
+      }
+      const [frontendPlayer] = resultFrontend;
+
+      return [frontendPlayer, null];
     } catch (e) {
-      console.error("getPlayer - unexpected error:", e);
-      return [
-        null,
-        new AppError(
-          "getPlayer - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
-        ),
-      ];
+      console.error(`getPlayer - unexpected error: ${JSON.stringify(e)}`);
+      return [null, "Internal Server Error"];
     }
   }
 
-  levelUp(nbLevelsToAdd: number): Result<true> {
+  levelUp(nbLevelsToAdd: number): FrontendResult<true> {
     try {
-      const player = this.repository.get();
-      player.levelUp(nbLevelsToAdd);
-      this.repository.update(player);
+      const resultGetPlayer = this.repository.get();
+      if (ResultFactory.isError(resultGetPlayer)) {
+        const [, errorGetPlayer] = resultGetPlayer;
+        console.error(errorGetPlayer);
+        return [null, errorGetPlayer.getPublicMessage()];
+      }
+      const [player] = resultGetPlayer;
+
+      const resultLevelUp = player.levelUp(nbLevelsToAdd);
+      if (ResultFactory.isError(resultLevelUp)) {
+        const [, errorLevelUp] = resultLevelUp;
+        console.error(errorLevelUp);
+        return [null, errorLevelUp.getPublicMessage()];
+      }
+
+      const resultUpdateSaved = this.repository.save(player);
+      if (ResultFactory.isError(resultUpdateSaved)) {
+        const [, errorUpdateSaved] = resultUpdateSaved;
+        console.error(errorUpdateSaved);
+        return [null, errorUpdateSaved.getPublicMessage()];
+      }
+
       return [true, null];
     } catch (e) {
-      return [
-        null,
-        new AppError(
-          "Player - levelUp - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
-        ),
-      ];
+      console.error(`levelUp - unexpected error: ${JSON.stringify(e)}`);
+      return [null, "Internal Server Error"];
     }
   }
 
-  engageDiscussion() {
+  engageDiscussion(): FrontendResult<boolean> {
     // TODO
-    return true;
+    return [true, null];
   }
 
-  initializePlayer(): Result<true> {
-    this.repository.restoreDefault();
-    return [true, null];
+  initializePlayer(): FrontendResult<true> {
+    try {
+      const resultRestoreDefault = this.repository.restoreDefault();
+      if (ResultFactory.isError(resultRestoreDefault)) {
+        const [, errorRestore] = resultRestoreDefault;
+        console.error(errorRestore);
+        return [null, errorRestore.getPublicMessage()];
+      }
+
+      return [true, null];
+    } catch (e) {
+      console.error(
+        `initializePlayer - unexpected error: ${JSON.stringify(e)}`,
+      );
+      return [null, "Internal Server Error"];
+    }
   }
 }
