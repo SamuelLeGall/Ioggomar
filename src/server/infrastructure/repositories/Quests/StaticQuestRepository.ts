@@ -1,7 +1,7 @@
 import {
-  AppError,
-  AppErrorCodes,
+  ErrorFactory,
   Result,
+  ResultFactory,
 } from "@src/models/BasicAndTempModels";
 import { QuestItem } from "@src/models/quests/QuestsModels";
 import { StaticQuestEntity } from "@src/server/domain/entities/StaticQuestEntity";
@@ -10,6 +10,7 @@ import { Collection } from "@src/server/infrastructure/db/Collection";
 
 export class StaticQuestRepository {
   private readonly database: Collection<QuestItem>;
+  private readonly instanceName = "StaticQuestRepository";
   constructor(database = new LocalDatabase()) {
     this.database = database.quests;
   }
@@ -26,38 +27,135 @@ export class StaticQuestRepository {
     };
   }
 
-  private toEntity(data: QuestItem): StaticQuestEntity {
-    return new StaticQuestEntity(data);
-  }
-
-  /** Public Getters */
-  public getAll(): StaticQuestEntity[] {
-    const result: StaticQuestEntity[] = [];
-    this.database.getAll().forEach((questDB: QuestItem) => {
-      result.push(this.toEntity(questDB));
-    });
-    return result;
-  }
-
-  public getById(questId: string): Result<StaticQuestEntity> {
-    const selectedQuest = this.database.getById(questId);
-    if (!selectedQuest) {
+  private toEntity(data: QuestItem): Result<StaticQuestEntity> {
+    try {
+      const entity = new StaticQuestEntity(data);
+      return [entity, null];
+    } catch (e) {
       return [
         null,
-        new AppError(
-          `No quest found for id ${questId}`,
-          AppErrorCodes.RESOURCE_NOT_FOUND,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Repository", "toEntity", {
+            questId: data.id,
+            instanceName: this.instanceName,
+          }),
+          e,
         ),
       ];
     }
+  }
 
-    return [this.toEntity(selectedQuest), null];
+  /** Public Getters */
+  public getAll(): Result<StaticQuestEntity[]> {
+    try {
+      const context = ErrorFactory.createContext("Repository", "getAll", {
+        instanceName: this.instanceName,
+      });
+
+      // Get raw data from database
+      const dbResult = this.database.getAll();
+      if (ResultFactory.isError(dbResult)) {
+        const [, error] = dbResult;
+        return [null, ErrorFactory.chainError(error, context)];
+      }
+      const [questItems] = dbResult;
+
+      // Transform to entities
+      const entities: StaticQuestEntity[] = [];
+      for (const questItem of questItems) {
+        const entityResult = this.toEntity(questItem);
+        if (ResultFactory.isError(entityResult)) {
+          const [, error] = entityResult;
+          return [null, ErrorFactory.chainError(error, context)];
+        }
+        const [entity] = entityResult;
+        entities.push(entity);
+      }
+
+      return [entities, null];
+    } catch (e) {
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Repository", "getAll", {
+            instanceName: this.instanceName,
+          }),
+          e,
+        ),
+      ];
+    }
+  }
+
+  public getById(questId: string): Result<StaticQuestEntity> {
+    try {
+      const context = ErrorFactory.createContext("Repository", "getById", {
+        questId,
+        instanceName: this.instanceName,
+      });
+
+      // Get from database
+      const dbResult = this.database.getById(questId);
+      if (ResultFactory.isError(dbResult)) {
+        const [, error] = dbResult;
+        return [null, ErrorFactory.chainError(error, context)];
+      }
+      const [questItem] = dbResult;
+
+      // Check if found
+      if (!questItem) {
+        return [null, ErrorFactory.resourceNotFound(context, "quest", questId)];
+      }
+
+      // Transform to entity
+      const entityResult = this.toEntity(questItem);
+      if (ResultFactory.isError(entityResult)) {
+        const [, error] = entityResult;
+        return [null, ErrorFactory.chainError(error, context)];
+      }
+      const [staticQuest] = entityResult;
+
+      return [staticQuest, null];
+    } catch (e) {
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Repository", "getById", {
+            questId,
+            instanceName: this.instanceName,
+          }),
+          e,
+        ),
+      ];
+    }
   }
 
   /** DON'T use this method except when loading/saving the game   */
   public restoreDefault(): Result<true> {
-    this.database._forceReset();
-
-    return [true, null];
+    try {
+      const resetResult = this.database._forceReset();
+      if (ResultFactory.isError(resetResult)) {
+        const [, error] = resetResult;
+        return [
+          null,
+          ErrorFactory.chainError(
+            error,
+            ErrorFactory.createContext("Repository", "restoreDefault", {
+              instanceName: this.instanceName,
+            }),
+          ),
+        ];
+      }
+      return [true, null];
+    } catch (e) {
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Repository", "restoreDefault", {
+            instanceName: this.instanceName,
+          }),
+          e,
+        ),
+      ];
+    }
   }
 }
