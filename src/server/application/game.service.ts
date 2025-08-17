@@ -137,6 +137,7 @@ export class GameService {
       const resultRestoreDBFromFile = this.database._RestoreDB(gameData);
       if (ResultFactory.isError(resultRestoreDBFromFile)) {
         const [, errorRestoreDBFromFile] = resultRestoreDBFromFile;
+        console.error(errorRestoreDBFromFile);
         return [null, errorRestoreDBFromFile.getPublicMessage()];
       }
 

@@ -58,7 +58,7 @@ export class SettingsStoreService {
 
   /** Technical Actions - no actual high level user-action at this level **/
   syncLocalization() {
-    const [newLocalization] = this.api.getCurrentLocalization();
+    const newLocalization = this.api.getCurrentLocalization();
     if (!newLocalization) {
       return;
     }
@@ -66,7 +66,7 @@ export class SettingsStoreService {
     this.locale.value = newLocalization.key;
   }
   syncTheme() {
-    const [newDataTheme] = this.api.getCurrentTheme();
+    const newDataTheme = this.api.getCurrentTheme();
     if (!newDataTheme) {
       return;
     }

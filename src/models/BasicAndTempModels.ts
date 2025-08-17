@@ -12,6 +12,12 @@ export class ResultFactory {
   static isError<T>(result: Result<T>): result is [null, AppError] {
     return result[1] !== null;
   }
+
+  static isErrorFrontend<T>(
+    result: FrontendResult<T>,
+  ): result is [null, string] {
+    return result[1] !== null;
+  }
 }
 
 export interface ExtendingDrawingLimits {
