@@ -24,7 +24,7 @@ export class SettingsService {
       const resultSettings = this.repository.get();
       if (ResultFactory.isError(resultSettings)) {
         const [, errorSettings] = resultSettings;
-        console.error(errorSettings);
+        errorSettings.logToConsole();
         return [null, errorSettings.getPublicMessage()];
       }
       const [settings] = resultSettings;
@@ -32,7 +32,7 @@ export class SettingsService {
       const resultFrontend = toLocalizationForFrontend(settings);
       if (ResultFactory.isError(resultFrontend)) {
         const [, errorMapperSetting] = resultFrontend;
-        console.error(errorMapperSetting);
+        errorMapperSetting.logToConsole();
         return [null, errorMapperSetting.getPublicMessage()];
       }
       const [frontendSetting] = resultFrontend;
@@ -51,7 +51,7 @@ export class SettingsService {
       const resultSettings = this.repository.get();
       if (ResultFactory.isError(resultSettings)) {
         const [, errorSettings] = resultSettings;
-        console.error(errorSettings);
+        errorSettings.logToConsole();
         return [null, errorSettings.getPublicMessage()];
       }
       const [settings] = resultSettings;
@@ -59,7 +59,7 @@ export class SettingsService {
       const resultFrontend = toDataThemeForFrontend(settings);
       if (ResultFactory.isError(resultFrontend)) {
         const [, errorMapperSetting] = resultFrontend;
-        console.error(errorMapperSetting);
+        errorMapperSetting.logToConsole();
         return [null, errorMapperSetting.getPublicMessage()];
       }
       const [frontendSetting] = resultFrontend;
@@ -76,7 +76,7 @@ export class SettingsService {
       const resultGetSettings = this.repository.get();
       if (ResultFactory.isError(resultGetSettings)) {
         const [, errorSettings] = resultGetSettings;
-        console.error(errorSettings);
+        errorSettings.logToConsole();
         return [null, errorSettings.getPublicMessage()];
       }
       const [settings] = resultGetSettings;
@@ -85,14 +85,14 @@ export class SettingsService {
         settings.changeLocalization(newLocalization);
       if (ResultFactory.isError(resultChangeLocalization)) {
         const [, errorChange] = resultChangeLocalization;
-        console.error(errorChange);
+        errorChange.logToConsole();
         return [null, errorChange.getPublicMessage()];
       }
 
       const resultUpdateSaved = this.repository.save(settings);
       if (ResultFactory.isError(resultUpdateSaved)) {
         const [, errorUpdateSaved] = resultUpdateSaved;
-        console.error(errorUpdateSaved);
+        errorUpdateSaved.logToConsole();
         return [null, errorUpdateSaved.getPublicMessage()];
       }
 
@@ -110,7 +110,7 @@ export class SettingsService {
       const resultGetSettings = this.repository.get();
       if (ResultFactory.isError(resultGetSettings)) {
         const [, errorSettings] = resultGetSettings;
-        console.error(errorSettings);
+        errorSettings.logToConsole();
         return [null, errorSettings.getPublicMessage()];
       }
       const [settings] = resultGetSettings;
@@ -118,14 +118,14 @@ export class SettingsService {
       const resultChangeTheme = settings.changeTheme(newTheme);
       if (ResultFactory.isError(resultChangeTheme)) {
         const [, errorChange] = resultChangeTheme;
-        console.error(errorChange);
+        errorChange.logToConsole();
         return [null, errorChange.getPublicMessage()];
       }
 
       const resultUpdateSaved = this.repository.save(settings);
       if (ResultFactory.isError(resultUpdateSaved)) {
         const [, errorUpdateSaved] = resultUpdateSaved;
-        console.error(errorUpdateSaved);
+        errorUpdateSaved.logToConsole();
         return [null, errorUpdateSaved.getPublicMessage()];
       }
 

@@ -39,7 +39,7 @@ export class QuestService {
       const resultGetQuests = this.staticQuestRepo.getAll();
       if (ResultFactory.isError(resultGetQuests)) {
         const [, errorGetQuests] = resultGetQuests;
-        console.error(errorGetQuests);
+        errorGetQuests.logToConsole();
         return [null, errorGetQuests.getPublicMessage()];
       }
       const [quests] = resultGetQuests;
@@ -49,7 +49,7 @@ export class QuestService {
         const resultMapFrontend = toQuestItemForFrontend(quest);
         if (ResultFactory.isError(resultMapFrontend)) {
           const [, errorMapFrontend] = resultMapFrontend;
-          console.error(errorMapFrontend);
+          errorMapFrontend.logToConsole();
           return [null, errorMapFrontend.getPublicMessage()];
         }
         const [questForFrontend] = resultMapFrontend;
@@ -67,7 +67,7 @@ export class QuestService {
       const resultGetQuest = this.staticQuestRepo.getById(questId);
       if (ResultFactory.isError(resultGetQuest)) {
         const [, errorGetQuest] = resultGetQuest;
-        console.error(errorGetQuest);
+        errorGetQuest.logToConsole();
         return [null, errorGetQuest.getPublicMessage()];
       }
       const [quest] = resultGetQuest;
@@ -75,7 +75,7 @@ export class QuestService {
       const resultMapFrontend = toQuestItemForFrontend(quest);
       if (ResultFactory.isError(resultMapFrontend)) {
         const [, errorMapFrontend] = resultMapFrontend;
-        console.error(errorMapFrontend);
+        errorMapFrontend.logToConsole();
         return [null, errorMapFrontend.getPublicMessage()];
       }
       const [questFrontend] = resultMapFrontend;
@@ -92,7 +92,7 @@ export class QuestService {
       const resultGetQuests = this.activeQuestRepo.getAll();
       if (ResultFactory.isError(resultGetQuests)) {
         const [, errorGetQuests] = resultGetQuests;
-        console.error(errorGetQuests);
+        errorGetQuests.logToConsole();
         return [null, errorGetQuests.getPublicMessage()];
       }
       const [quests] = resultGetQuests;
@@ -102,7 +102,7 @@ export class QuestService {
         const resultMapFrontend = toActiveQuestForFrontend(activeQuest);
         if (ResultFactory.isError(resultMapFrontend)) {
           const [, errorMapFrontend] = resultMapFrontend;
-          console.error(errorMapFrontend);
+          errorMapFrontend.logToConsole();
           return [null, errorMapFrontend.getPublicMessage()];
         }
         const [questForFrontend] = resultMapFrontend;
@@ -122,7 +122,7 @@ export class QuestService {
       const resultGetQuest = this.activeQuestRepo.getById(questId);
       if (ResultFactory.isError(resultGetQuest)) {
         const [, errorGetQuest] = resultGetQuest;
-        console.error(errorGetQuest);
+        errorGetQuest.logToConsole();
         return [null, errorGetQuest.getPublicMessage()];
       }
       const [quest] = resultGetQuest;
@@ -130,7 +130,7 @@ export class QuestService {
       const resultMapFrontend = toActiveQuestForFrontend(quest);
       if (ResultFactory.isError(resultMapFrontend)) {
         const [, errorMapFrontend] = resultMapFrontend;
-        console.error(errorMapFrontend);
+        errorMapFrontend.logToConsole();
         return [null, errorMapFrontend.getPublicMessage()];
       }
       const [activeQuest] = resultMapFrontend;
@@ -152,7 +152,7 @@ export class QuestService {
       const resultGetQuest = this.staticQuestRepo.getById(questId);
       if (ResultFactory.isError(resultGetQuest)) {
         const [, errorGetQuest] = resultGetQuest;
-        console.error(errorGetQuest);
+        errorGetQuest.logToConsole();
         return [null, errorGetQuest.getPublicMessage()];
       }
       const [quest] = resultGetQuest;
@@ -164,7 +164,7 @@ export class QuestService {
       );
       if (ResultFactory.isError(resultInitializeQuest)) {
         const [, errorInitializeQuest] = resultInitializeQuest;
-        console.error(errorInitializeQuest);
+        errorInitializeQuest.logToConsole();
         return [null, errorInitializeQuest.getPublicMessage()];
       }
       const [activeQuest] = resultInitializeQuest;
@@ -173,7 +173,7 @@ export class QuestService {
       const resultQuestSaved = this.activeQuestRepo.save(activeQuest);
       if (ResultFactory.isError(resultQuestSaved)) {
         const [, errorQuestSaved] = resultQuestSaved;
-        console.error(errorQuestSaved);
+        errorQuestSaved.logToConsole();
         return [null, errorQuestSaved.getPublicMessage()];
       }
 
@@ -188,7 +188,7 @@ export class QuestService {
       const resultRemoveQuest = this.activeQuestRepo.remove(questId);
       if (ResultFactory.isError(resultRemoveQuest)) {
         const [, errorRemoveQuest] = resultRemoveQuest;
-        console.error(errorRemoveQuest);
+        errorRemoveQuest.logToConsole();
         return [null, errorRemoveQuest.getPublicMessage()];
       }
 
@@ -211,7 +211,7 @@ export class QuestService {
       const resultRemoveQuest = this.activeQuestRepo.remove(questId);
       if (ResultFactory.isError(resultRemoveQuest)) {
         const [, errorRemoveQuest] = resultRemoveQuest;
-        console.error(errorRemoveQuest);
+        errorRemoveQuest.logToConsole();
         return [null, errorRemoveQuest.getPublicMessage()];
       }
 
@@ -228,7 +228,7 @@ export class QuestService {
       const resultRemoveQuest = this.activeQuestRepo.remove(questId);
       if (ResultFactory.isError(resultRemoveQuest)) {
         const [, errorRemoveQuest] = resultRemoveQuest;
-        console.error(errorRemoveQuest);
+        errorRemoveQuest.logToConsole();
         return [null, errorRemoveQuest.getPublicMessage()];
       }
 
@@ -256,7 +256,7 @@ export class QuestService {
       const resultGetQuest = this.activeQuestRepo.getById(questId);
       if (ResultFactory.isError(resultGetQuest)) {
         const [, errorGetQuest] = resultGetQuest;
-        console.error(errorGetQuest);
+        errorGetQuest.logToConsole();
         return [null, errorGetQuest.getPublicMessage()];
       }
       const [quest] = resultGetQuest;
@@ -268,7 +268,7 @@ export class QuestService {
         );
         if (ResultFactory.isError(resultIncrementTarget)) {
           const [, errorIncrementTarget] = resultIncrementTarget;
-          console.error(errorIncrementTarget);
+          errorIncrementTarget.logToConsole();
           return [null, errorIncrementTarget.getPublicMessage()];
         }
       }
@@ -276,7 +276,7 @@ export class QuestService {
       const resultSave = this.activeQuestRepo.save(quest);
       if (ResultFactory.isError(resultSave)) {
         const [, errorSave] = resultSave;
-        console.error(errorSave);
+        errorSave.logToConsole();
         return [null, errorSave.getPublicMessage()];
       }
 

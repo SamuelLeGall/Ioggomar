@@ -21,7 +21,7 @@ export class PlayerService {
       const resultGetPlayer = this.repository.get();
       if (ResultFactory.isError(resultGetPlayer)) {
         const [, errorGetPlayer] = resultGetPlayer;
-        console.error(errorGetPlayer);
+        errorGetPlayer.logToConsole();
         return [null, errorGetPlayer.getPublicMessage()];
       }
       const [player] = resultGetPlayer;
@@ -29,7 +29,7 @@ export class PlayerService {
       const resultFrontend = toPlayerForFrontend(player);
       if (ResultFactory.isError(resultFrontend)) {
         const [, errorMapperSetting] = resultFrontend;
-        console.error(errorMapperSetting);
+        errorMapperSetting.logToConsole();
         return [null, errorMapperSetting.getPublicMessage()];
       }
       const [frontendPlayer] = resultFrontend;
@@ -46,7 +46,7 @@ export class PlayerService {
       const resultGetPlayer = this.repository.get();
       if (ResultFactory.isError(resultGetPlayer)) {
         const [, errorGetPlayer] = resultGetPlayer;
-        console.error(errorGetPlayer);
+        errorGetPlayer.logToConsole();
         return [null, errorGetPlayer.getPublicMessage()];
       }
       const [player] = resultGetPlayer;
@@ -54,14 +54,14 @@ export class PlayerService {
       const resultLevelUp = player.levelUp(nbLevelsToAdd);
       if (ResultFactory.isError(resultLevelUp)) {
         const [, errorLevelUp] = resultLevelUp;
-        console.error(errorLevelUp);
+        errorLevelUp.logToConsole();
         return [null, errorLevelUp.getPublicMessage()];
       }
 
       const resultUpdateSaved = this.repository.save(player);
       if (ResultFactory.isError(resultUpdateSaved)) {
         const [, errorUpdateSaved] = resultUpdateSaved;
-        console.error(errorUpdateSaved);
+        errorUpdateSaved.logToConsole();
         return [null, errorUpdateSaved.getPublicMessage()];
       }
 

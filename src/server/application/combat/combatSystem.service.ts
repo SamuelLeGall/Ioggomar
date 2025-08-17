@@ -217,7 +217,7 @@ class CombatSystemService {
           );
           if (ResultFactory.isError(resultAction)) {
             const [, errorAction] = resultAction;
-            console.error(errorAction);
+            errorAction.logToConsole();
             return [null, errorAction.getPublicMessage()];
           }
         }
@@ -237,7 +237,7 @@ class CombatSystemService {
 
       return [true, null];
     } catch (e) {
-      console.error(e);
+      console.error("initializeFight - unexpected error:", e);
       return [null, "Internal Server Error"];
     }
   }

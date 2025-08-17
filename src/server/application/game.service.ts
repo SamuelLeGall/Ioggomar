@@ -82,7 +82,7 @@ export class GameService {
       const resultInitializeGlobal = this.initializeGlobal();
       if (ResultFactory.isError(resultInitializeGlobal)) {
         const [, errorInitializeGlobal] = resultInitializeGlobal;
-        console.error(errorInitializeGlobal);
+        errorInitializeGlobal.logToConsole();
         return [null, errorInitializeGlobal.getPublicMessage()];
       }
 
@@ -107,7 +107,7 @@ export class GameService {
       const resultDumpExistingDB = this.database._DumpDB();
       if (ResultFactory.isError(resultDumpExistingDB)) {
         const [, errorDumpExistingDB] = resultDumpExistingDB;
-        console.error(errorDumpExistingDB);
+        errorDumpExistingDB.logToConsole();
         return [null, errorDumpExistingDB.getPublicMessage()];
       }
       const [dumpDB] = resultDumpExistingDB;
@@ -137,7 +137,7 @@ export class GameService {
       const resultRestoreDBFromFile = this.database._RestoreDB(gameData);
       if (ResultFactory.isError(resultRestoreDBFromFile)) {
         const [, errorRestoreDBFromFile] = resultRestoreDBFromFile;
-        console.error(errorRestoreDBFromFile);
+        errorRestoreDBFromFile.logToConsole();
         return [null, errorRestoreDBFromFile.getPublicMessage()];
       }
 
