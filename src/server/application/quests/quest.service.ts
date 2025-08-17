@@ -1,8 +1,8 @@
 import {
-  AppError,
-  AppErrorCodes,
   ErrorFactory,
+  FrontendResult,
   Result,
+  ResultFactory,
 } from "@src/models/BasicAndTempModels";
 import {
   ActiveQuestForFrontend,
@@ -19,6 +19,7 @@ import {
 } from "@src/server/domain/mappers/QuestMappers";
 
 export class QuestService {
+  private readonly instanceName = "QuestService";
   private readonly activeQuestRepo: ActiveQuestRepository;
   private readonly staticQuestRepo: StaticQuestRepository;
 
@@ -33,93 +34,111 @@ export class QuestService {
   /** Business Logic - It represent use cases or actions that the player can perform **/
 
   /** GETTERS */
-  public getAllQuests(): Result<QuestItemForFrontend[]> {
+  public getAllQuests(): FrontendResult<QuestItemForFrontend[]> {
     try {
-      const quests = this.staticQuestRepo.getAll();
-      // TODO filter quests that are active from this list...
-      return [
-        quests.map((quest) => {
-          return toQuestItemForFrontend(quest);
-        }),
-        null,
-      ];
+      const resultGetQuests = this.staticQuestRepo.getAll();
+      if (ResultFactory.isError(resultGetQuests)) {
+        const [, errorGetQuests] = resultGetQuests;
+        console.error(errorGetQuests);
+        return [null, errorGetQuests.getPublicMessage()];
+      }
+      const [quests] = resultGetQuests;
+
+      const questsFrontend: QuestItemForFrontend[] = [];
+      for (const quest of quests) {
+        const resultMapFrontend = toQuestItemForFrontend(quest);
+        if (ResultFactory.isError(resultMapFrontend)) {
+          const [, errorMapFrontend] = resultMapFrontend;
+          console.error(errorMapFrontend);
+          return [null, errorMapFrontend.getPublicMessage()];
+        }
+        const [questForFrontend] = resultMapFrontend;
+        questsFrontend.push(questForFrontend);
+      }
+
+      return [questsFrontend, null];
     } catch (e) {
       console.error("getAllQuests - unexpected error:", e);
-      return [
-        null,
-        new AppError(
-          "getAllQuests - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
-        ),
-      ];
+      return [null, "Internal Server Error"];
     }
   }
-  public getQuestById(questId: string): Result<QuestItemForFrontend> {
+  public getQuestById(questId: string): FrontendResult<QuestItemForFrontend> {
     try {
-      const [quest, errorGetQuest] = this.staticQuestRepo.getById(questId);
-      if (errorGetQuest) {
-        console.error("getQuestById - error from repo", errorGetQuest.message);
-        return [
-          null,
-          ErrorFactory.chainError(
-            errorGetQuest,
-            ErrorFactory.createContext("Service", "getQuestById", { questId }),
-          ),
-        ];
+      const resultGetQuest = this.staticQuestRepo.getById(questId);
+      if (ResultFactory.isError(resultGetQuest)) {
+        const [, errorGetQuest] = resultGetQuest;
+        console.error(errorGetQuest);
+        return [null, errorGetQuest.getPublicMessage()];
       }
-      return [toQuestItemForFrontend(quest), null];
+      const [quest] = resultGetQuest;
+
+      const resultMapFrontend = toQuestItemForFrontend(quest);
+      if (ResultFactory.isError(resultMapFrontend)) {
+        const [, errorMapFrontend] = resultMapFrontend;
+        console.error(errorMapFrontend);
+        return [null, errorMapFrontend.getPublicMessage()];
+      }
+      const [questFrontend] = resultMapFrontend;
+
+      return [questFrontend, null];
     } catch (e) {
       console.error("getQuestById - unexpected error:", e);
-      return [
-        null,
-        new AppError(
-          "getQuestById - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
-        ),
-      ];
+      return [null, "Internal Server Error"];
     }
   }
 
-  public getAllActiveQuests(): Result<ActiveQuestForFrontend[]> {
+  public getAllActiveQuests(): FrontendResult<ActiveQuestForFrontend[]> {
     try {
-      const quests = this.activeQuestRepo.getAll();
-      return [
-        quests.map((activeQuest) => {
-          return toActiveQuestForFrontend(activeQuest);
-        }),
-        null,
-      ];
+      const resultGetQuests = this.activeQuestRepo.getAll();
+      if (ResultFactory.isError(resultGetQuests)) {
+        const [, errorGetQuests] = resultGetQuests;
+        console.error(errorGetQuests);
+        return [null, errorGetQuests.getPublicMessage()];
+      }
+      const [quests] = resultGetQuests;
+
+      const questsFrontend: ActiveQuestForFrontend[] = [];
+      for (const activeQuest of quests) {
+        const resultMapFrontend = toActiveQuestForFrontend(activeQuest);
+        if (ResultFactory.isError(resultMapFrontend)) {
+          const [, errorMapFrontend] = resultMapFrontend;
+          console.error(errorMapFrontend);
+          return [null, errorMapFrontend.getPublicMessage()];
+        }
+        const [questForFrontend] = resultMapFrontend;
+        questsFrontend.push(questForFrontend);
+      }
+
+      return [questsFrontend, null];
     } catch (e) {
       console.error("getAllActiveQuests - unexpected error:", e);
-      return [
-        null,
-        new AppError(
-          "getAllActiveQuests - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
-        ),
-      ];
+      return [null, "Internal Server Error"];
     }
   }
-  public getActiveQuestById(questId: string): Result<ActiveQuestForFrontend> {
+  public getActiveQuestById(
+    questId: string,
+  ): FrontendResult<ActiveQuestForFrontend> {
     try {
-      const [quest, errorGetQuest] = this.activeQuestRepo.getById(questId);
-      if (errorGetQuest) {
-        console.error(
-          "getActiveQuestById - error from repo",
-          errorGetQuest.message,
-        );
-        return [null, errorGetQuest];
+      const resultGetQuest = this.activeQuestRepo.getById(questId);
+      if (ResultFactory.isError(resultGetQuest)) {
+        const [, errorGetQuest] = resultGetQuest;
+        console.error(errorGetQuest);
+        return [null, errorGetQuest.getPublicMessage()];
       }
-      return [toActiveQuestForFrontend(quest), null];
+      const [quest] = resultGetQuest;
+
+      const resultMapFrontend = toActiveQuestForFrontend(quest);
+      if (ResultFactory.isError(resultMapFrontend)) {
+        const [, errorMapFrontend] = resultMapFrontend;
+        console.error(errorMapFrontend);
+        return [null, errorMapFrontend.getPublicMessage()];
+      }
+      const [activeQuest] = resultMapFrontend;
+
+      return [activeQuest, null];
     } catch (e) {
       console.error("getActiveQuestById - unexpected error:", e);
-      return [
-        null,
-        new AppError(
-          "getActiveQuestById - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
-        ),
-      ];
+      return [null, "Internal Server Error"];
     }
   }
 
@@ -127,190 +146,188 @@ export class QuestService {
   public acceptQuest(
     questId: string,
     difficulty: questDifficulty,
-  ): Result<true> {
+  ): FrontendResult<true> {
     try {
       // fetch the static config of the quest with the asked id
-      const [quest, errorGetQuest] = this.staticQuestRepo.getById(questId);
-      if (!quest) {
-        console.error(
-          "acceptQuest - getById - error from repo",
-          errorGetQuest.message,
-        );
-        return [null, errorGetQuest];
+      const resultGetQuest = this.staticQuestRepo.getById(questId);
+      if (ResultFactory.isError(resultGetQuest)) {
+        const [, errorGetQuest] = resultGetQuest;
+        console.error(errorGetQuest);
+        return [null, errorGetQuest.getPublicMessage()];
       }
+      const [quest] = resultGetQuest;
 
       // Initialize a new active quest to track user progress on this quest
-      const activeQuest = ActiveQuestEntity.fromStaticQuest(quest, difficulty);
+      const resultInitializeQuest = ActiveQuestEntity.fromStaticQuest(
+        quest,
+        difficulty,
+      );
+      if (ResultFactory.isError(resultInitializeQuest)) {
+        const [, errorInitializeQuest] = resultInitializeQuest;
+        console.error(errorInitializeQuest);
+        return [null, errorInitializeQuest.getPublicMessage()];
+      }
+      const [activeQuest] = resultInitializeQuest;
 
       // Add the new quest into the list
-      const [isQuestAdded, errorAddQuest] =
-        this.activeQuestRepo.insert(activeQuest);
-      if (errorAddQuest) {
-        console.error(
-          "acceptQuest - insert - error from repo",
-          errorAddQuest.message,
-        );
-        return [null, errorAddQuest];
+      const resultQuestSaved = this.activeQuestRepo.save(activeQuest);
+      if (ResultFactory.isError(resultQuestSaved)) {
+        const [, errorQuestSaved] = resultQuestSaved;
+        console.error(errorQuestSaved);
+        return [null, errorQuestSaved.getPublicMessage()];
       }
 
-      return [isQuestAdded, null];
+      return [true, null];
     } catch (e) {
       console.error("acceptQuest - unexpected error:", e);
-      return [
-        null,
-        new AppError(
-          "acceptQuest - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
-        ),
-      ];
+      return [null, "Internal Server Error"];
     }
   }
-  public cancelQuest(questId: string): Result<true> {
+  public cancelQuest(questId: string): FrontendResult<true> {
     try {
-      const [isQuestRemovedFromActive, errorRemoveQuest] =
-        this.activeQuestRepo.removeById(questId);
-
-      if (errorRemoveQuest) {
-        console.error(
-          "cancelQuest - removeById - error from repo",
-          errorRemoveQuest.message,
-        );
-        return [null, errorRemoveQuest];
+      const resultRemoveQuest = this.activeQuestRepo.remove(questId);
+      if (ResultFactory.isError(resultRemoveQuest)) {
+        const [, errorRemoveQuest] = resultRemoveQuest;
+        console.error(errorRemoveQuest);
+        return [null, errorRemoveQuest.getPublicMessage()];
       }
 
       // Additional logic for canceling a quest can go here
 
-      return [isQuestRemovedFromActive, null];
+      return [true, null];
     } catch (e) {
       console.error("cancelQuest - unexpected error:", e);
-      return [
-        null,
-        new AppError(
-          "cancelQuest - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
-        ),
-      ];
+      return [null, "Internal Server Error"];
     }
   }
 
-  public completeQuest(questId: string): Result<true> {
+  public completeQuest(questId: string): FrontendResult<true> {
     try {
       // TODO we deal with giving the rewards to the player
 
       // TODO we add the quest to the completed list. giving it a uniqId and the chosen difficulty to track repeatable quests
 
       // we remove the quest from the active ones.
-      const [isQuestRemovedFromActive, errorRemoveQuest] =
-        this.activeQuestRepo.removeById(questId);
-
-      if (errorRemoveQuest) {
-        console.error(
-          "completeQuest - removeById - error from repo",
-          errorRemoveQuest.message,
-        );
-        return [null, errorRemoveQuest];
+      const resultRemoveQuest = this.activeQuestRepo.remove(questId);
+      if (ResultFactory.isError(resultRemoveQuest)) {
+        const [, errorRemoveQuest] = resultRemoveQuest;
+        console.error(errorRemoveQuest);
+        return [null, errorRemoveQuest.getPublicMessage()];
       }
 
-      return [isQuestRemovedFromActive, null];
+      return [true, null];
     } catch (e) {
       console.error("completeQuest - unexpected error:", e);
-      return [
-        null,
-        new AppError(
-          "completeQuest - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
-        ),
-      ];
+      return [null, "Internal Server Error"];
     }
   }
 
-  public failQuest(questId: string): Result<true> {
+  public failQuest(questId: string): FrontendResult<true> {
     try {
       // we remove the quest from the active ones.
-      const [isQuestRemovedFromActive, errorRemoveQuest] =
-        this.activeQuestRepo.removeById(questId);
-
-      if (errorRemoveQuest) {
-        console.error(
-          "failQuest - removeById - error from repo",
-          errorRemoveQuest.message,
-        );
-        return [null, errorRemoveQuest];
+      const resultRemoveQuest = this.activeQuestRepo.remove(questId);
+      if (ResultFactory.isError(resultRemoveQuest)) {
+        const [, errorRemoveQuest] = resultRemoveQuest;
+        console.error(errorRemoveQuest);
+        return [null, errorRemoveQuest.getPublicMessage()];
       }
+
       // eventual processing because quest failed
       // TODO we deal with giving the failure penalities to the player
 
-      return [isQuestRemovedFromActive, null];
+      return [true, null];
     } catch (e) {
       console.error("failQuest - unexpected error:", e);
-      return [
-        null,
-        new AppError(
-          "failQuest - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
-        ),
-      ];
+      return [null, "Internal Server Error"];
     }
   }
 
   public incrementProgress(
     questId: string,
     progressUpdate: QuestItemProgressionUpdateRequest[],
-  ): Result<true> {
+  ): FrontendResult<true> {
     try {
       if (!Array.isArray(progressUpdate) || progressUpdate.length === 0) {
         console.error("incrementProgress - Bad request", progressUpdate);
+        return [null, "Bad Request"];
+      }
+
+      // we fetch the current activeQuest
+      const resultGetQuest = this.activeQuestRepo.getById(questId);
+      if (ResultFactory.isError(resultGetQuest)) {
+        const [, errorGetQuest] = resultGetQuest;
+        console.error(errorGetQuest);
+        return [null, errorGetQuest.getPublicMessage()];
+      }
+      const [quest] = resultGetQuest;
+
+      for (const progressOneGoal of progressUpdate) {
+        const resultIncrementTarget = quest.incrementTarget(
+          progressOneGoal.idItem,
+          progressOneGoal.quantityToAdd,
+        );
+        if (ResultFactory.isError(resultIncrementTarget)) {
+          const [, errorIncrementTarget] = resultIncrementTarget;
+          console.error(errorIncrementTarget);
+          return [null, errorIncrementTarget.getPublicMessage()];
+        }
+      }
+
+      const resultSave = this.activeQuestRepo.save(quest);
+      if (ResultFactory.isError(resultSave)) {
+        const [, errorSave] = resultSave;
+        console.error(errorSave);
+        return [null, errorSave.getPublicMessage()];
+      }
+
+      return [true, null];
+    } catch (e) {
+      console.error("incrementProgress - unexpected error:", e);
+      return [null, "Internal Server Error"];
+    }
+  }
+
+  public initializeQuests(): Result<true> {
+    try {
+      const resultRestoreDefaultStatic = this.staticQuestRepo.restoreDefault();
+      if (ResultFactory.isError(resultRestoreDefaultStatic)) {
+        const [, errorRestoreActive] = resultRestoreDefaultStatic;
         return [
           null,
-          new AppError(
-            `Bad Request`,
-            AppErrorCodes.ACTION_NOT_ALLOWED_BAD_REQUEST,
+          ErrorFactory.chainError(
+            errorRestoreActive,
+            ErrorFactory.createContext("Service", "initializeQuests", {
+              instanceName: this.instanceName,
+            }),
           ),
         ];
       }
 
-      // we fetch the current activeQuest
-      const [quest, errorGetQuest] = this.activeQuestRepo.getById(questId);
-      if (errorGetQuest || !quest) {
-        console.error(
-          "incrementProgress - getById - error from repo",
-          errorGetQuest.message,
-        );
-        return [null, errorGetQuest];
+      const resultRestoreDefaultActive = this.activeQuestRepo.restoreDefault();
+      if (ResultFactory.isError(resultRestoreDefaultActive)) {
+        const [, errorRestoreActive] = resultRestoreDefaultActive;
+        return [
+          null,
+          ErrorFactory.chainError(
+            errorRestoreActive,
+            ErrorFactory.createContext("Service", "initializeQuests", {
+              instanceName: this.instanceName,
+            }),
+          ),
+        ];
       }
 
-      progressUpdate.forEach((el) => {
-        quest.incrementTarget(el.idItem, el.quantityToAdd);
-      });
-
-      const [isUpdated, errorUpdateQuest] = this.activeQuestRepo.updateById(
-        questId,
-        quest,
-      );
-      if (errorUpdateQuest) {
-        console.error(
-          "incrementProgress - updateById - error from repo",
-          errorUpdateQuest.message,
-        );
-        return [null, errorUpdateQuest];
-      }
-
-      return [isUpdated, null];
+      return [true, null];
     } catch (e) {
-      console.error("incrementProgress - unexpected error:", e);
       return [
         null,
-        new AppError(
-          "incrementProgress - unexpected error:",
-          AppErrorCodes.ERROR_NOT_FOUND,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Service", "initializeSettings", {
+            instanceName: this.instanceName,
+          }),
+          e,
         ),
       ];
     }
-  }
-
-  initializeQuests(): Result<true> {
-    this.staticQuestRepo.restoreDefault();
-    this.activeQuestRepo.restoreDefault();
-    return [true, null];
   }
 }

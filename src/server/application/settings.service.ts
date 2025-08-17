@@ -1,6 +1,8 @@
 import {
+  ErrorFactory,
   FrontendResult,
   OptionConfig,
+  Result,
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
 import { SettingsRepository } from "@src/server/infrastructure/repositories/SettingsRepository";
@@ -11,6 +13,7 @@ import {
 
 export class SettingsService {
   private repository: SettingsRepository;
+  private readonly instanceName = "SettingsService";
 
   constructor(repository = new SettingsRepository()) {
     this.repository = repository;
@@ -133,21 +136,33 @@ export class SettingsService {
     }
   }
 
-  initializeSettings(): FrontendResult<true> {
+  initializeSettings(): Result<true> {
     try {
       const resultRestoreDefault = this.repository.restoreDefault();
       if (ResultFactory.isError(resultRestoreDefault)) {
         const [, errorRestore] = resultRestoreDefault;
-        console.error(errorRestore);
-        return [null, errorRestore.getPublicMessage()];
+        return [
+          null,
+          ErrorFactory.chainError(
+            errorRestore,
+            ErrorFactory.createContext("Service", "initializeSettings", {
+              instanceName: this.instanceName,
+            }),
+          ),
+        ];
       }
 
       return [true, null];
     } catch (e) {
-      console.error(
-        `initializeSettings - unexpected error: ${JSON.stringify(e)}`,
-      );
-      return [null, "Internal Server Error"];
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Service", "initializeSettings", {
+            instanceName: this.instanceName,
+          }),
+          e,
+        ),
+      ];
     }
   }
 }

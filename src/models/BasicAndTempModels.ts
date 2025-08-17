@@ -29,6 +29,7 @@ export enum drawingResult {
   SUCCESS = "success",
   CRITICAL_SUCCESS = "criticalSuccess",
 }
+export type TAction = "ATTACK";
 export interface OptionConfig {
   key: string;
   value: string;
@@ -208,6 +209,23 @@ export class ErrorFactory {
   }
 
   // Domain errors
+  static combatActionNotFound(action: TAction): AppError {
+    return new AppError(
+      `The selected action  ${action} does not exist or is not implemented`,
+      AppErrorCodes.BUSINESS_RULE_VIOLATION,
+      ErrorCategory.DOMAIN,
+      ErrorSeverity.MEDIUM,
+      ErrorFactory.createContext("Service", "performAction", {
+        action,
+      }),
+      {
+        userMessage:
+          "The selected action is not available please try another action.",
+        isRecoverable: true,
+      },
+    );
+  }
+
   static questDifficultyNotSet(questId: string): AppError {
     return new AppError(
       `Quest difficulty not set for quest ${questId}`,

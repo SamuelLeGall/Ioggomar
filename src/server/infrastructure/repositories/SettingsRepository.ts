@@ -7,7 +7,6 @@ import {
   Result,
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
-import { PlayerEntity } from "@src/server/domain/entities/PlayerEntity";
 
 export class SettingsRepository {
   private database: Document<MainSettings>;

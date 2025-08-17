@@ -1,14 +1,15 @@
 import { PlayerRepository } from "@src/server/infrastructure/repositories/PlayerRepository";
 import { PlayerForFrontend } from "@src/models/player/PlayerModels";
 import {
-  AppError,
-  AppErrorCodes,
+  ErrorFactory,
   FrontendResult,
+  Result,
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
 import { toPlayerForFrontend } from "@src/server/domain/mappers/PlayerMappers";
 
 export class PlayerService {
+  private readonly instanceName = "PlayerService";
   private repository: PlayerRepository;
 
   constructor(repository = new PlayerRepository()) {
@@ -76,21 +77,33 @@ export class PlayerService {
     return [true, null];
   }
 
-  initializePlayer(): FrontendResult<true> {
+  initializePlayer(): Result<true> {
     try {
       const resultRestoreDefault = this.repository.restoreDefault();
       if (ResultFactory.isError(resultRestoreDefault)) {
         const [, errorRestore] = resultRestoreDefault;
-        console.error(errorRestore);
-        return [null, errorRestore.getPublicMessage()];
+        return [
+          null,
+          ErrorFactory.chainError(
+            errorRestore,
+            ErrorFactory.createContext("Service", "initializePlayer", {
+              instanceName: this.instanceName,
+            }),
+          ),
+        ];
       }
 
       return [true, null];
     } catch (e) {
-      console.error(
-        `initializePlayer - unexpected error: ${JSON.stringify(e)}`,
-      );
-      return [null, "Internal Server Error"];
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Service", "initializePlayer", {
+            instanceName: this.instanceName,
+          }),
+          e,
+        ),
+      ];
     }
   }
 }
