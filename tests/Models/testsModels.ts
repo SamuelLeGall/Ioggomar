@@ -4,7 +4,7 @@ export interface TestCase {
   mocks?: any;
   params: any;
   expected: {
-    error: Error | null;
+    error: string | null;
     result: any | null;
   };
 }

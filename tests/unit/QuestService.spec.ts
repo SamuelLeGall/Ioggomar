@@ -17,12 +17,12 @@ describe("Test of QuestService - acceptQuest", () => {
       const questInstance = new QuestService();
       const [result, error] = questInstance.acceptQuest(
         questId,
-        questDifficulty.MEDIUM
+        questDifficulty.MEDIUM,
       );
 
       // then
       if (testCase.expected.error) {
-        expect(error?.message).toStrictEqual(testCase.expected.error.message);
+        expect(error).toStrictEqual(testCase.expected.error);
       } else {
         expect(error).toStrictEqual(testCase.expected.error);
       }
@@ -46,7 +46,7 @@ describe("Test of QuestService - cancelQuest", () => {
 
       // then
       if (testCase.expected.error) {
-        expect(error?.message).toStrictEqual(testCase.expected.error.message);
+        expect(error).toStrictEqual(testCase.expected.error);
       } else {
         expect(error).toStrictEqual(testCase.expected.error);
       }

@@ -9,10 +9,7 @@ const acceptQuestTestCases: TestCase[] = [
     },
     expected: {
       result: null,
-      error: new AppError(
-        `No quest found for id TEST_NON_PRESENT`,
-        AppErrorCodes.RESOURCE_NOT_FOUND
-      ),
+      error: "WILL BE REPLACED LATER",
     },
   },
   {
@@ -22,10 +19,8 @@ const acceptQuestTestCases: TestCase[] = [
     },
     expected: {
       result: null,
-      error: new AppError(
-        `Quest with id loc1_quest002 already active`,
-        AppErrorCodes.ACTION_NOT_ALLOWED_DATA_CONSISTENCY
-      ),
+
+      error: "WILL BE REPLACED LATER",
     },
   },
   {
@@ -48,10 +43,8 @@ const cancelQuestTestCases: TestCase[] = [
     },
     expected: {
       result: null,
-      error: new AppError(
-        `No active quest found for id TEST_NON_PRESENT`,
-        AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT
-      ),
+
+      error: "WILL BE REPLACED LATER",
     },
   },
   {
@@ -61,10 +54,7 @@ const cancelQuestTestCases: TestCase[] = [
     },
     expected: {
       result: null,
-      error: new AppError(
-        `No active quest found for id loc1_quest001`,
-        AppErrorCodes.RESOURCE_NOT_FOUND_FOR_THIS_CONTEXT
-      ),
+      error: "WILL BE REPLACED LATER",
     },
   },
   {
