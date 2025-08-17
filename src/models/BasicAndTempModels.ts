@@ -51,7 +51,8 @@ export type TLayer =
   | "Repository"
   | "LocalDatabase"
   | "Collection"
-  | "Document";
+  | "Document"
+  | "ErrorSystem";
 
 export enum ErrorCategory {
   DOMAIN = "DOMAIN", // Business rule violations
@@ -385,38 +386,365 @@ export class AppError extends Error {
   /**
    * Get the complete error history with all messages and contexts
    * This traverses the full cause chain and provides detailed information
+   * BULLETPROOF: Protected against infinite loops and corrupted error chains
    */
   getCompleteErrorHistory(): ErrorHistoryEntry[] {
-    const history: ErrorHistoryEntry[] = [];
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let currentError: AppError | undefined = this;
-    let depth = 0;
+    try {
+      const history: ErrorHistoryEntry[] = [];
+      const visited = new Set<AppError>(); // Prevent infinite loops
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
+      let currentError: AppError | undefined = this;
+      let depth = 0;
+      const maxDepth = 100; // Safety limit
 
-    while (currentError) {
-      history.push({
-        depth,
-        message: currentError.message,
-        code: currentError.code,
-        category: currentError.category,
-        severity: currentError.severity,
-        context: currentError.context,
-        userMessage: currentError.userMessage,
-        isRecoverable: currentError.isRecoverable,
-        timestamp: currentError.context.timestamp,
+      while (currentError && depth < maxDepth) {
+        // Check for circular references
+        if (visited.has(currentError)) {
+          history.push({
+            depth,
+            message: "[CIRCULAR REFERENCE DETECTED]",
+            code: AppErrorCodes.UNEXPECTED_ERROR,
+            category: ErrorCategory.SYSTEM,
+            severity: ErrorSeverity.HIGH,
+            context: {
+              layer: "ErrorSystem",
+              method: "getCompleteErrorHistory",
+              timestamp: new Date(),
+              metadata: { circularRef: true, detectedAt: depth },
+            },
+            isRecoverable: false,
+            timestamp: new Date(),
+          });
+          break;
+        }
+
+        visited.add(currentError);
+
+        try {
+          history.push({
+            depth,
+            message: this._safeStringify(currentError.message, "[No Message]"),
+            code: currentError.code || AppErrorCodes.UNEXPECTED_ERROR,
+            category: currentError.category || ErrorCategory.SYSTEM,
+            severity: currentError.severity || ErrorSeverity.MEDIUM,
+            context: currentError.context || {
+              layer: "Unknown",
+              method: "unknown",
+              timestamp: new Date(),
+            },
+            userMessage: currentError.userMessage,
+            isRecoverable: currentError.isRecoverable ?? false,
+            timestamp: currentError.context?.timestamp || new Date(),
+          });
+        } catch (entryError) {
+          // If we can't process this error entry, add a placeholder
+          history.push({
+            depth,
+            message: `[ERROR ENTRY CORRUPTED: ${this._safeStringify(entryError, "Unknown")}]`,
+            code: AppErrorCodes.UNEXPECTED_ERROR,
+            category: ErrorCategory.SYSTEM,
+            severity: ErrorSeverity.HIGH,
+            context: {
+              layer: "ErrorSystem",
+              method: "getCompleteErrorHistory",
+              timestamp: new Date(),
+              metadata: {
+                corruptedEntry: true,
+                originalError: String(currentError),
+              },
+            },
+            isRecoverable: false,
+            timestamp: new Date(),
+          });
+        }
+
+        currentError = currentError.cause;
+        depth++;
+      }
+
+      if (depth >= maxDepth) {
+        history.push({
+          depth,
+          message: `[MAX DEPTH REACHED: ${maxDepth}+ errors in chain]`,
+          code: AppErrorCodes.UNEXPECTED_ERROR,
+          category: ErrorCategory.SYSTEM,
+          severity: ErrorSeverity.HIGH,
+          context: {
+            layer: "ErrorSystem",
+            method: "getCompleteErrorHistory",
+            timestamp: new Date(),
+            metadata: { maxDepthReached: true, maxDepth },
+          },
+          isRecoverable: false,
+          timestamp: new Date(),
+        });
+      }
+
+      return history;
+    } catch (criticalError) {
+      // Last resort: return minimal history entry
+      return [
+        {
+          depth: 0,
+          message: `[CRITICAL ERROR IN HISTORY EXTRACTION: ${this._safeStringify(criticalError, "Unknown")}]`,
+          code: AppErrorCodes.UNEXPECTED_ERROR,
+          category: ErrorCategory.SYSTEM,
+          severity: ErrorSeverity.CRITICAL,
+          context: {
+            layer: "ErrorSystem",
+            method: "getCompleteErrorHistory",
+            timestamp: new Date(),
+            metadata: { criticalFailure: true },
+          },
+          isRecoverable: false,
+          timestamp: new Date(),
+        },
+      ];
+    }
+  }
+
+  /**
+   * Log the complete error to console with proper formatting
+   * BULLETPROOF: Will always log something, even if formatting fails
+   */
+  logToConsole(): void {
+    try {
+      console.group(
+        `🔴 ${this.severity || "UNKNOWN"} ${this.category || "UNKNOWN"} Error`,
+      );
+      console.error(this.getFormattedErrorHistory());
+      console.groupEnd();
+    } catch (consoleError) {
+      // Fallback: Basic console logging
+      try {
+        console.error("🚨 ERROR LOGGING FAILED:");
+        console.error("Original Error:", String(this.message || "No message"));
+        console.error("Code:", String(this.code || "NO_CODE"));
+        console.error("Logging Error:", String(consoleError));
+        console.error("Raw Error Object:", this);
+      } catch {
+        // Ultimate fallback: Most basic logging possible
+        console.error("🚨 CRITICAL: Error logging completely failed");
+        console.error(String(this));
+      }
+    }
+  }
+
+  /**
+   * Get error data optimized for external logging services (structured data)
+   * BULLETPROOF: Protected against serialization failures and missing data
+   */
+  getStructuredLogData(): StructuredErrorLog {
+    try {
+      const history = this.getCompleteErrorHistory();
+      const rootCause = history[history.length - 1] || history[0];
+
+      const baseLog: StructuredErrorLog = {
+        timestamp: new Date().toISOString(),
+        errorId: this._generateSafeErrorId(),
+        summary: {
+          message: this._safeStringify(this.message, "No message"),
+          code: this.code || AppErrorCodes.UNEXPECTED_ERROR,
+          category: this.category || ErrorCategory.SYSTEM,
+          severity: this.severity || ErrorSeverity.MEDIUM,
+          isRecoverable: this.isRecoverable ?? false,
+          userMessage: this._safeStringify(
+            this.userMessage || this.getPublicMessage(),
+            "An error occurred",
+          ),
+        },
+        rootCause: {
+          message: this._safeStringify(
+            rootCause?.message,
+            "Unknown root cause",
+          ),
+          code: rootCause?.code || AppErrorCodes.UNEXPECTED_ERROR,
+          layer: this._safeStringify(rootCause?.context?.layer, "Unknown"),
+          method: this._safeStringify(rootCause?.context?.method, "unknown"),
+        },
+        trace: {
+          methodChain: this._safeGetMethodCallChain(),
+          errorChain: this._safeGetErrorTraceOneLine(),
+          depth: history.length,
+        },
+        metadata: this._safeGetCombinedMetadata(),
+        correlationId: this._safeStringify(
+          this.context?.correlationId,
+          undefined,
+        ),
+        stack: this._safeStringify(this.stack, undefined),
+      };
+
+      return baseLog;
+    } catch (structuredError) {
+      // Emergency structured log
+      return {
+        timestamp: new Date().toISOString(),
+        errorId: `EMERGENCY-${Date.now()}`,
+        summary: {
+          message: `Structured logging failed: ${this._safeStringify(structuredError, "Unknown")}`,
+          code: AppErrorCodes.UNEXPECTED_ERROR,
+          category: ErrorCategory.SYSTEM,
+          severity: ErrorSeverity.CRITICAL,
+          isRecoverable: false,
+          userMessage:
+            "An unexpected error occurred while logging error details",
+        },
+        rootCause: {
+          message: this._safeStringify(
+            this.message,
+            "Unknown original message",
+          ),
+          code: this.code || AppErrorCodes.UNEXPECTED_ERROR,
+          layer: "Unknown",
+          method: "unknown",
+        },
+        trace: {
+          methodChain: "Extraction failed",
+          errorChain: "Extraction failed",
+          depth: 1,
+        },
+        metadata: { structuredLoggingFailed: true },
+        correlationId: undefined,
+        stack: undefined,
+      };
+    }
+  }
+
+  /**
+   * Generate a unique error ID for tracking (safe version)
+   */
+  private _generateSafeErrorId(): string {
+    try {
+      const timestamp = Date.now().toString(36);
+      const random = Math.random().toString(36).substr(2, 5);
+      const codeHash = String(this.code || "UNKN").substr(0, 4);
+      return `${codeHash}-${timestamp}-${random}`.toUpperCase();
+    } catch {
+      // Ultimate fallback
+      return `EMERGENCY-${Date.now()}`;
+    }
+  }
+
+  /**
+   * Safe version of getMethodCallChain
+   */
+  private _safeGetMethodCallChain(): string {
+    try {
+      const history = this.getCompleteErrorHistory();
+      return history
+        .map(
+          (entry) =>
+            `${this._safeStringify(entry.context?.layer, "Unknown")}.${this._safeStringify(entry.context?.method, "unknown")}()`,
+        )
+        .join(" → ");
+    } catch {
+      return `${this._safeStringify(this.context?.layer, "Unknown")}.${this._safeStringify(this.context?.method, "unknown")}() [Chain extraction failed]`;
+    }
+  }
+
+  /**
+   * Safe version of getErrorTraceOneLine
+   */
+  private _safeGetErrorTraceOneLine(): string {
+    try {
+      const history = this.getCompleteErrorHistory();
+      const trace = history
+        .map(
+          (entry) =>
+            `${this._safeStringify(entry.context?.layer, "Unknown")}.${this._safeStringify(entry.context?.method, "unknown")}[${this._safeStringify(entry.code, "UNKNOWN")}]`,
+        )
+        .join(" → ");
+
+      const severity = this._safeStringify(this.severity, "UNKNOWN");
+      const category = this._safeStringify(this.category, "UNKNOWN");
+
+      return `${severity} ${category}: ${trace}`;
+    } catch {
+      return `${this._safeStringify(this.severity, "UNKNOWN")} ${this._safeStringify(this.category, "UNKNOWN")}: [Trace extraction failed]`;
+    }
+  }
+
+  /**
+   * Safe version of getCombinedMetadata
+   */
+  private _safeGetCombinedMetadata(): Record<string, unknown> {
+    try {
+      const history = this.getCompleteErrorHistory();
+      const combined: Record<string, unknown> = {};
+
+      history.reverse().forEach((entry, index) => {
+        try {
+          if (
+            entry.context?.metadata &&
+            typeof entry.context.metadata === "object"
+          ) {
+            Object.entries(entry.context.metadata).forEach(([key, value]) => {
+              try {
+                const prefixedKey =
+                  index === 0 ? key : `level${entry.depth}_${key}`;
+                combined[prefixedKey] = value;
+              } catch {
+                // Skip this metadata entry if it causes issues
+              }
+            });
+          }
+
+          // Add some basic context info
+          combined[`level${entry.depth}_layer`] =
+            entry.context?.layer || "Unknown";
+          combined[`level${entry.depth}_method`] =
+            entry.context?.method || "unknown";
+          combined[`level${entry.depth}_timestamp`] =
+            entry.context?.timestamp || new Date();
+        } catch {
+          // Skip this history entry if it causes issues
+          combined[`level${entry.depth}_error`] = "Metadata extraction failed";
+        }
       });
 
-      currentError = currentError.cause;
-      depth++;
+      return combined;
+    } catch {
+      return {
+        metadataExtractionFailed: true,
+        currentLayer: this._safeStringify(this.context?.layer, "Unknown"),
+        currentMethod: this._safeStringify(this.context?.method, "unknown"),
+      };
     }
-
-    return history;
   }
 
   /**
    * Get a formatted string representation of the complete error history
    * Perfect for logging and debugging
+   * BULLETPROOF: Multiple fallback layers to ensure this never crashes
    */
   getFormattedErrorHistory(): string {
+    try {
+      return this._getFormattedErrorHistoryUnsafe();
+    } catch (formattingError) {
+      // Fallback 1: Try minimal formatting
+      try {
+        return this._getMinimalFormattedHistory(formattingError);
+      } catch (minimalError) {
+        // Fallback 2: Basic string representation
+        try {
+          return this._getBasicErrorString(formattingError, minimalError);
+        } catch (basicError) {
+          // Fallback 3: Absolute minimum (this should never fail)
+          return this._getEmergencyErrorString(
+            formattingError,
+            minimalError,
+            basicError,
+          );
+        }
+      }
+    }
+  }
+
+  /**
+   * The original formatting logic (now marked as unsafe)
+   */
+  private _getFormattedErrorHistoryUnsafe(): string {
     const history = this.getCompleteErrorHistory();
     const lines: string[] = [];
 
@@ -424,41 +752,69 @@ export class AppError extends Error {
     lines.push(`═══════════════════════════════════════════════════════════`);
 
     history.forEach((entry, index) => {
-      const indent = "  ".repeat(entry.depth);
+      const indent = "  ".repeat(Math.max(0, Math.min(entry.depth, 10))); // Limit depth
       const isRoot = entry.depth === history.length - 1;
       const prefix = isRoot ? "🟡 ROOT CAUSE" : `🔸 LEVEL ${entry.depth + 1}`;
 
       lines.push(`${indent}${prefix}`);
-      lines.push(`${indent}├─ Message: ${entry.message}`);
-      lines.push(`${indent}├─ Code: ${entry.code}`);
-      lines.push(`${indent}├─ Category: ${entry.category} (${entry.severity})`);
       lines.push(
-        `${indent}├─ Layer: ${entry.context.layer}.${entry.context.method}`,
+        `${indent}├─ Message: ${this._safeStringify(entry.message, "Unknown message")}`,
       );
-      lines.push(`${indent}├─ Time: ${entry.timestamp.toISOString()}`);
+      lines.push(
+        `${indent}├─ Code: ${this._safeStringify(entry.code, "UNKNOWN_CODE")}`,
+      );
+      lines.push(
+        `${indent}├─ Category: ${this._safeStringify(entry.category, "UNKNOWN")} (${this._safeStringify(entry.severity, "UNKNOWN")})`,
+      );
+      lines.push(
+        `${indent}├─ Layer: ${this._safeStringify(entry.context?.layer, "Unknown")}.${this._safeStringify(entry.context?.method, "unknown")}`,
+      );
 
-      if (
-        entry.context.metadata &&
-        Object.keys(entry.context.metadata).length > 0
-      ) {
-        lines.push(
-          `${indent}├─ Metadata: ${JSON.stringify(entry.context.metadata, null, 2).replace(/\n/g, `\n${indent}│    `)}`,
-        );
+      try {
+        const timeStr =
+          entry.timestamp instanceof Date
+            ? entry.timestamp.toISOString()
+            : String(entry.timestamp || "Unknown time");
+        lines.push(`${indent}├─ Time: ${timeStr}`);
+      } catch {
+        lines.push(`${indent}├─ Time: [Invalid Date]`);
       }
 
-      if (entry.context.correlationId) {
+      if (
+        entry.context?.metadata &&
+        typeof entry.context.metadata === "object"
+      ) {
+        try {
+          const metadataStr = JSON.stringify(entry.context.metadata, null, 2);
+          if (metadataStr && metadataStr !== "{}") {
+            lines.push(
+              `${indent}├─ Metadata: ${metadataStr.replace(/\n/g, `\n${indent}│    `)}`,
+            );
+          }
+        } catch {
+          lines.push(`${indent}├─ Metadata: [Serialization Failed]`);
+        }
+      }
+
+      if (entry.context?.correlationId) {
         lines.push(
-          `${indent}├─ Correlation ID: ${entry.context.correlationId}`,
+          `${indent}├─ Correlation ID: ${this._safeStringify(entry.context.correlationId, "Unknown")}`,
         );
       }
 
       if (entry.userMessage) {
-        lines.push(`${indent}├─ User Message: "${entry.userMessage}"`);
+        lines.push(
+          `${indent}├─ User Message: "${this._safeStringify(entry.userMessage, "Unknown message")}"`,
+        );
       }
 
-      lines.push(
-        `${indent}└─ Recoverable: ${entry.isRecoverable ? "✅" : "❌"}`,
-      );
+      const recoverable =
+        entry.isRecoverable === true
+          ? "✅"
+          : entry.isRecoverable === false
+            ? "❌"
+            : "❓";
+      lines.push(`${indent}└─ Recoverable: ${recoverable}`);
 
       if (index < history.length - 1) {
         lines.push(`${indent}   ↓`);
@@ -467,6 +823,138 @@ export class AppError extends Error {
 
     lines.push(`═══════════════════════════════════════════════════════════`);
     return lines.join("\n");
+  }
+
+  /**
+   * Fallback 1: Minimal formatting when full formatting fails
+   */
+  private _getMinimalFormattedHistory(formattingError: unknown): string {
+    const lines: string[] = [];
+    lines.push("🔴 ERROR TRACE (Minimal Format - Full Format Failed)");
+    lines.push("═══════════════════════════════════════════════════════════");
+    lines.push(
+      `⚠️  Format Error: ${this._safeStringify(formattingError, "Unknown formatting error")}`,
+    );
+    lines.push("───────────────────────────────────────────────────────────");
+
+    try {
+      const history = this.getCompleteErrorHistory();
+      history.forEach((entry, index) => {
+        const level = `[${index}] ${entry.context?.layer || "Unknown"}.${entry.context?.method || "unknown"}`;
+        const message = this._safeStringify(entry.message, "No message");
+        const code = this._safeStringify(entry.code, "NO_CODE");
+        lines.push(`${level}: ${code} - ${message}`);
+      });
+    } catch {
+      // If we can't even get the history, try to extract basic info
+      lines.push(
+        `Current Error: ${this._safeStringify(this.message, "No message")}`,
+      );
+      lines.push(`Current Code: ${this._safeStringify(this.code, "NO_CODE")}`);
+      lines.push(
+        `Current Layer: ${this._safeStringify(this.context?.layer, "Unknown")}.${this._safeStringify(this.context?.method, "unknown")}`,
+      );
+    }
+
+    lines.push("═══════════════════════════════════════════════════════════");
+    return lines.join("\n");
+  }
+
+  /**
+   * Fallback 2: Basic string when minimal formatting fails
+   */
+  private _getBasicErrorString(
+    formattingError: unknown,
+    minimalError: unknown,
+  ): string {
+    const parts: string[] = [
+      "🔴 ERROR (Basic Format - Advanced Formatting Failed)",
+      `Format Error 1: ${this._safeStringify(formattingError, "Unknown")}`,
+      `Format Error 2: ${this._safeStringify(minimalError, "Unknown")}`,
+      "───────────────────────────────────────────────────────────",
+      `Message: ${this._safeStringify(this.message, "No message")}`,
+      `Code: ${this._safeStringify(this.code, "NO_CODE")}`,
+      `Category: ${this._safeStringify(this.category, "UNKNOWN")}`,
+      `Severity: ${this._safeStringify(this.severity, "UNKNOWN")}`,
+    ];
+
+    // Try to get basic context info
+    try {
+      if (this.context) {
+        parts.push(
+          `Layer: ${this._safeStringify(this.context.layer, "Unknown")}`,
+        );
+        parts.push(
+          `Method: ${this._safeStringify(this.context.method, "unknown")}`,
+        );
+      }
+    } catch {
+      parts.push("Context: [Extraction Failed]");
+    }
+
+    // Try to show if there are causes
+    try {
+      if (this.cause) {
+        parts.push(
+          `Has Cause: Yes (${this._safeStringify(this.cause.message, "Unknown cause")})`,
+        );
+      } else {
+        parts.push("Has Cause: No");
+      }
+    } catch {
+      parts.push("Has Cause: [Check Failed]");
+    }
+
+    return parts.join("\n");
+  }
+
+  /**
+   * Fallback 3: Emergency format - this should never fail
+   */
+  private _getEmergencyErrorString(
+    formattingError: unknown,
+    minimalError: unknown,
+    basicError: unknown,
+  ): string {
+    // Use only the most basic operations that are extremely unlikely to fail
+    const timestamp = new Date().toISOString();
+
+    return [
+      "🚨 EMERGENCY ERROR LOG (All Formatting Failed)",
+      `Time: ${timestamp}`,
+      `Original Error: ${String(this.message || "No message")}`,
+      `Error Code: ${String(this.code || "NO_CODE")}`,
+      `Format Error 1: ${String(formattingError)}`,
+      `Format Error 2: ${String(minimalError)}`,
+      `Format Error 3: ${String(basicError)}`,
+      "This indicates a critical issue with error logging system.",
+      "Raw Error Object:",
+      String(this),
+    ].join("\n");
+  }
+
+  /**
+   * Safe stringify helper that never throws
+   */
+  private _safeStringify(
+    value: unknown,
+    fallback: string = "undefined",
+  ): string {
+    if (value === null) return "null";
+    if (value === undefined) return fallback;
+
+    try {
+      if (typeof value === "string") return value;
+      if (typeof value === "number" || typeof value === "boolean")
+        return String(value);
+      return JSON.stringify(value);
+    } catch {
+      try {
+        return String(value);
+      } catch {
+        return fallback;
+      }
+    }
   }
 
   /**
@@ -550,54 +1038,6 @@ export class AppError extends Error {
   getErrorAtDepth(depth: number): ErrorHistoryEntry | null {
     const history = this.getCompleteErrorHistory();
     return history.find((entry) => entry.depth === depth) || null;
-  }
-
-  // ==========================================
-  // LOGGING CONVENIENCE METHODS
-  // ==========================================
-
-  /**
-   * Log the complete error to console with proper formatting
-   */
-  logToConsole(): void {
-    console.group(`🔴 ${this.severity} ${this.category} Error`);
-    console.error(this.getFormattedErrorHistory());
-    console.groupEnd();
-  }
-
-  /**
-   * Get error data optimized for external logging services (structured data)
-   */
-  getStructuredLogData(): StructuredErrorLog {
-    const history = this.getCompleteErrorHistory();
-    const rootCause = history[history.length - 1];
-
-    return {
-      timestamp: new Date().toISOString(),
-      errorId: this.generateErrorId(),
-      summary: {
-        message: this.message,
-        code: this.code,
-        category: this.category,
-        severity: this.severity,
-        isRecoverable: this.isRecoverable,
-        userMessage: this.userMessage || this.getPublicMessage(),
-      },
-      rootCause: {
-        message: rootCause.message,
-        code: rootCause.code,
-        layer: rootCause.context.layer,
-        method: rootCause.context.method,
-      },
-      trace: {
-        methodChain: this.getMethodCallChain(),
-        errorChain: this.getErrorTraceOneLine(),
-        depth: history.length,
-      },
-      metadata: this.getCombinedMetadata(),
-      correlationId: this.context.correlationId,
-      stack: this.stack,
-    };
   }
 
   /**
