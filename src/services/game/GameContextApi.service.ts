@@ -15,7 +15,7 @@ export class GameContextApiService {
   }
 
   /** MUTATIONS */
-  public initialize(): boolean {
+  public initialize = (): boolean => {
     const result = this.backendService.initialize();
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -24,9 +24,9 @@ export class GameContextApiService {
     }
 
     return true;
-  }
+  };
 
-  public reset(): boolean {
+  public reset = (): boolean => {
     const result = this.backendService.initialize();
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -35,9 +35,9 @@ export class GameContextApiService {
     }
 
     return true;
-  }
+  };
 
-  public resume(): boolean {
+  public resume = (): boolean => {
     const result = this.backendService.resume();
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -46,9 +46,9 @@ export class GameContextApiService {
     }
 
     return true;
-  }
+  };
 
-  public async save(): Promise<boolean> {
+  public save = async (): Promise<boolean> => {
     const result = await this.backendService.save();
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -57,9 +57,9 @@ export class GameContextApiService {
     }
 
     return true;
-  }
+  };
 
-  public async load(): Promise<boolean> {
+  public load = async (): Promise<boolean> => {
     const result = await this.backendService.load();
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -69,5 +69,5 @@ export class GameContextApiService {
 
     this.toast.success("Game loaded successfully.");
     return true;
-  }
+  };
 }

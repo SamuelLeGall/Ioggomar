@@ -22,7 +22,7 @@ export class QuestApiService {
 
   /** GETTERS */
 
-  getAllQuests(): QuestItemForFrontend[] | undefined {
+  getAllQuests = (): QuestItemForFrontend[] | undefined => {
     const result = this.backendService.getAllQuests();
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -31,8 +31,8 @@ export class QuestApiService {
     }
     const [quests] = result;
     return quests;
-  }
-  getQuestById(questId: string): QuestItemForFrontend | undefined {
+  };
+  getQuestById = (questId: string): QuestItemForFrontend | undefined => {
     const result = this.backendService.getQuestById(questId);
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -41,8 +41,8 @@ export class QuestApiService {
     }
     const [quest] = result;
     return quest;
-  }
-  getAllActiveQuests(): ActiveQuestForFrontend[] | undefined {
+  };
+  getAllActiveQuests = (): ActiveQuestForFrontend[] | undefined => {
     const result = this.backendService.getAllActiveQuests();
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -51,8 +51,10 @@ export class QuestApiService {
     }
     const [quests] = result;
     return quests;
-  }
-  getActiveQuestById(questId: string): ActiveQuestForFrontend | undefined {
+  };
+  getActiveQuestById = (
+    questId: string,
+  ): ActiveQuestForFrontend | undefined => {
     const result = this.backendService.getActiveQuestById(questId);
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -61,10 +63,10 @@ export class QuestApiService {
     }
     const [quest] = result;
     return quest;
-  }
+  };
 
   /** MUTATIONS */
-  accept(questId: string, difficulty: questDifficulty): boolean {
+  accept = (questId: string, difficulty: questDifficulty): boolean => {
     const result = this.backendService.acceptQuest(questId, difficulty);
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -74,9 +76,9 @@ export class QuestApiService {
     const [success] = result;
 
     return Boolean(success);
-  }
+  };
 
-  cancel(questId: string): boolean {
+  cancel = (questId: string): boolean => {
     const result = this.backendService.cancelQuest(questId);
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -85,9 +87,9 @@ export class QuestApiService {
     }
     const [success] = result;
     return Boolean(success);
-  }
+  };
 
-  complete(questId: string): boolean {
+  complete = (questId: string): boolean => {
     const result = this.backendService.completeQuest(questId);
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -96,12 +98,12 @@ export class QuestApiService {
     }
     const [success] = result;
     return Boolean(success);
-  }
+  };
 
-  incrementProgress(
+  incrementProgress = (
     questId: string,
     progressUpdated: QuestItemProgressionUpdateRequest[],
-  ): boolean {
+  ): boolean => {
     const result = this.backendService.incrementProgress(
       questId,
       progressUpdated,
@@ -113,5 +115,5 @@ export class QuestApiService {
     }
     const [success] = result;
     return Boolean(success);
-  }
+  };
 }

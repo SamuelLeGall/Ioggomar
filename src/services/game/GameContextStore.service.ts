@@ -17,10 +17,10 @@ export class GameContextStoreService {
     this.quests = questsStoreService;
   }
   /** This store should only be use for specific edge case that require full game sync **/
-  initialSyncAfterLoad(): void {
+  public initialSyncAfterLoad = (): void => {
     this.settings.syncLocalization();
     this.settings.syncTheme();
     this.player.syncPlayer();
     this.quests.refreshAllQuests();
-  }
+  };
 }

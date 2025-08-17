@@ -14,35 +14,35 @@ export class QuestStoreService {
     this.api = api;
   }
 
-  getAllQuests(): QuestItemForFrontend[] {
+  getAllQuests = (): QuestItemForFrontend[] => {
     return this.store.listQuests;
-  }
-  syncAllQuests(): void {
+  };
+  syncAllQuests = (): void => {
     const listUpdated = this.api.getAllQuests();
     if (!listUpdated) {
       return;
     }
     this.store.listQuests = listUpdated;
-  }
+  };
 
-  getAllActiveQuests(): ActiveQuestForFrontend[] {
+  getAllActiveQuests = (): ActiveQuestForFrontend[] => {
     return this.store.activeQuests;
-  }
-  syncAllActiveQuests(): void {
+  };
+  syncAllActiveQuests = (): void => {
     const listUpdated = this.api.getAllActiveQuests();
     if (!listUpdated) {
       return;
     }
     this.store.activeQuests = listUpdated;
-  }
+  };
 
-  getQuestById(questId: string): QuestItemForFrontend | undefined {
+  getQuestById = (questId: string): QuestItemForFrontend | undefined => {
     return this.getAllQuests().find((el) => el.id === questId);
-  }
-  getQuestIndexById(questId: string): number {
+  };
+  getQuestIndexById = (questId: string): number => {
     return this.getAllQuests().findIndex((el) => el.id === questId);
-  }
-  syncQuestById(questId: string): void {
+  };
+  syncQuestById = (questId: string): void => {
     const questUpdated = this.api.getQuestById(questId);
     if (!questUpdated) {
       // quest not found in backend
@@ -58,15 +58,17 @@ export class QuestStoreService {
 
     // we update the existing quest in the store
     this.store.listQuests[index] = questUpdated;
-  }
+  };
 
-  getActiveQuestById(questId: string): ActiveQuestForFrontend | undefined {
+  getActiveQuestById = (
+    questId: string,
+  ): ActiveQuestForFrontend | undefined => {
     return this.getAllActiveQuests().find((el) => el.id === questId);
-  }
-  getActiveQuestIndexById(questId: string): number {
+  };
+  getActiveQuestIndexById = (questId: string): number => {
     return this.getAllActiveQuests().findIndex((el) => el.id === questId);
-  }
-  syncActiveQuestById(questId: string): void {
+  };
+  syncActiveQuestById = (questId: string): void => {
     const questUpdated = this.api.getActiveQuestById(questId);
     if (!questUpdated) {
       // quest not found in backend
@@ -82,10 +84,11 @@ export class QuestStoreService {
 
     // we update the existing quest in the store
     this.store.activeQuests[index] = questUpdated;
-  }
+  };
 
-  refreshAllQuests(): void {
+  public refreshAllQuests = (): void => {
+    console.log(this);
     this.syncAllQuests();
     this.syncAllActiveQuests();
-  }
+  };
 }

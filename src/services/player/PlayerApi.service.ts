@@ -15,7 +15,7 @@ export class PlayerApiService {
     this.toast = useToast();
   }
 
-  getPlayer(): PlayerForFrontend | undefined {
+  getPlayer = (): PlayerForFrontend | undefined => {
     const result = this.backendService.getPlayer();
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -24,9 +24,9 @@ export class PlayerApiService {
     }
     const [player] = result;
     return player;
-  }
+  };
 
-  levelUp(nbLevelsToAdd: number): boolean {
+  levelUp = (nbLevelsToAdd: number): boolean => {
     const result = this.backendService.levelUp(nbLevelsToAdd);
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -35,7 +35,7 @@ export class PlayerApiService {
     }
     const [success] = result;
     return Boolean(success);
-  }
+  };
 
   // player-specific actions
 }

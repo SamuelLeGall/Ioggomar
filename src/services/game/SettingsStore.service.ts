@@ -17,60 +17,60 @@ export class SettingsStoreService {
     this.api = api;
   }
   /** Getters **/
-  getLabel(key: string): string {
+  getLabel = (key: string): string => {
     return this.libelles(key) ?? key;
-  }
-  getLocalizationText(): string {
+  };
+  getLocalizationText = (): string => {
     return this.store.currentLocalization.value;
-  }
+  };
 
-  getLocalizationKey(): string {
+  getLocalizationKey = (): string => {
     return this.store.currentLocalization.key;
-  }
+  };
 
-  getLocalizationLibelle() {
+  getLocalizationLibelle = () => {
     // At the moment that the only thing that will stay only in the "front" because of the use of i18n
     // i won't migrate it in the db level like the rest for now.
     return this.libelles;
-  }
+  };
 
-  getLocalization(): OptionConfig {
+  getLocalization = (): OptionConfig => {
     return {
       key: this.getLocalizationKey(),
       value: this.getLocalizationText(),
     };
-  }
+  };
 
-  getDataThemeText(): string {
+  getDataThemeText = (): string => {
     return this.store.currentDataTheme.value;
-  }
+  };
 
-  getDataThemeKey(): string {
+  getDataThemeKey = (): string => {
     return this.store.currentDataTheme.key;
-  }
+  };
 
-  getDataTheme(): OptionConfig {
+  getDataTheme = (): OptionConfig => {
     return {
       key: this.getDataThemeKey(),
       value: this.getDataThemeText(),
     };
-  }
+  };
 
   /** Technical Actions - no actual high level user-action at this level **/
-  syncLocalization() {
+  syncLocalization = () => {
     const newLocalization = this.api.getCurrentLocalization();
     if (!newLocalization) {
       return;
     }
     this.store.currentLocalization = newLocalization;
     this.locale.value = newLocalization.key;
-  }
-  syncTheme() {
+  };
+  syncTheme = () => {
     const newDataTheme = this.api.getCurrentTheme();
     if (!newDataTheme) {
       return;
     }
     this.store.currentDataTheme = newDataTheme;
     document.documentElement.setAttribute("data-theme", newDataTheme.key);
-  }
+  };
 }

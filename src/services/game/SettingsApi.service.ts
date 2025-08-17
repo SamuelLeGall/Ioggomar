@@ -15,7 +15,7 @@ export class SettingsApiService {
   }
 
   /** GETTERS */
-  getCurrentLocalization(): OptionConfig | undefined {
+  getCurrentLocalization = (): OptionConfig | undefined => {
     const result = this.backendService.getCurrentLocalization();
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -24,9 +24,9 @@ export class SettingsApiService {
     }
     const [currentLocalization] = result;
     return currentLocalization;
-  }
+  };
 
-  getCurrentTheme() {
+  getCurrentTheme = (): OptionConfig | undefined => {
     const result = this.backendService.getCurrentTheme();
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -35,10 +35,10 @@ export class SettingsApiService {
     }
     const [currentTheme] = result;
     return currentTheme;
-  }
+  };
 
   /** MUTATIONS */
-  changeLocalization(newLocalization: OptionConfig): boolean {
+  changeLocalization = (newLocalization: OptionConfig): boolean => {
     const result = this.backendService.changeLocalization(newLocalization);
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -46,9 +46,9 @@ export class SettingsApiService {
       return false;
     }
     return true;
-  }
+  };
 
-  changeTheme(newTheme: OptionConfig): boolean {
+  changeTheme = (newTheme: OptionConfig): boolean => {
     const result = this.backendService.changeTheme(newTheme);
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -56,5 +56,5 @@ export class SettingsApiService {
       return false;
     }
     return true;
-  }
+  };
 }

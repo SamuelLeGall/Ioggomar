@@ -11,14 +11,14 @@ export class PlayerStoreService {
     this.api = api;
   }
 
-  getPlayer(): PlayerForFrontend {
+  getPlayer = (): PlayerForFrontend => {
     return this.store.player;
-  }
-  syncPlayer() {
+  };
+  syncPlayer = () => {
     const newValue = this.api.getPlayer();
     if (!newValue) {
       return;
     }
     this.store.player = newValue;
-  }
+  };
 }
