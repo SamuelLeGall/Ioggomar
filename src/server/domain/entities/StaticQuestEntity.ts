@@ -40,6 +40,15 @@ export class StaticQuestEntity {
   public getQuestType(): questType {
     return this.quest.typeQuest;
   }
+
+  public getQuestAvailableDifficulties(): questDifficulty[] {
+    return this.getQuestConfigurations().map((el) => el.difficulty);
+  }
+
+  public haveDifficultySelected(): boolean {
+    return this.difficulty !== null;
+  }
+
   public getQuestDifficulty(): Result<questDifficulty> {
     if (!this.difficulty) {
       return [null, ErrorFactory.questDifficultyNotSet(this.getQuestId())];

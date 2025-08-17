@@ -77,6 +77,7 @@ export interface QuestItemForFrontend {
   name: string;
   description: string;
   illustration: string;
+  availableDifficulties: number[];
   difficulty?: number;
   rewards?: questRewards;
   penalities?: questPenalities;

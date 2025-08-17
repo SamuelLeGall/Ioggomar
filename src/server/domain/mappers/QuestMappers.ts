@@ -64,56 +64,59 @@ export function toQuestItemForFrontend(
       name: entity.getQuestName(),
       description: entity.getQuestDescription(),
       illustration: entity.getQuestIllustration(),
+      availableDifficulties: entity.getQuestAvailableDifficulties(),
     };
 
-    const resGetDifficulty = entity.getQuestDifficulty();
-    if (ResultFactory.isError(resGetDifficulty)) {
-      const [, errorGetDifficulty] = resGetDifficulty;
-      return [
-        null,
-        ErrorFactory.chainError(
-          errorGetDifficulty,
-          ErrorFactory.createContext("Mapper", "toQuestItemForFrontend", {
-            questId: entity.getQuestId(),
-          }),
-        ),
-      ];
-    }
-    const [difficulty] = resGetDifficulty;
-    questItem.difficulty = difficulty;
+    if (entity.haveDifficultySelected()) {
+      const resGetDifficulty = entity.getQuestDifficulty();
+      if (ResultFactory.isError(resGetDifficulty)) {
+        const [, errorGetDifficulty] = resGetDifficulty;
+        return [
+          null,
+          ErrorFactory.chainError(
+            errorGetDifficulty,
+            ErrorFactory.createContext("Mapper", "toQuestItemForFrontend", {
+              questId: entity.getQuestId(),
+            }),
+          ),
+        ];
+      }
+      const [difficulty] = resGetDifficulty;
+      questItem.difficulty = difficulty;
 
-    const resGetRewards = entity.getQuestRewards();
-    if (ResultFactory.isError(resGetRewards)) {
-      const [, errorGetRewards] = resGetRewards;
-      return [
-        null,
-        ErrorFactory.chainError(
-          errorGetRewards,
-          ErrorFactory.createContext("Mapper", "toQuestItemForFrontend", {
-            questId: entity.getQuestId(),
-          }),
-        ),
-      ];
-    }
-    const [rewards] = resGetRewards;
-    questItem.rewards = rewards;
+      const resGetRewards = entity.getQuestRewards();
+      if (ResultFactory.isError(resGetRewards)) {
+        const [, errorGetRewards] = resGetRewards;
+        return [
+          null,
+          ErrorFactory.chainError(
+            errorGetRewards,
+            ErrorFactory.createContext("Mapper", "toQuestItemForFrontend", {
+              questId: entity.getQuestId(),
+            }),
+          ),
+        ];
+      }
+      const [rewards] = resGetRewards;
+      questItem.rewards = rewards;
 
-    const resGetPenalities = entity.getQuestPenalities();
-    if (ResultFactory.isError(resGetPenalities)) {
-      const [, errorGetPenalities] = resGetPenalities;
-      return [
-        null,
-        ErrorFactory.chainError(
-          errorGetPenalities,
-          ErrorFactory.createContext("Mapper", "toQuestItemForFrontend", {
-            questId: entity.getQuestId(),
-          }),
-        ),
-      ];
-    }
-    const [penalities] = resGetPenalities;
-    if (penalities) {
-      questItem.penalities = penalities;
+      const resGetPenalities = entity.getQuestPenalities();
+      if (ResultFactory.isError(resGetPenalities)) {
+        const [, errorGetPenalities] = resGetPenalities;
+        return [
+          null,
+          ErrorFactory.chainError(
+            errorGetPenalities,
+            ErrorFactory.createContext("Mapper", "toQuestItemForFrontend", {
+              questId: entity.getQuestId(),
+            }),
+          ),
+        ];
+      }
+      const [penalities] = resGetPenalities;
+      if (penalities) {
+        questItem.penalities = penalities;
+      }
     }
 
     return [questItem, null];
