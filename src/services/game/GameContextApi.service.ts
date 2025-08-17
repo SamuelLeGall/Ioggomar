@@ -11,7 +11,10 @@ export class GameContextApiService {
     // the frontend API interface and "backend" logic. In the future, it can easily be replaced
     // with real API calls without needing to refactor the entire codebase.
     this.backendService = backendService;
-    this.toast = useToast();
+    this.toast = useToast({
+      position: "top-right",
+      duration: 1500,
+    });
   }
 
   /** MUTATIONS */
@@ -56,6 +59,7 @@ export class GameContextApiService {
       return false;
     }
 
+    this.toast.success("Game saved successfully.");
     return true;
   };
 

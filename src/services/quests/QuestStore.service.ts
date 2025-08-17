@@ -87,7 +87,6 @@ export class QuestStoreService {
   };
 
   public refreshAllQuests = (): void => {
-    console.log(this);
     this.syncAllQuests();
     this.syncAllActiveQuests();
   };

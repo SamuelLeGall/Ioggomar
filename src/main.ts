@@ -8,7 +8,7 @@ import { createCustomMessageObject } from "@src/localizations";
 
 // All global CSS files
 import "@styles/index.scss";
-import ToastPlugin from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-bootstrap.css";
 
 (async () => {
   const localizationMessagesObject = await createCustomMessageObject();
@@ -34,9 +34,5 @@ import ToastPlugin from "vue-toast-notification";
   app.use(i18n);
   app.use(router);
   app.use(pinia);
-  app.use(ToastPlugin, {
-    // One of the options
-    position: "top-right",
-  });
   app.mount("#app");
 })();

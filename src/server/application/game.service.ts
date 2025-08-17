@@ -118,7 +118,6 @@ export class GameService {
         return [null, "Internal Server Error"];
       }
 
-      alert("Game saved successfully.");
       return [true, null];
     } catch (e) {
       console.error("save - unexpected error:", e);
