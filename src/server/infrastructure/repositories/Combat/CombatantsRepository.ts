@@ -4,20 +4,22 @@ import {
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
 import { Combatant } from "@src/models/entitiesStats/CombatantModels";
-import { Collection } from "@src/server/infrastructure/db/Collection";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 import { CombatantEntity } from "@src/server/domain/entities/combatantEntity";
+import { BaseCollectionRepository } from "@src/server/infrastructure/repositories/BaseCollectionRepository";
 
-export class CombatantsRepository {
-  private database: Collection<Combatant>;
-  private readonly instanceName = "CombatantsRepository";
+export class CombatantsRepository extends BaseCollectionRepository<
+  Combatant,
+  CombatantEntity
+> {
+  protected readonly instanceName = "CombatantsRepository";
 
   constructor(database = new LocalDatabase()) {
-    this.database = database.combatants;
+    super(database.combatants);
   }
 
   /** Private Getters */
-  private toDB(entity: CombatantEntity): Combatant {
+  protected toDB(entity: CombatantEntity): Combatant {
     return {
       id: entity.getId(),
       type: entity.getType(),
@@ -29,8 +31,7 @@ export class CombatantsRepository {
       equipementSlots: entity.getEquipments(),
     };
   }
-
-  private toEntity(data: Combatant): Result<CombatantEntity> {
+  protected toEntity(data: Combatant): Result<CombatantEntity> {
     try {
       const entity = CombatantEntity.fromData(data);
       return [entity, null];
@@ -49,7 +50,7 @@ export class CombatantsRepository {
   }
 
   /** Getters **/
-  getAllCombatants(): Result<CombatantEntity[]> {
+  public getAllCombatants(): Result<CombatantEntity[]> {
     try {
       const context = ErrorFactory.createContext(
         "Repository",
@@ -59,25 +60,14 @@ export class CombatantsRepository {
         },
       );
 
-      const dbResult = this.database.getAll();
+      const dbResult = this.find({});
       if (ResultFactory.isError(dbResult)) {
         const [, error] = dbResult;
         return [null, ErrorFactory.chainError(error, context)];
       }
       const [combatants] = dbResult;
 
-      const entities: CombatantEntity[] = [];
-      for (const combatant of combatants) {
-        const entityResult = this.toEntity(combatant);
-        if (ResultFactory.isError(entityResult)) {
-          const [, error] = entityResult;
-          return [null, ErrorFactory.chainError(error, context)];
-        }
-        const [entity] = entityResult;
-        entities.push(entity);
-      }
-
-      return [entities, null];
+      return [combatants, null];
     } catch (e) {
       return [
         null,
@@ -90,8 +80,7 @@ export class CombatantsRepository {
       ];
     }
   }
-
-  getAllEnnemies(): Result<CombatantEntity[]> {
+  public getAllEnnemies(): Result<CombatantEntity[]> {
     try {
       const context = ErrorFactory.createContext(
         "Repository",
@@ -101,16 +90,14 @@ export class CombatantsRepository {
         },
       );
 
-      const dbResult = this.getAllCombatants();
+      const dbResult = this.find({
+        type: "ENNEMY",
+      });
       if (ResultFactory.isError(dbResult)) {
         const [, error] = dbResult;
         return [null, ErrorFactory.chainError(error, context)];
       }
-      const [combatants] = dbResult;
-
-      const ennemies = combatants.filter((combatant) => {
-        return combatant.getType() === "ENNEMY";
-      });
+      const [ennemies] = dbResult;
 
       return [ennemies, null];
     } catch (e) {
@@ -125,25 +112,22 @@ export class CombatantsRepository {
       ];
     }
   }
-
-  getAllAllies(): Result<CombatantEntity[]> {
+  public getAllAllies(): Result<CombatantEntity[]> {
     try {
       const context = ErrorFactory.createContext("Repository", "getAllAllies", {
         instanceName: this.instanceName,
       });
 
-      const dbResult = this.getAllCombatants();
+      const dbResult = this.find({
+        type: "ALLY",
+      });
       if (ResultFactory.isError(dbResult)) {
         const [, error] = dbResult;
         return [null, ErrorFactory.chainError(error, context)];
       }
-      const [combatants] = dbResult;
+      const [allies] = dbResult;
 
-      const ennemies = combatants.filter((combatant) => {
-        return combatant.getType() === "ALLY";
-      });
-
-      return [ennemies, null];
+      return [allies, null];
     } catch (e) {
       return [
         null,
@@ -156,11 +140,6 @@ export class CombatantsRepository {
       ];
     }
   }
-
-  /**
-   * Fetch a single combatant from the list. Use only for scoping.
-   * Any logic related to a single combatant MUST go into CombatantInstanceRepository.
-   */
   public getCombatantById(combatantId: string): Result<CombatantEntity> {
     try {
       const context = ErrorFactory.createContext(
@@ -172,7 +151,7 @@ export class CombatantsRepository {
         },
       );
 
-      const dbResult = this.database.getById(combatantId);
+      const dbResult = this.findOne({ id: combatantId });
       if (ResultFactory.isError(dbResult)) {
         const [, error] = dbResult;
         return [null, ErrorFactory.chainError(error, context)];
@@ -186,7 +165,7 @@ export class CombatantsRepository {
         ];
       }
 
-      return this.toEntity(currentCombatant);
+      return [currentCombatant, null];
     } catch (e) {
       return [
         null,

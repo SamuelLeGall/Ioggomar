@@ -170,9 +170,9 @@ export class QuestService {
       const [activeQuest] = resultInitializeQuest;
 
       // we check if an active quest exist for the staticId
-      const resultAlreadyActive = this.activeQuestRepo.findOne({
-        staticQuestId: activeQuest.getStaticQuestId(),
-      });
+      const resultAlreadyActive = this.activeQuestRepo.getByStaticId(
+        activeQuest.getStaticQuestId(),
+      );
       if (ResultFactory.isError(resultAlreadyActive)) {
         const [, errorAlreadyActive] = resultAlreadyActive;
         errorAlreadyActive.logToConsole();

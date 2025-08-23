@@ -13,23 +13,6 @@ export class Collection<T extends { id: string }> {
     private instanceName: string,
   ) {}
 
-  getAll(): Result<T[]> {
-    try {
-      const items = this.getState();
-      return [items, null];
-    } catch (e) {
-      return [
-        null,
-        ErrorFactory.unexpectedError(
-          ErrorFactory.createContext("Collection", "getAll", {
-            instanceName: this.instanceName,
-          }),
-          e,
-        ),
-      ];
-    }
-  }
-
   find(query: QueryParam<T>): Result<T[]> {
     try {
       const items = this.getState();
@@ -84,10 +67,6 @@ export class Collection<T extends { id: string }> {
         ),
       ];
     }
-  }
-
-  getById(id: string): Result<T | null> {
-    return this.findOne({ id });
   }
 
   update(id: string, value: T): Result<boolean> {

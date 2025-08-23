@@ -2,24 +2,25 @@ import { ActiveQuest } from "@src/models/quests/QuestsModels";
 import {
   AppErrorCodes,
   ErrorFactory,
-  QueryParam,
   Result,
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
 import { ActiveQuestEntity } from "@src/server/domain/entities/ActiveQuestEntity";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
-import { Collection } from "@src/server/infrastructure/db/Collection";
+import { BaseCollectionRepository } from "@src/server/infrastructure/repositories/BaseCollectionRepository";
 
-export class ActiveQuestRepository {
-  private database: Collection<ActiveQuest>;
-  private readonly instanceName = "ActiveQuestRepository";
+export class ActiveQuestRepository extends BaseCollectionRepository<
+  ActiveQuest,
+  ActiveQuestEntity
+> {
+  protected readonly instanceName = "ActiveQuestRepository";
 
   constructor(database = new LocalDatabase()) {
-    this.database = database.activeQuests;
+    super(database.activeQuests);
   }
 
   /** Private Getters */
-  private toDB(entity: ActiveQuestEntity): ActiveQuest {
+  protected toDB(entity: ActiveQuestEntity): ActiveQuest {
     return {
       id: entity.getId(),
       staticQuestId: entity.getStaticQuestId(),
@@ -27,8 +28,7 @@ export class ActiveQuestRepository {
       data: entity.getProgress(),
     };
   }
-
-  private toEntity(data: ActiveQuest): Result<ActiveQuestEntity> {
+  protected toEntity(data: ActiveQuest): Result<ActiveQuestEntity> {
     try {
       const entity = ActiveQuestEntity.fromData(data);
       return [entity, null];
@@ -53,25 +53,14 @@ export class ActiveQuestRepository {
         instanceName: this.instanceName,
       });
 
-      const dbResult = this.database.getAll();
+      const dbResult = this.find({});
       if (ResultFactory.isError(dbResult)) {
         const [, error] = dbResult;
         return [null, ErrorFactory.chainError(error, context)];
       }
       const [activeQuests] = dbResult;
 
-      const entities: ActiveQuestEntity[] = [];
-      for (const activeQuest of activeQuests) {
-        const entityResult = this.toEntity(activeQuest);
-        if (ResultFactory.isError(entityResult)) {
-          const [, error] = entityResult;
-          return [null, ErrorFactory.chainError(error, context)];
-        }
-        const [entity] = entityResult;
-        entities.push(entity);
-      }
-
-      return [entities, null];
+      return [activeQuests, null];
     } catch (e) {
       return [
         null,
@@ -84,39 +73,6 @@ export class ActiveQuestRepository {
       ];
     }
   }
-
-  public findOne(query: QueryParam<unknown>): Result<ActiveQuestEntity | null> {
-    try {
-      const context = ErrorFactory.createContext("Repository", "findOne", {
-        query,
-        instanceName: this.instanceName,
-      });
-
-      const dbResult = this.database.findOne(query);
-      if (ResultFactory.isError(dbResult)) {
-        const [, error] = dbResult;
-        return [null, ErrorFactory.chainError(error, context)];
-      }
-      const [activeQuest] = dbResult;
-      if (!activeQuest) {
-        return [null, null];
-      }
-
-      return this.toEntity(activeQuest);
-    } catch (e) {
-      return [
-        null,
-        ErrorFactory.unexpectedError(
-          ErrorFactory.createContext("Repository", "findOne", {
-            query,
-            instanceName: this.instanceName,
-          }),
-          e,
-        ),
-      ];
-    }
-  }
-
   public getById(questId: string): Result<ActiveQuestEntity> {
     try {
       const context = ErrorFactory.createContext("Repository", "getById", {
@@ -145,6 +101,42 @@ export class ActiveQuestRepository {
         ErrorFactory.unexpectedError(
           ErrorFactory.createContext("Repository", "getById", {
             uuid: questId,
+            instanceName: this.instanceName,
+          }),
+          e,
+        ),
+      ];
+    }
+  }
+  public getByStaticId(
+    staticQuestId: string,
+  ): Result<ActiveQuestEntity | null> {
+    try {
+      const context = ErrorFactory.createContext(
+        "Repository",
+        "getByStaticId",
+        {
+          staticQuestId,
+          instanceName: this.instanceName,
+        },
+      );
+
+      const dbResult = this.findOne({
+        staticQuestId,
+      });
+      if (ResultFactory.isError(dbResult)) {
+        const [, error] = dbResult;
+        return [null, ErrorFactory.chainError(error, context)];
+      }
+      const [activeQuest] = dbResult;
+
+      return [activeQuest, null];
+    } catch (e) {
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Repository", "getByStaticId", {
+            staticQuestId,
             instanceName: this.instanceName,
           }),
           e,
@@ -217,36 +209,6 @@ export class ActiveQuestRepository {
           ErrorFactory.createContext("Repository", "save", {
             questUUID: entity.getId(),
             staticQuestId: entity.getStaticQuestId(),
-            instanceName: this.instanceName,
-          }),
-          e,
-        ),
-      ];
-    }
-  }
-
-  /** DON'T use this method except when loading/saving the game   */
-  public restoreDefault(): Result<true> {
-    try {
-      const resetResult = this.database._forceReset();
-      if (ResultFactory.isError(resetResult)) {
-        const [, error] = resetResult;
-        return [
-          null,
-          ErrorFactory.chainError(
-            error,
-            ErrorFactory.createContext("Repository", "restoreDefault", {
-              instanceName: this.instanceName,
-            }),
-          ),
-        ];
-      }
-      return [true, null];
-    } catch (e) {
-      return [
-        null,
-        ErrorFactory.unexpectedError(
-          ErrorFactory.createContext("Repository", "restoreDefault", {
             instanceName: this.instanceName,
           }),
           e,

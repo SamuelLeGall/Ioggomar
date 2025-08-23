@@ -1,4 +1,3 @@
-import { Document } from "@src/server/infrastructure/db/Document";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 import { PlayerEntity } from "@src/server/domain/entities/PlayerEntity";
 import { PlayerI } from "@src/models/player/PlayerModels";
@@ -7,23 +6,25 @@ import {
   Result,
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
+import { BaseDocumentRepository } from "@src/server/infrastructure/repositories/BaseDocumentRepository";
 
-export class PlayerRepository {
-  private database: Document<PlayerI>;
-  private readonly instanceName = "PlayerRepository";
+export class PlayerRepository extends BaseDocumentRepository<
+  PlayerI,
+  PlayerEntity
+> {
+  protected readonly instanceName = "PlayerRepository";
 
   constructor(database = new LocalDatabase()) {
-    this.database = database.player;
+    super(database.player);
   }
 
   /** Private Getters */
-  private toDB(entity: PlayerEntity): PlayerI {
+  protected toDB(entity: PlayerEntity): PlayerI {
     return {
       playerLevel: entity.getLevel(),
     };
   }
-
-  private toEntity(data: PlayerI): Result<PlayerEntity> {
+  protected toEntity(data: PlayerI): Result<PlayerEntity> {
     try {
       const entity = PlayerEntity.fromData(data);
       return [entity, null];
@@ -41,29 +42,7 @@ export class PlayerRepository {
   }
 
   public get(): Result<PlayerEntity> {
-    try {
-      const context = ErrorFactory.createContext("Repository", "get", {
-        instanceName: this.instanceName,
-      });
-
-      const dbResult = this.database.get();
-      if (ResultFactory.isError(dbResult)) {
-        const [, error] = dbResult;
-        return [null, ErrorFactory.chainError(error, context)];
-      }
-      const [player] = dbResult;
-      return this.toEntity(player);
-    } catch (e) {
-      return [
-        null,
-        ErrorFactory.unexpectedError(
-          ErrorFactory.createContext("Repository", "get", {
-            instanceName: this.instanceName,
-          }),
-          e,
-        ),
-      ];
-    }
+    return this.findOne();
   }
 
   public save(entity: PlayerEntity): Result<PlayerEntity> {
@@ -89,36 +68,6 @@ export class PlayerRepository {
         null,
         ErrorFactory.unexpectedError(
           ErrorFactory.createContext("Repository", "save", {
-            instanceName: this.instanceName,
-          }),
-          e,
-        ),
-      ];
-    }
-  }
-
-  /** ONLY use for save/load */
-  public restoreDefault(): Result<true> {
-    try {
-      const resetResult = this.database._forceReset();
-      if (ResultFactory.isError(resetResult)) {
-        const [, error] = resetResult;
-        return [
-          null,
-          ErrorFactory.chainError(
-            error,
-            ErrorFactory.createContext("Repository", "restoreDefault", {
-              instanceName: this.instanceName,
-            }),
-          ),
-        ];
-      }
-      return [true, null];
-    } catch (e) {
-      return [
-        null,
-        ErrorFactory.unexpectedError(
-          ErrorFactory.createContext("Repository", "restoreDefault", {
             instanceName: this.instanceName,
           }),
           e,
