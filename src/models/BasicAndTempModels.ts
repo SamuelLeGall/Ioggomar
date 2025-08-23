@@ -40,6 +40,11 @@ export interface OptionConfig {
   key: string;
   value: string;
 }
+// Type for custom predicate functions
+export type PredicateFunction<T> = (item: T) => boolean;
+
+// Union type for query parameters - simplified without array support
+export type QueryParam<T> = Record<string, unknown> | PredicateFunction<T>;
 
 // ===== DOMAIN-SPECIFIC ERROR CATEGORIES =====
 // This is a key principle: errors should be categorized by domain meaning, not technical implementation

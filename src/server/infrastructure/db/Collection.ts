@@ -1,4 +1,8 @@
-import { ErrorFactory, Result } from "@src/models/BasicAndTempModels";
+import {
+  ErrorFactory,
+  QueryParam,
+  Result,
+} from "@src/models/BasicAndTempModels";
 
 export class Collection<T extends { id: string }> {
   // using options.force= true bypass the readony requirement but is only for privileged calls.
@@ -26,22 +30,64 @@ export class Collection<T extends { id: string }> {
     }
   }
 
-  getById(id: string): Result<T | null> {
+  find(query: QueryParam<T>): Result<T[]> {
     try {
-      const item = this.getState().find((item) => item.id === id);
-      return [item ?? null, null];
+      const items = this.getState();
+      let filteredItems: T[];
+
+      if (typeof query === "function") {
+        // Handle predicate function
+        filteredItems = items.filter(query);
+      } else {
+        // Handle object filter
+        filteredItems = items.filter((item) => {
+          return Object.entries(query).every(([key, value]) => {
+            const itemValue = item[key as keyof T];
+            return itemValue === value;
+          });
+        });
+      }
+
+      return [filteredItems, null];
     } catch (e) {
       return [
         null,
         ErrorFactory.unexpectedError(
-          ErrorFactory.createContext("Collection", "getById", {
-            id,
+          ErrorFactory.createContext("Collection", "find", {
+            query,
             instanceName: this.instanceName,
           }),
           e,
         ),
       ];
     }
+  }
+
+  findOne(query: QueryParam<T>): Result<T | null> {
+    try {
+      const [items, error] = this.find(query);
+
+      if (error) {
+        return [null, error];
+      }
+
+      return [items[0] ?? null, null];
+    } catch (e) {
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Collection", "findOne", {
+            query,
+            instanceName: this.instanceName,
+          }),
+          e,
+        ),
+      ];
+    }
+  }
+
+  getById(id: string): Result<T | null> {
+    return this.findOne({ id });
   }
 
   update(id: string, value: T): Result<boolean> {

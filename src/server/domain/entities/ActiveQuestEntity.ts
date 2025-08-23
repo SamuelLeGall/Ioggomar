@@ -9,6 +9,7 @@ import {
   Result,
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
+import * as generalUtils from "@utils/GeneralUtils";
 
 export class ActiveQuestEntity {
   private readonly quest: ActiveQuest;
@@ -46,7 +47,7 @@ export class ActiveQuestEntity {
       }
       const [questGoals] = resultGetGoals;
       const questData: ActiveQuest = {
-        id: crypto.randomUUID(),
+        id: generalUtils.generateUUID(),
         staticQuestId: quest.getQuestId(),
         difficultyChosen: difficulty,
         data: [],

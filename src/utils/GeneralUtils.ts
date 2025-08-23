@@ -1,7 +1,8 @@
-import crypto from "crypto";
-
 export const randomIntNumberInclusive = (minimum: number, maximum: number) => {
-  return crypto.randomInt(minimum, maximum + 1);
+  const range = maximum - minimum + 1;
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  return minimum + (array[0] % range);
 };
 
 export function isEmpty(value: unknown): boolean {
@@ -18,4 +19,8 @@ export function isEmpty(value: unknown): boolean {
   }
 
   return false;
+}
+
+export function generateUUID() {
+  return crypto.randomUUID();
 }

@@ -2,6 +2,7 @@ import { ActiveQuest } from "@src/models/quests/QuestsModels";
 import {
   AppErrorCodes,
   ErrorFactory,
+  QueryParam,
   Result,
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
@@ -84,19 +85,51 @@ export class ActiveQuestRepository {
     }
   }
 
-  public getById(questId: string): Result<ActiveQuestEntity> {
+  public findOne(query: QueryParam<unknown>): Result<ActiveQuestEntity | null> {
     try {
-      const context = ErrorFactory.createContext("Repository", "getById", {
-        questUUID: questId,
+      const context = ErrorFactory.createContext("Repository", "findOne", {
+        query,
         instanceName: this.instanceName,
       });
 
-      const dbResult = this.database.getById(questId);
+      const dbResult = this.database.findOne(query);
       if (ResultFactory.isError(dbResult)) {
         const [, error] = dbResult;
         return [null, ErrorFactory.chainError(error, context)];
       }
       const [activeQuest] = dbResult;
+      if (!activeQuest) {
+        return [null, null];
+      }
+
+      return this.toEntity(activeQuest);
+    } catch (e) {
+      return [
+        null,
+        ErrorFactory.unexpectedError(
+          ErrorFactory.createContext("Repository", "findOne", {
+            query,
+            instanceName: this.instanceName,
+          }),
+          e,
+        ),
+      ];
+    }
+  }
+
+  public getById(questId: string): Result<ActiveQuestEntity> {
+    try {
+      const context = ErrorFactory.createContext("Repository", "getById", {
+        uuid: questId,
+        instanceName: this.instanceName,
+      });
+
+      const resultGetId = this.findOne({ id: questId });
+      if (ResultFactory.isError(resultGetId)) {
+        const [, error] = resultGetId;
+        return [null, ErrorFactory.chainError(error, context)];
+      }
+      const [activeQuest] = resultGetId;
 
       if (!activeQuest) {
         return [
@@ -105,13 +138,13 @@ export class ActiveQuestRepository {
         ];
       }
 
-      return this.toEntity(activeQuest);
+      return [activeQuest, null];
     } catch (e) {
       return [
         null,
         ErrorFactory.unexpectedError(
           ErrorFactory.createContext("Repository", "getById", {
-            questUUID: questId,
+            uuid: questId,
             instanceName: this.instanceName,
           }),
           e,
