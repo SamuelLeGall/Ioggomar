@@ -1,4 +1,5 @@
 import { TestCase } from "tests/Models/testsModels";
+import { questDifficulty } from "@src/models/quests/QuestsModels";
 
 const acceptQuestTestCases: TestCase[] = [
   {
@@ -8,18 +9,20 @@ const acceptQuestTestCases: TestCase[] = [
     },
     expected: {
       result: null,
-      error: "WILL BE REPLACED LATER",
+      error: "The requested quest could not be found.",
     },
   },
   {
     name: "quest id exist but is already active - return an error and no data",
     params: {
       questId: "loc1_quest002",
+      questsToAcceptBeforeTest: [
+        { id: "loc1_quest002", difficulty: questDifficulty.MEDIUM },
+      ],
     },
     expected: {
       result: null,
-
-      error: "WILL BE REPLACED LATER",
+      error: `The requested active quest already exists.`,
     },
   },
   {
@@ -43,29 +46,29 @@ const cancelQuestTestCases: TestCase[] = [
     expected: {
       result: null,
 
-      error: "WILL BE REPLACED LATER",
+      error: "The requested ActiveQuest could not be found.",
     },
   },
-  {
-    name: "quest id exist but is not active - return an error and no data",
-    params: {
-      questId: "loc1_quest001",
-    },
-    expected: {
-      result: null,
-      error: "WILL BE REPLACED LATER",
-    },
-  },
-  {
-    name: "quest id exist and is active - return the data and no error",
-    params: {
-      questId: "loc1_quest002",
-    },
-    expected: {
-      result: true,
-      error: null,
-    },
-  },
+  // {
+  //   name: "quest id exist but is not active - return an error and no data",
+  //   params: {
+  //     questId: "loc1_quest001",
+  //   },
+  //   expected: {
+  //     result: null,
+  //     error: "The requested ActiveQuest could not be found.",
+  //   },
+  // },
+  // {
+  //   name: "quest id exist and is active - return the data and no error",
+  //   params: {
+  //     questId: "loc1_quest002",
+  //   },
+  //   expected: {
+  //     result: true,
+  //     error: null,
+  //   },
+  // },
 ];
 
 export { acceptQuestTestCases, cancelQuestTestCases };

@@ -169,6 +169,31 @@ export class QuestService {
       }
       const [activeQuest] = resultInitializeQuest;
 
+      // we check if an active quest exist for the staticId
+      const resultAlreadyActive = this.activeQuestRepo.findOne({
+        staticQuestId: activeQuest.getStaticQuestId(),
+      });
+      if (ResultFactory.isError(resultAlreadyActive)) {
+        const [, errorAlreadyActive] = resultAlreadyActive;
+        errorAlreadyActive.logToConsole();
+        return [null, errorAlreadyActive.getPublicMessage()];
+      }
+      const [activeQuestDB] = resultAlreadyActive;
+      if (activeQuestDB) {
+        const errorAlreadyActiveBis = ErrorFactory.resourceConflict(
+          ErrorFactory.createContext("Service", "acceptQuest", {
+            instanceName: this.instanceName,
+            staticId: activeQuest.getStaticQuestId(),
+            uuidRequest: activeQuest.getId(),
+            uuidDB: activeQuestDB.getId(),
+          }),
+          "active quest",
+          activeQuest.getStaticQuestId(),
+        );
+        errorAlreadyActiveBis.logToConsole();
+        return [null, errorAlreadyActiveBis.getPublicMessage()];
+      }
+
       // Add the new quest into the list
       const resultQuestSaved = this.activeQuestRepo.save(activeQuest);
       if (ResultFactory.isError(resultQuestSaved)) {
