@@ -528,7 +528,7 @@ export class AppError extends Error {
       const history = this.getCompleteErrorHistory();
       const rootCause = history[history.length - 1] || history[0];
 
-      const baseLog: StructuredErrorLog = {
+      return {
         timestamp: new Date().toISOString(),
         errorId: this._generateSafeErrorId(),
         summary: {
@@ -563,8 +563,6 @@ export class AppError extends Error {
         ),
         stack: this._safeStringify(this.stack, undefined),
       };
-
-      return baseLog;
     } catch (structuredError) {
       // Emergency structured log
       return {
@@ -606,8 +604,9 @@ export class AppError extends Error {
   private _generateSafeErrorId(): string {
     try {
       const timestamp = Date.now().toString(36);
-      const random = Math.random().toString(36).substr(2, 5);
-      const codeHash = String(this.code || "UNKN").substr(0, 4);
+
+      const random = Math.random().toString(36).substring(2, 5);
+      const codeHash = String(this.code || "UNKN").substring(0, 4);
       return `${codeHash}-${timestamp}-${random}`.toUpperCase();
     } catch {
       // Ultimate fallback
@@ -760,10 +759,7 @@ export class AppError extends Error {
       );
 
       try {
-        const timeStr =
-          entry.timestamp instanceof Date
-            ? entry.timestamp.toISOString()
-            : String(entry.timestamp || "Unknown time");
+        const timeStr = entry.timestamp.toISOString();
         lines.push(`${indent}├─ Time: ${timeStr}`);
       } catch {
         lines.push(`${indent}├─ Time: [Invalid Date]`);
@@ -797,12 +793,11 @@ export class AppError extends Error {
         );
       }
 
-      const recoverable =
-        entry.isRecoverable === true
-          ? "✅"
-          : entry.isRecoverable === false
-            ? "❌"
-            : "❓";
+      const recoverable = entry.isRecoverable
+        ? "✅"
+        : !entry.isRecoverable
+          ? "❌"
+          : "❓";
       lines.push(`${indent}└─ Recoverable: ${recoverable}`);
 
       if (index < history.length - 1) {
@@ -1034,8 +1029,8 @@ export class AppError extends Error {
    */
   private generateErrorId(): string {
     const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substr(2, 5);
-    const codeHash = this.code.substr(0, 4);
+    const random = Math.random().toString(36).substring(2, 5);
+    const codeHash = this.code.substring(0, 4);
     return `${codeHash}-${timestamp}-${random}`.toUpperCase();
   }
 
