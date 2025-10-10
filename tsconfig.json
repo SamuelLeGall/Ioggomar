@@ -45,7 +45,7 @@
       ],
       "@utils/*": [
         "src/utils/*"
-      ],
+      ]
     },
     "strict": true,
     "allowSyntheticDefaultImports": true,
