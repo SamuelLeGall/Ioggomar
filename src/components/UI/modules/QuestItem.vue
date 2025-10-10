@@ -158,8 +158,7 @@ const onChangeDifficultyOutcomePreview = (event: OptionConfig) => {
 };
 
 const onAccept = () => {
-  // TEMP
-  questApiService.accept(props.quest.id, QuestDifficulty.MEDIUM);
+  questApiService.accept(props.quest.id, currentDifficulty.value);
   emit("quest-state-changed");
 };
 
