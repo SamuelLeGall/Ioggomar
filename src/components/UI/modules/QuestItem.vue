@@ -26,12 +26,17 @@
       <p>
         <strong>Gold :</strong> {{ currentDifficultyOutcomes.rewards.gold }}
       </p>
-      <ul v-if="currentDifficultyOutcomes.rewards.items">
+      <template v-if="currentDifficultyOutcomes.rewards.items">
         <p><strong>Items :</strong></p>
-        <li v-for="item in currentDifficultyOutcomes.rewards.items" :key="item">
-          {{ item }}
-        </li>
-      </ul>
+        <ul>
+          <li
+            v-for="item in currentDifficultyOutcomes.rewards.items"
+            :key="item"
+          >
+            {{ item }}
+          </li>
+        </ul>
+      </template>
     </div>
 
     <div v-if="currentDifficultyOutcomes.penalties">
@@ -55,12 +60,17 @@
       <p>
         <strong>Gold :</strong> {{ currentDifficultyOutcomes.rewards.gold }}
       </p>
-      <ul v-if="currentDifficultyOutcomes.rewards.items">
+      <template v-if="currentDifficultyOutcomes.rewards.items">
         <p><strong>Items :</strong></p>
-        <li v-for="item in currentDifficultyOutcomes.rewards.items" :key="item">
-          {{ item }}
-        </li>
-      </ul>
+        <ul>
+          <li
+            v-for="item in currentDifficultyOutcomes.rewards.items"
+            :key="item"
+          >
+            {{ item }}
+          </li>
+        </ul>
+      </template>
     </div>
 
     <div class="flex justify-end gap-2">
