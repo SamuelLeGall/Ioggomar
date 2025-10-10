@@ -1,4 +1,3 @@
-import { MainSettings } from "@src/models/game/SettingsModels";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 import { SettingsEntity } from "@src/server/domain/entities/SettingsEntity";
 import {
@@ -7,6 +6,7 @@ import {
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
 import { BaseDocumentRepository } from "@src/server/infrastructure/repositories/BaseDocumentRepository";
+import { MainSettings } from "@src/models/game/settings.db.models";
 
 export class SettingsRepository extends BaseDocumentRepository<
   MainSettings,

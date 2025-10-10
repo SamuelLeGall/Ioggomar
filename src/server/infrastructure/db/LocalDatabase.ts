@@ -5,7 +5,6 @@ import { combatantsCollection } from "@src/server/infrastructure/db/collections/
 import { Combatant } from "@src/models/entitiesStats/CombatantModels";
 import { Collection } from "@src/server/infrastructure/db/Collection";
 import { Document } from "@src/server/infrastructure/db/Document";
-import { MainSettings } from "@src/models/game/SettingsModels";
 import {
   ErrorFactory,
   Result,
@@ -18,6 +17,7 @@ import {
   Quests,
 } from "@src/models/quests/quest.db.model";
 import { Player } from "@src/models/player/player.db.models";
+import { MainSettings } from "@src/models/game/settings.db.models";
 
 export type GameDatabase = {
   readonly: {

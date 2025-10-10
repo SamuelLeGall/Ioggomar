@@ -1,11 +1,11 @@
 import { SettingsEntity } from "@src/server/domain/entities/SettingsEntity";
-import { MainSettingsForFrontend } from "@src/models/game/SettingsModels";
 import {
   ErrorFactory,
   OptionConfig,
   Result,
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
+import { MainSettingsUI } from "@src/models/game/settings.frontend.model";
 
 export function toLocalizationForFrontend(
   entity: SettingsEntity,
@@ -41,7 +41,7 @@ export function toDataThemeForFrontend(
 
 export function toGameSettingsForFrontend(
   entity: SettingsEntity,
-): Result<MainSettingsForFrontend> {
+): Result<MainSettingsUI> {
   try {
     const resGetLocalization = toLocalizationForFrontend(entity);
     if (ResultFactory.isError(resGetLocalization)) {
