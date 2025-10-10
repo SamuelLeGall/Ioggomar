@@ -4,19 +4,20 @@ import {
   Result,
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
-import {
-  ActiveQuestForFrontend,
-  questDifficulty,
-  QuestItemForFrontend,
-  QuestItemProgressionUpdateRequest,
-} from "@src/models/quests/QuestsModels";
 import { StaticQuestRepository } from "@src/server/infrastructure/repositories/Quests/StaticQuestRepository";
 import { ActiveQuestRepository } from "@src/server/infrastructure/repositories/Quests/ActiveQuestRepository";
 import { ActiveQuestEntity } from "@src/server/domain/entities/ActiveQuestEntity";
 import {
-  toActiveQuestForFrontend,
-  toQuestItemForFrontend,
+  toActiveQuestUI,
+  toQuestItemUI,
 } from "@src/server/domain/mappers/QuestMappers";
+import {
+  ActiveQuestUI,
+  QuestItemDifficultyOutcomesUI,
+  QuestItemProgressionUpdateRequest,
+  QuestItemUI,
+} from "@src/models/quests/quest.frontend.model";
+import { QuestDifficulty } from "@src/models/quests/quest.enums";
 
 export class QuestService {
   private readonly instanceName = "QuestService";
@@ -34,7 +35,7 @@ export class QuestService {
   /** Business Logic - It represent use cases or actions that the player can perform **/
 
   /** GETTERS */
-  public getAllQuests(): FrontendResult<QuestItemForFrontend[]> {
+  public getAllQuests(): FrontendResult<QuestItemUI[]> {
     try {
       const resultGetQuests = this.staticQuestRepo.getAll();
       if (ResultFactory.isError(resultGetQuests)) {
@@ -44,9 +45,9 @@ export class QuestService {
       }
       const [quests] = resultGetQuests;
 
-      const questsFrontend: QuestItemForFrontend[] = [];
+      const questsFrontend: QuestItemUI[] = [];
       for (const quest of quests) {
-        const resultMapFrontend = toQuestItemForFrontend(quest);
+        const resultMapFrontend = toQuestItemUI(quest);
         if (ResultFactory.isError(resultMapFrontend)) {
           const [, errorMapFrontend] = resultMapFrontend;
           errorMapFrontend.logToConsole();
@@ -62,7 +63,7 @@ export class QuestService {
       return [null, "Internal Server Error"];
     }
   }
-  public getQuestById(questId: string): FrontendResult<QuestItemForFrontend> {
+  public getQuestById(questId: string): FrontendResult<QuestItemUI> {
     try {
       const resultGetQuest = this.staticQuestRepo.getById(questId);
       if (ResultFactory.isError(resultGetQuest)) {
@@ -72,7 +73,7 @@ export class QuestService {
       }
       const [quest] = resultGetQuest;
 
-      const resultMapFrontend = toQuestItemForFrontend(quest);
+      const resultMapFrontend = toQuestItemUI(quest);
       if (ResultFactory.isError(resultMapFrontend)) {
         const [, errorMapFrontend] = resultMapFrontend;
         errorMapFrontend.logToConsole();
@@ -87,7 +88,7 @@ export class QuestService {
     }
   }
 
-  public getAllActiveQuests(): FrontendResult<ActiveQuestForFrontend[]> {
+  public getAllActiveQuests(): FrontendResult<ActiveQuestUI[]> {
     try {
       const resultGetQuests = this.activeQuestRepo.getAll();
       if (ResultFactory.isError(resultGetQuests)) {
@@ -97,9 +98,9 @@ export class QuestService {
       }
       const [quests] = resultGetQuests;
 
-      const questsFrontend: ActiveQuestForFrontend[] = [];
+      const questsFrontend: ActiveQuestUI[] = [];
       for (const activeQuest of quests) {
-        const resultMapFrontend = toActiveQuestForFrontend(activeQuest);
+        const resultMapFrontend = toActiveQuestUI(activeQuest);
         if (ResultFactory.isError(resultMapFrontend)) {
           const [, errorMapFrontend] = resultMapFrontend;
           errorMapFrontend.logToConsole();
@@ -115,9 +116,7 @@ export class QuestService {
       return [null, "Internal Server Error"];
     }
   }
-  public getActiveQuestById(
-    questId: string,
-  ): FrontendResult<ActiveQuestForFrontend> {
+  public getActiveQuestById(questId: string): FrontendResult<ActiveQuestUI> {
     try {
       const resultGetQuest = this.activeQuestRepo.getById(questId);
       if (ResultFactory.isError(resultGetQuest)) {
@@ -127,7 +126,7 @@ export class QuestService {
       }
       const [quest] = resultGetQuest;
 
-      const resultMapFrontend = toActiveQuestForFrontend(quest);
+      const resultMapFrontend = toActiveQuestUI(quest);
       if (ResultFactory.isError(resultMapFrontend)) {
         const [, errorMapFrontend] = resultMapFrontend;
         errorMapFrontend.logToConsole();
@@ -145,7 +144,7 @@ export class QuestService {
   /** MUTATIONS */
   public acceptQuest(
     questId: string,
-    difficulty: questDifficulty,
+    difficulty: QuestDifficulty,
   ): FrontendResult<true> {
     try {
       // fetch the static config of the quest with the asked id
@@ -208,6 +207,7 @@ export class QuestService {
       return [null, "Internal Server Error"];
     }
   }
+
   public cancelQuest(questId: string): FrontendResult<true> {
     try {
       const resultRemoveQuest = this.activeQuestRepo.remove(questId);
@@ -258,7 +258,7 @@ export class QuestService {
       }
 
       // eventual processing because quest failed
-      // TODO we deal with giving the failure penalities to the player
+      // TODO we deal with giving the failure penalties to the player
 
       return [true, null];
     } catch (e) {

@@ -3,21 +3,24 @@ import {
   Result,
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
+import { QuestItem } from "@src/models/quests/quest.db.model";
+import { QuestDifficulty, QuestType } from "@src/models/quests/quest.enums";
 import {
-  questDifficulty,
   QuestGoalConfig,
   QuestGoalSubConfig,
-  QuestItem,
-  questPenalities,
-  questRewards,
-  questType,
-} from "@src/models/quests/QuestsModels";
+  QuestPenalties,
+  QuestRewards,
+} from "@src/models/quests/quest.shared.model";
 
 export class StaticQuestEntity {
   private quest: QuestItem;
-  private difficulty: questDifficulty | null = null;
+  private difficulty: QuestDifficulty;
   constructor(quest: QuestItem) {
     this.quest = quest;
+    const availableDifficulties = this.getQuestAvailableDifficulties();
+    this.difficulty =
+      availableDifficulties.find((el) => el === QuestDifficulty.MEDIUM) ??
+      availableDifficulties[0];
   }
 
   /** Public Getters */
@@ -37,23 +40,16 @@ export class StaticQuestEntity {
     return this.quest.illustration;
   }
 
-  public getQuestType(): questType {
+  public getQuestType(): QuestType[] {
     return this.quest.typeQuest;
   }
 
-  public getQuestAvailableDifficulties(): questDifficulty[] {
+  public getQuestAvailableDifficulties(): QuestDifficulty[] {
     return this.getQuestConfigurations().map((el) => el.difficulty);
   }
 
-  public haveDifficultySelected(): boolean {
-    return this.difficulty !== null;
-  }
-
-  public getQuestDifficulty(): Result<questDifficulty> {
-    if (!this.difficulty) {
-      return [null, ErrorFactory.questDifficultyNotSet(this.getQuestId())];
-    }
-    return [this.difficulty, null];
+  public getQuestDifficulty(): QuestDifficulty {
+    return this.difficulty;
   }
   public getQuestConfigurations(): QuestGoalConfig[] {
     return this.quest.configs;
@@ -111,21 +107,7 @@ export class StaticQuestEntity {
 
   public getQuestConfiguration(): Result<QuestGoalConfig> {
     try {
-      const resultGetDifficulty = this.getQuestDifficulty();
-      if (ResultFactory.isError(resultGetDifficulty)) {
-        const [, errorDifficulty] = resultGetDifficulty;
-        return [
-          null,
-          ErrorFactory.chainError(
-            errorDifficulty,
-            ErrorFactory.createContext("Entity", "getQuestConfiguration", {
-              questId: this.getQuestId(),
-            }),
-          ),
-        ];
-      }
-      const [difficulty] = resultGetDifficulty;
-
+      const difficulty = this.getQuestDifficulty();
       const allConfigs = this.getQuestConfigurations();
       const selectedConfiguration = allConfigs.find(
         (el) => el.difficulty === difficulty,
@@ -153,7 +135,7 @@ export class StaticQuestEntity {
     }
   }
 
-  public haveQuestPenalities(): Result<boolean> {
+  public haveQuestPenalties(): Result<boolean> {
     try {
       const resultGetConfig = this.getQuestConfiguration();
       if (ResultFactory.isError(resultGetConfig)) {
@@ -162,7 +144,7 @@ export class StaticQuestEntity {
           null,
           ErrorFactory.chainError(
             errorGetConfig,
-            ErrorFactory.createContext("Entity", "haveQuestPenalities", {
+            ErrorFactory.createContext("Entity", "haveQuestPenalties", {
               questId: this.getQuestId(),
             }),
           ),
@@ -170,12 +152,12 @@ export class StaticQuestEntity {
       }
       const [configuration] = resultGetConfig;
 
-      return [Boolean(configuration.penalities), null];
+      return [Boolean(configuration.penalties), null];
     } catch (e) {
       return [
         null,
         ErrorFactory.unexpectedError(
-          ErrorFactory.createContext("Entity", "haveQuestPenalities", {
+          ErrorFactory.createContext("Entity", "haveQuestPenalties", {
             questId: this.getQuestId(),
           }),
           e,
@@ -184,7 +166,7 @@ export class StaticQuestEntity {
     }
   }
 
-  public getQuestRewards(): Result<questRewards> {
+  public getQuestRewards(): Result<QuestRewards> {
     try {
       const resultGetConfig = this.getQuestConfiguration();
       if (ResultFactory.isError(resultGetConfig)) {
@@ -215,7 +197,7 @@ export class StaticQuestEntity {
     }
   }
 
-  public getQuestPenalities(): Result<questPenalities | null> {
+  public getQuestPenalties(): Result<QuestPenalties | null> {
     try {
       const resultGetConfig = this.getQuestConfiguration();
       if (ResultFactory.isError(resultGetConfig)) {
@@ -224,7 +206,7 @@ export class StaticQuestEntity {
           null,
           ErrorFactory.chainError(
             errorGetConfig,
-            ErrorFactory.createContext("Entity", "getQuestPenalities", {
+            ErrorFactory.createContext("Entity", "getQuestPenalties", {
               questId: this.getQuestId(),
             }),
           ),
@@ -232,17 +214,17 @@ export class StaticQuestEntity {
       }
       const [configuration] = resultGetConfig;
 
-      if (!configuration.penalities) {
+      if (!configuration.penalties) {
         // there may not be any penality for some quests, so not an error.
         return [null, null];
       }
 
-      return [configuration.penalities, null];
+      return [configuration.penalties, null];
     } catch (e) {
       return [
         null,
         ErrorFactory.unexpectedError(
-          ErrorFactory.createContext("Entity", "getQuestPenalities", {
+          ErrorFactory.createContext("Entity", "getQuestPenalties", {
             questId: this.getQuestId(),
           }),
           e,
@@ -349,7 +331,7 @@ export class StaticQuestEntity {
   }
 
   /** Setters */
-  public setDifficulty(difficulty: questDifficulty) {
+  public setDifficulty(difficulty: QuestDifficulty) {
     this.difficulty = difficulty;
   }
 }

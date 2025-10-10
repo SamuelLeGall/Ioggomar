@@ -1,4 +1,4 @@
-import { questDifficulty } from "@src/models/quests/QuestsModels";
+import { QuestDifficulty } from "@src/models/quests/quest.enums";
 
 export type Result<T> = [T, null] | [null, AppError];
 export type FrontendResult<T> = [T, null] | [null, string];
@@ -187,25 +187,9 @@ export class ErrorFactory {
     );
   }
 
-  static questDifficultyNotSet(questId: string): AppError {
-    return new AppError(
-      `Quest difficulty not set for quest ${questId}`,
-      AppErrorCodes.MISSING_REQUIRED_DATA,
-      ErrorCategory.DOMAIN,
-      ErrorSeverity.LOW,
-      ErrorFactory.createContext("Entity", "getQuestDifficulty", {
-        questId: questId,
-      }),
-      {
-        userMessage: "Please select a difficulty level for this quest.",
-        isRecoverable: true,
-      },
-    );
-  }
-
   static questDifficultyNotAvailable(
     questId: string,
-    difficulty: questDifficulty,
+    difficulty: QuestDifficulty,
   ): AppError {
     return new AppError(
       `No configuration found for difficulty ${difficulty} in quest ${questId}`,

@@ -1,8 +1,5 @@
-import {
-  Quests,
-  questDifficulty,
-  questType,
-} from "@src/models/quests/QuestsModels";
+import { Quests } from "@src/models/quests/quest.db.model";
+import { QuestDifficulty, QuestType } from "@src/models/quests/quest.enums";
 
 export const questsCollection: Quests = [
   {
@@ -11,10 +8,10 @@ export const questsCollection: Quests = [
     description: "Quests.loc1_quest001.description",
     locationId: "loc1_tuto",
     illustration: "",
-    typeQuest: questType.LOOT,
+    typeQuest: [QuestType.LOOT],
     configs: [
       {
-        difficulty: questDifficulty.EASY,
+        difficulty: QuestDifficulty.EASY,
         rewards: {
           xp: 100,
           gold: 100,
@@ -30,7 +27,7 @@ export const questsCollection: Quests = [
         ],
       },
       {
-        difficulty: questDifficulty.MEDIUM,
+        difficulty: QuestDifficulty.MEDIUM,
         rewards: {
           xp: 150,
           gold: 150,
@@ -58,13 +55,18 @@ export const questsCollection: Quests = [
     description: "Quests.loc1_quest002.description",
     locationId: "loc1_tavern",
     illustration: "",
-    typeQuest: questType.LOOT,
+    typeQuest: [QuestType.LOOT],
     configs: [
       {
-        difficulty: questDifficulty.MEDIUM,
+        difficulty: QuestDifficulty.MEDIUM,
         rewards: {
           xp: 150,
           gold: 150,
+        },
+        penalties: {
+          xpReset: true,
+          equipmentDropped: true,
+          levelsLost: 2,
         },
         goals: [
           { idItem: "loot_slime_001", targetAmount: 5 },

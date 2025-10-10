@@ -3,10 +3,10 @@ import {
   Result,
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
-import { QuestItem } from "@src/models/quests/QuestsModels";
 import { StaticQuestEntity } from "@src/server/domain/entities/StaticQuestEntity";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 import { BaseCollectionRepository } from "@src/server/infrastructure/repositories/BaseCollectionRepository";
+import { QuestItem } from "@src/models/quests/quest.db.model";
 
 export class StaticQuestRepository extends BaseCollectionRepository<
   QuestItem,

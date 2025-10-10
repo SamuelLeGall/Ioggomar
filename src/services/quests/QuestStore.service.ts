@@ -1,9 +1,9 @@
 import { QuestApiService } from "@src/services/quests/QuestApi.service";
 import { useQuestStore } from "@src/store/quest";
 import {
-  ActiveQuestForFrontend,
-  QuestItemForFrontend,
-} from "@src/models/quests/QuestsModels";
+  ActiveQuestUI,
+  QuestItemUI,
+} from "@src/models/quests/quest.frontend.model";
 
 export class QuestStoreService {
   private store;
@@ -14,7 +14,7 @@ export class QuestStoreService {
     this.api = api;
   }
 
-  getAllQuests = (): QuestItemForFrontend[] => {
+  getAllQuests = (): QuestItemUI[] => {
     return this.store.listQuests;
   };
   syncAllQuests = (): void => {
@@ -25,7 +25,7 @@ export class QuestStoreService {
     this.store.listQuests = listUpdated;
   };
 
-  getAllActiveQuests = (): ActiveQuestForFrontend[] => {
+  getAllActiveQuests = (): ActiveQuestUI[] => {
     return this.store.activeQuests;
   };
   syncAllActiveQuests = (): void => {
@@ -36,7 +36,7 @@ export class QuestStoreService {
     this.store.activeQuests = listUpdated;
   };
 
-  getQuestById = (questId: string): QuestItemForFrontend | undefined => {
+  getQuestById = (questId: string): QuestItemUI | undefined => {
     return this.getAllQuests().find((el) => el.id === questId);
   };
   getQuestIndexById = (questId: string): number => {
@@ -60,9 +60,7 @@ export class QuestStoreService {
     this.store.listQuests[index] = questUpdated;
   };
 
-  getActiveQuestById = (
-    questId: string,
-  ): ActiveQuestForFrontend | undefined => {
+  getActiveQuestById = (questId: string): ActiveQuestUI | undefined => {
     return this.getAllActiveQuests().find((el) => el.id === questId);
   };
   getActiveQuestIndexById = (questId: string): number => {

@@ -1,12 +1,12 @@
 import { QuestService } from "@src/server/application/quests/quest.service";
-import {
-  ActiveQuestForFrontend,
-  questDifficulty,
-  QuestItemForFrontend,
-  QuestItemProgressionUpdateRequest,
-} from "@src/models/quests/QuestsModels";
 import { useToast } from "vue-toast-notification";
 import { ResultFactory } from "@src/models/BasicAndTempModels";
+import {
+  ActiveQuestUI,
+  QuestItemProgressionUpdateRequest,
+  QuestItemUI,
+} from "@src/models/quests/quest.frontend.model";
+import { QuestDifficulty } from "@src/models/quests/quest.enums";
 
 export class QuestApiService {
   private backendService: QuestService;
@@ -25,7 +25,7 @@ export class QuestApiService {
 
   /** GETTERS */
 
-  getAllQuests = (): QuestItemForFrontend[] | undefined => {
+  getAllQuests = (): QuestItemUI[] | undefined => {
     const result = this.backendService.getAllQuests();
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -35,7 +35,7 @@ export class QuestApiService {
     const [quests] = result;
     return quests;
   };
-  getQuestById = (questId: string): QuestItemForFrontend | undefined => {
+  getQuestById = (questId: string): QuestItemUI | undefined => {
     const result = this.backendService.getQuestById(questId);
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -45,7 +45,7 @@ export class QuestApiService {
     const [quest] = result;
     return quest;
   };
-  getAllActiveQuests = (): ActiveQuestForFrontend[] | undefined => {
+  getAllActiveQuests = (): ActiveQuestUI[] | undefined => {
     const result = this.backendService.getAllActiveQuests();
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -55,9 +55,7 @@ export class QuestApiService {
     const [quests] = result;
     return quests;
   };
-  getActiveQuestById = (
-    questId: string,
-  ): ActiveQuestForFrontend | undefined => {
+  getActiveQuestById = (questId: string): ActiveQuestUI | undefined => {
     const result = this.backendService.getActiveQuestById(questId);
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;
@@ -69,7 +67,7 @@ export class QuestApiService {
   };
 
   /** MUTATIONS */
-  accept = (questId: string, difficulty: questDifficulty): boolean => {
+  accept = (questId: string, difficulty: QuestDifficulty): boolean => {
     const result = this.backendService.acceptQuest(questId, difficulty);
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;

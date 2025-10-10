@@ -161,10 +161,10 @@ export default defineComponent({
       //    - Array<OptionConfig> if multiple=true
       //    - OptionConfig if multiple=false
       // Internally we work with an selectedOptions of type Array<OptionConfig> in both cases
-      if (props.multiple) {
+      if (props.multiple && Array.isArray(props.modelValue)) {
         inputText.value = "";
         selectedOptions.value = props.modelValue;
-      } else {
+      } else if (!props.multiple && !Array.isArray(props.modelValue)) {
         inputText.value = props.modelValue.value;
         selectedOptions.value = [props.modelValue];
       }

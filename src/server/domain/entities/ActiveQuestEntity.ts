@@ -1,8 +1,3 @@
-import {
-  ActiveQuest,
-  questDifficulty,
-  QuestItemProgression,
-} from "@src/models/quests/QuestsModels";
 import { StaticQuestEntity } from "@src/server/domain/entities/StaticQuestEntity";
 import {
   ErrorFactory,
@@ -10,6 +5,11 @@ import {
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
 import * as generalUtils from "@utils/GeneralUtils";
+import {
+  ActiveQuest,
+  QuestItemProgression,
+} from "@src/models/quests/quest.db.model";
+import { QuestDifficulty } from "@src/models/quests/quest.enums";
 
 export class ActiveQuestEntity {
   private readonly quest: ActiveQuest;
@@ -26,7 +26,7 @@ export class ActiveQuestEntity {
   // For creating a new active quest from static quest + difficulty
   public static fromStaticQuest(
     quest: StaticQuestEntity,
-    difficulty: questDifficulty,
+    difficulty: QuestDifficulty,
   ): Result<ActiveQuestEntity> {
     try {
       quest.setDifficulty(difficulty);

@@ -36,13 +36,13 @@
 
 <script setup lang="ts">
 import { onMounted, computed } from "vue";
-import {
-  ActiveQuestForFrontend,
-  QuestItemForFrontend,
-} from "@src/models/quests/QuestsModels";
 import { QuestStoreService } from "@src/services/quests/QuestStore.service";
 import QuestItem from "@components/UI/modules/QuestItem.vue";
 import ActiveQuestItem from "@components/UI/modules/ActiveQuestItem.vue";
+import {
+  ActiveQuestUI,
+  QuestItemUI,
+} from "@src/models/quests/quest.frontend.model";
 
 // STATE
 
@@ -52,15 +52,15 @@ import ActiveQuestItem from "@components/UI/modules/ActiveQuestItem.vue";
 const questStoreService = new QuestStoreService();
 
 // COMPUTED
-const activeQuests = computed<ActiveQuestForFrontend[]>(() => {
+const activeQuests = computed<ActiveQuestUI[]>(() => {
   return questStoreService.getAllActiveQuests();
 });
 
-const quests = computed<QuestItemForFrontend[]>(() => {
+const quests = computed<QuestItemUI[]>(() => {
   return questStoreService.getAllQuests();
 });
 
-const staticQuestsMap = computed<Record<string, QuestItemForFrontend>>(() => {
+const staticQuestsMap = computed<Record<string, QuestItemUI>>(() => {
   return Object.fromEntries(
     activeQuests.value
       .map((q) => {
@@ -69,9 +69,7 @@ const staticQuestsMap = computed<Record<string, QuestItemForFrontend>>(() => {
         );
         return staticData ? [q.id, staticData] : null;
       })
-      .filter(
-        (entry): entry is [string, QuestItemForFrontend] => entry !== null,
-      ),
+      .filter((entry): entry is [string, QuestItemUI] => entry !== null),
   );
 });
 

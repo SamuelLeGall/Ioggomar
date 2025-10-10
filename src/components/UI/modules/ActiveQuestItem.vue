@@ -28,17 +28,15 @@
               <strong>Reward:</strong> {{ staticQuest.rewards.items }} item
             </div>
           </div>
-          <div v-if="staticQuest.penalities">
+          <div v-if="staticQuest.penalties">
             <strong>Penalties:</strong>
-            <p>
-              xp reset ? {{ staticQuest.penalities.xpReset ? "Yes" : "No" }}
-            </p>
+            <p>xp reset ? {{ staticQuest.penalties.xpReset ? "Yes" : "No" }}</p>
             <p>
               equipment loss ?
-              {{ staticQuest.penalities.equipementDropped ? "Yes" : "No" }}
+              {{ staticQuest.penalties.equipementDropped ? "Yes" : "No" }}
             </p>
-            <p v-if="staticQuest.penalities.levelsLost">
-              nbre of level loss ? {{ staticQuest.penalities.levelsLost }}
+            <p v-if="staticQuest.penalties.levelsLost">
+              nbre of level loss ? {{ staticQuest.penalties.levelsLost }}
             </p>
           </div>
         </div>
@@ -81,16 +79,16 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ActiveQuestForFrontend,
-  QuestItemForFrontend,
-} from "@src/models/quests/QuestsModels";
 import { QuestApiService } from "@src/services/quests/QuestApi.service";
 import { SettingsStoreService } from "@src/services/game/SettingsStore.service";
+import {
+  ActiveQuestUI,
+  QuestItemUI,
+} from "@src/models/quests/quest.frontend.model";
 
 const props = defineProps<{
-  activeQuest: ActiveQuestForFrontend;
-  staticQuest: QuestItemForFrontend;
+  activeQuest: ActiveQuestUI;
+  staticQuest: QuestItemUI;
 }>();
 
 const emit = defineEmits<{

@@ -1,4 +1,3 @@
-import { ActiveQuest } from "@src/models/quests/QuestsModels";
 import {
   AppErrorCodes,
   ErrorFactory,
@@ -8,6 +7,7 @@ import {
 import { ActiveQuestEntity } from "@src/server/domain/entities/ActiveQuestEntity";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 import { BaseCollectionRepository } from "@src/server/infrastructure/repositories/BaseCollectionRepository";
+import { ActiveQuest } from "@src/models/quests/quest.db.model";
 
 export class ActiveQuestRepository extends BaseCollectionRepository<
   ActiveQuest,
