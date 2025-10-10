@@ -13,7 +13,6 @@ import {
 } from "@src/server/domain/mappers/QuestMappers";
 import {
   ActiveQuestUI,
-  QuestItemDifficultyOutcomesUI,
   QuestItemProgressionUpdateRequest,
   QuestItemUI,
 } from "@src/models/quests/quest.frontend.model";
