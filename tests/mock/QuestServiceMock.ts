@@ -1,5 +1,5 @@
 import { TestCase } from "tests/Models/testsModels";
-import { questDifficulty } from "@src/models/quests/QuestsModels";
+import { QuestDifficulty } from "@src/models/quests/quest.enums";
 
 const acceptQuestTestCases: TestCase[] = [
   {
@@ -17,7 +17,7 @@ const acceptQuestTestCases: TestCase[] = [
     params: {
       questId: "loc1_quest002",
       questsToAcceptBeforeTest: [
-        { id: "loc1_quest002", difficulty: questDifficulty.MEDIUM },
+        { id: "loc1_quest002", difficulty: QuestDifficulty.MEDIUM },
       ],
     },
     expected: {

@@ -1,5 +1,4 @@
 import { PlayerRepository } from "@src/server/infrastructure/repositories/PlayerRepository";
-import { PlayerForFrontend } from "@src/models/player/PlayerModels";
 import {
   ErrorFactory,
   FrontendResult,
@@ -7,6 +6,7 @@ import {
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
 import { toPlayerForFrontend } from "@src/server/domain/mappers/PlayerMappers";
+import { PlayerUI } from "@src/models/player/player.frontend.model";
 
 export class PlayerService {
   private readonly instanceName = "PlayerService";
@@ -16,7 +16,7 @@ export class PlayerService {
     this.repository = repository;
   }
 
-  getPlayer(): FrontendResult<PlayerForFrontend> {
+  getPlayer(): FrontendResult<PlayerUI> {
     try {
       const resultGetPlayer = this.repository.get();
       if (ResultFactory.isError(resultGetPlayer)) {

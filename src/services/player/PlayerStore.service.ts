@@ -1,6 +1,6 @@
 import { usePlayerStore } from "@src/store/player";
 import { PlayerApiService } from "@src/services/player/PlayerApi.service";
-import { PlayerForFrontend } from "@src/models/player/PlayerModels";
+import { PlayerUI } from "@src/models/player/player.frontend.model";
 
 export class PlayerStoreService {
   private store;
@@ -11,7 +11,7 @@ export class PlayerStoreService {
     this.api = api;
   }
 
-  getPlayer = (): PlayerForFrontend => {
+  getPlayer = (): PlayerUI => {
     return this.store.player;
   };
   syncPlayer = () => {

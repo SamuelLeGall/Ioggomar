@@ -1,7 +1,7 @@
 import { PlayerService } from "@src/server/application/player.service";
-import { PlayerForFrontend } from "@src/models/player/PlayerModels";
 import { ResultFactory } from "@src/models/BasicAndTempModels";
 import { useToast } from "vue-toast-notification";
+import { PlayerUI } from "@src/models/player/player.frontend.model";
 
 export class PlayerApiService {
   private backendService: PlayerService;
@@ -18,7 +18,7 @@ export class PlayerApiService {
     });
   }
 
-  getPlayer = (): PlayerForFrontend | undefined => {
+  getPlayer = (): PlayerUI | undefined => {
     const result = this.backendService.getPlayer();
     if (ResultFactory.isErrorFrontend(result)) {
       const [, message] = result;

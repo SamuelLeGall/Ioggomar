@@ -1,5 +1,5 @@
-import { PlayerI } from "@src/models/player/PlayerModels";
+import { Player } from "@src/models/player/player.db.models";
 
-export const playerCollection: PlayerI = {
+export const playerCollection: Player = {
   playerLevel: 1,
 };

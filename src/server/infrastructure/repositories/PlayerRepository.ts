@@ -1,15 +1,15 @@
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 import { PlayerEntity } from "@src/server/domain/entities/PlayerEntity";
-import { PlayerI } from "@src/models/player/PlayerModels";
 import {
   ErrorFactory,
   Result,
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
 import { BaseDocumentRepository } from "@src/server/infrastructure/repositories/BaseDocumentRepository";
+import { Player } from "@src/models/player/player.db.models";
 
 export class PlayerRepository extends BaseDocumentRepository<
-  PlayerI,
+  Player,
   PlayerEntity
 > {
   protected readonly instanceName = "PlayerRepository";
@@ -19,12 +19,12 @@ export class PlayerRepository extends BaseDocumentRepository<
   }
 
   /** Private Getters */
-  protected toDB(entity: PlayerEntity): PlayerI {
+  protected toDB(entity: PlayerEntity): Player {
     return {
       playerLevel: entity.getLevel(),
     };
   }
-  protected toEntity(data: PlayerI): Result<PlayerEntity> {
+  protected toEntity(data: Player): Result<PlayerEntity> {
     try {
       const entity = PlayerEntity.fromData(data);
       return [entity, null];

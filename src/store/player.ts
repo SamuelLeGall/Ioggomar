@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { PlayerForFrontend } from "@src/models/player/PlayerModels";
+import { PlayerUI } from "@src/models/player/player.frontend.model";
 
 export const usePlayerStore = defineStore("player", () => {
   // specific to the player and not in another store
-  const player = ref<PlayerForFrontend>({
+  const player = ref<PlayerUI>({
     level: 0,
   });
 

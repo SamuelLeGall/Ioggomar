@@ -4,8 +4,8 @@ import {
 } from "tests/mock/QuestServiceMock";
 import { TestCase } from "tests/Models/testsModels";
 import { QuestService } from "@src/server/application/quests/quest.service";
-import { questDifficulty } from "@src/models/quests/QuestsModels";
 import * as generalUtils from "@utils/GeneralUtils";
+import { QuestDifficulty } from "@src/models/quests/quest.enums";
 
 describe("Test of QuestService - acceptQuest", () => {
   beforeEach(() => {
@@ -18,7 +18,7 @@ describe("Test of QuestService - acceptQuest", () => {
       const questInstance = new QuestService();
       if (Array.isArray(testCase.params.questsToAcceptBeforeTest)) {
         testCase.params.questsToAcceptBeforeTest.forEach(
-          (testData: { id: string; difficulty: questDifficulty }) => {
+          (testData: { id: string; difficulty: QuestDifficulty }) => {
             questInstance.acceptQuest(testData.id, testData.difficulty);
           },
         );
@@ -32,7 +32,7 @@ describe("Test of QuestService - acceptQuest", () => {
       // when
       const [result, error] = questInstance.acceptQuest(
         questId,
-        questDifficulty.MEDIUM,
+        QuestDifficulty.MEDIUM,
       );
 
       // then

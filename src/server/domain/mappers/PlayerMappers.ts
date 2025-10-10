@@ -1,10 +1,8 @@
 import { PlayerEntity } from "@src/server/domain/entities/PlayerEntity";
-import { PlayerForFrontend } from "@src/models/player/PlayerModels";
 import { ErrorFactory, Result } from "@src/models/BasicAndTempModels";
+import { PlayerUI } from "@src/models/player/player.frontend.model";
 
-export function toPlayerForFrontend(
-  entity: PlayerEntity,
-): Result<PlayerForFrontend> {
+export function toPlayerForFrontend(entity: PlayerEntity): Result<PlayerUI> {
   try {
     return [
       {

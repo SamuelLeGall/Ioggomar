@@ -1,15 +1,15 @@
-import { PlayerI } from "@src/models/player/PlayerModels";
 import { ErrorFactory, Result } from "@src/models/BasicAndTempModels";
+import { Player } from "@src/models/player/player.db.models";
 
 export class PlayerEntity {
-  private readonly player: PlayerI;
+  private readonly player: Player;
 
-  private constructor(player: PlayerI) {
+  private constructor(player: Player) {
     this.player = player;
   }
 
   // For recreating from raw/persisted data
-  public static fromData(data: PlayerI): PlayerEntity {
+  public static fromData(data: Player): PlayerEntity {
     return new PlayerEntity(data);
   }
 

@@ -1,14 +1,14 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import {
-  ActiveQuestForFrontend,
-  QuestItemForFrontend,
-} from "../models/quests/QuestsModels";
+  ActiveQuestUI,
+  QuestItemUI,
+} from "@src/models/quests/quest.frontend.model";
 
 export const useQuestStore = defineStore("quest", () => {
-  const activeQuests = ref<ActiveQuestForFrontend[]>([]);
+  const activeQuests = ref<ActiveQuestUI[]>([]);
   const completedQuests = ref<string[]>([]);
-  const listQuests = ref<QuestItemForFrontend[]>([]);
+  const listQuests = ref<QuestItemUI[]>([]);
 
   return {
     listQuests,
