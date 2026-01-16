@@ -1,0 +1,73 @@
+.display-flex {
+    display: flex;
+}
+
+
+// flex direction
+.flex-direction-column {
+    flex-direction: column;
+}
+
+//justify centent
+.justify-centent-center {
+    justify-content: center;
+}
+
+// align items
+.align-items-center {
+    align-items: center;
+}
+
+// specific flex properties
+// flex-fill to take all available place
+.flex-fill {
+    flex-grow: 1;
+}
+
+// flex-children-fill to have children of this class take all available space
+.flex-children-fill > * {
+    flex-grow: 1;
+}
+
+
+//flex-basis
+.no-flex-basis{
+    flex-basis: 0;
+}
+
+//complex layout class
+
+// centered content
+.flex-center {
+    @extend .justify-centent-center;
+    @extend .align-items-center;
+}
+
+// get children to have same width
+.flex-children-equals > * {
+    /* same size because :
+        - flex-basis is 0. So initial width of child has no effect on layout of free space
+        - flex-grow is 1. So children will take all available space of container and since initial width is ignored, 
+        space is divided equally
+        - flex-shrink is 1 (inherited from default display:flex behaviour). So will allow children to shrink if needed to fit in the container, 
+        since initial width is ignored, space is removed from children equally
+    */
+    @extend .display-flex;
+    @extend .flex-fill;
+    @extend .no-flex-basis;
+}
+
+
+//manipuling flex children margin to use free-space
+/*
+.flex-child:nth-child(2) {
+margin-left:auto; // this allow all available space to be put in this margin
+}
+
+// if we add the following code, the available free space is equally divided between those 3 margins (the one from before + the 2 below)
+.flex-child:nth-child(3) {
+margin-left:auto; 
+margin-right:auto;
+}
+
+*/

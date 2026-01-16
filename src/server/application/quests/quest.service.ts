@@ -3,7 +3,7 @@ import {
   FrontendResult,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 import { StaticQuestRepository } from "@src/server/infrastructure/repositories/Quests/StaticQuestRepository";
 import { ActiveQuestRepository } from "@src/server/infrastructure/repositories/Quests/ActiveQuestRepository";
 import { ActiveQuestEntity } from "@src/server/domain/entities/ActiveQuestEntity";
@@ -15,8 +15,8 @@ import {
   ActiveQuestUI,
   QuestItemProgressionUpdateRequest,
   QuestItemUI,
-} from "@src/models/quests/quest.frontend.model";
-import { QuestDifficulty } from "@src/models/quests/quest.enums";
+} from "@src/server/models/quests/quest.frontend.model";
+import { QuestDifficulty } from "@src/server/models/quests/quest.enums";
 
 export class QuestService {
   private readonly instanceName = "QuestService";

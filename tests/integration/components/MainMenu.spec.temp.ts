@@ -1,9 +1,9 @@
 import { mount } from "@vue/test-utils";
 import { createTestingPinia } from "@pinia/testing";
 import { createI18n } from "vue-i18n";
-import router from "@router/index";
-import MainMenu from "@components/views/MainMenu.vue";
-import * as messagesFr from "@localizations/fr-FR/UI/Menus/MainMenuMessage.json";
+import router from "@src/public/router/index";
+import MainMenu from "@src/public/components/views/MainMenu.vue";
+import * as messagesFr from "@src/public/localizations/fr-FR/UI/Menus/MainMenuMessage.json";
 
 test("mount MainMenu", async () => {
   expect(MainMenu).toBeTruthy();

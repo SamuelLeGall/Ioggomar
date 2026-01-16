@@ -1,8 +1,8 @@
 import {
   ActiveItem,
   Inventory,
-} from "@src/models/inventory/inventory.db.model";
-import * as generalUtils from "@utils/GeneralUtils";
+} from "@src/server/models/inventory/inventory.db.model";
+import * as generalUtils from "@src/server/utils/GeneralUtils";
 
 export class InventoryEntity {
   private readonly inventory: Inventory;

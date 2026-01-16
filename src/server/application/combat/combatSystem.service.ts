@@ -2,18 +2,18 @@ import { CombatantEntity } from "@src/server/domain/entities/combatantEntity";
 import {
   ElementalTypeConfig,
   ElementalTypesInteractions,
-} from "@src/models/fight/ElementalTypesModels";
+} from "@src/server/models/fight/ElementalTypesModels";
 import {
   defaultElementalTypeConfig,
   elementalTypesGlobalConfig,
-} from "@config/globalConstants/fighting/Elements/elementTypesConfig";
+} from "@src/server/config/globalConstants/fighting/Elements/elementTypesConfig";
 import {
   ErrorFactory,
   FrontendResult,
   Result,
   ResultFactory,
   TAction,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 
 /** FOR SOME GOOD MATHEMATICAL FONCTION FOR GRAPH (experience/damagedealt etc) - https://easings.net/ */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

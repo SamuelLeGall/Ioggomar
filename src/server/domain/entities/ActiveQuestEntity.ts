@@ -3,13 +3,13 @@ import {
   ErrorFactory,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
-import * as generalUtils from "@utils/GeneralUtils";
+} from "@src/server/models/BasicAndTempModels";
+import * as generalUtils from "@src/server/utils/GeneralUtils";
 import {
   ActiveQuest,
   QuestItemProgression,
-} from "@src/models/quests/quest.db.model";
-import { QuestDifficulty } from "@src/models/quests/quest.enums";
+} from "@src/server/models/quests/quest.db.model";
+import { QuestDifficulty } from "@src/server/models/quests/quest.enums";
 
 export class ActiveQuestEntity {
   private readonly quest: ActiveQuest;

@@ -1,5 +1,5 @@
-import { ErrorFactory, Result } from "@src/models/BasicAndTempModels";
-import { Player } from "@src/models/player/player.db.models";
+import { ErrorFactory, Result } from "@src/server/models/BasicAndTempModels";
+import { Player } from "@src/server/models/player/player.db.models";
 
 export class PlayerEntity {
   private readonly player: Player;

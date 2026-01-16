@@ -1,4 +1,4 @@
-import { Inventories } from "@src/models/inventory/inventory.db.model";
+import { Inventories } from "@src/server/models/inventory/inventory.db.model";
 
 export const inventoriesCollection: Inventories = [
   {

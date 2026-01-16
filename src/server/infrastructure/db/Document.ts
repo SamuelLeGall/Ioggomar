@@ -1,4 +1,4 @@
-import { ErrorFactory, Result } from "@src/models/BasicAndTempModels";
+import { ErrorFactory, Result } from "@src/server/models/BasicAndTempModels";
 
 export class Document<T> {
   // using options.force= true bypass the readony requirement but is only for privileged calls.

@@ -4,8 +4,8 @@ import {
   OptionConfig,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
-import { MainSettingsUI } from "@src/models/game/settings.frontend.model";
+} from "@src/server/models/BasicAndTempModels";
+import { MainSettingsUI } from "@src/server/models/game/settings.frontend.model";
 
 export function toLocalizationForFrontend(
   entity: SettingsEntity,

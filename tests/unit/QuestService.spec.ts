@@ -4,8 +4,8 @@ import {
 } from "tests/mock/QuestServiceMock";
 import { TestCase } from "tests/Models/testsModels";
 import { QuestService } from "@src/server/application/quests/quest.service";
-import * as generalUtils from "@utils/GeneralUtils";
-import { QuestDifficulty } from "@src/models/quests/quest.enums";
+import * as generalUtils from "@src/server/utils/GeneralUtils";
+import { QuestDifficulty } from "@src/server/models/quests/quest.enums";
 
 describe("Test of QuestService - acceptQuest", () => {
   beforeEach(() => {

@@ -1,0 +1,14 @@
+{
+  "loot_slime_001": {
+    "name": "slime jelly"
+  },
+  "loot_metal_slime_001": {
+    "name": "metal slime core"
+  },
+  "loot_goblin_001": {
+    "name": "goblin ear"
+  },
+  "loot_golem_002": {
+    "name": "fractured golem core"
+  }
+}

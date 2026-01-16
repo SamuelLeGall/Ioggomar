@@ -2,7 +2,7 @@ import {
   ErrorFactory,
   QueryParam,
   Result,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 
 export class Collection<T extends { id: string }> {
   // using options.force= true bypass the readony requirement but is only for privileged calls.

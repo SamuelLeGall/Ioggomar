@@ -1,6 +1,6 @@
-import { Items } from "@src/models/inventory/inventory.db.model";
-import keyImg from "@components/UI/modules/inventory/pngtree-golden-key-metal-on-transparent-background-png-image_15629147.png";
-import { ItemRarity } from "@src/models/inventory/inventory.enums";
+import { Items } from "@src/server/models/inventory/inventory.db.model";
+import keyImg from "@src/public/components/UI/modules/inventory/pngtree-golden-key-metal-on-transparent-background-png-image_15629147.png";
+import { ItemRarity } from "@src/server/models/inventory/inventory.enums";
 
 export const itemsCollection: Items = [
   {

@@ -4,12 +4,12 @@ import {
   ErrorFactory,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 import {
   ActiveQuestUI,
   QuestItemDifficultyOutcomesUI,
   QuestItemUI,
-} from "@src/models/quests/quest.frontend.model";
+} from "@src/server/models/quests/quest.frontend.model";
 
 export function toActiveQuestUI(
   entity: ActiveQuestEntity,

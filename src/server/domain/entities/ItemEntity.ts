@@ -1,5 +1,5 @@
-import { Item } from "@src/models/inventory/inventory.db.model";
-import { ItemRarity } from "@src/models/inventory/inventory.enums";
+import { Item } from "@src/server/models/inventory/inventory.db.model";
+import { ItemRarity } from "@src/server/models/inventory/inventory.enums";
 
 export class ItemEntity {
   private readonly item: Item;

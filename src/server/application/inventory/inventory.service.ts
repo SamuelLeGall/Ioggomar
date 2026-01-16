@@ -3,15 +3,15 @@ import {
   FrontendResult,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
-import { InventoryUI } from "@src/models/inventory/inventory.frontend.model";
+} from "@src/server/models/BasicAndTempModels";
+import { InventoryUI } from "@src/server/models/inventory/inventory.frontend.model";
 import { InventoryRepository } from "@src/server/infrastructure/repositories/Inventory/InventoryRepository";
 import { toInventoryForFrontend } from "@src/server/domain/mappers/InventoryMappers";
 import { ItemRepository } from "@src/server/infrastructure/repositories/Inventory/ItemRepository";
 import { ItemEntity } from "@src/server/domain/entities/ItemEntity";
-import { ActiveItem } from "@src/models/inventory/inventory.db.model";
+import { ActiveItem } from "@src/server/models/inventory/inventory.db.model";
 import { InventoryEntity } from "@src/server/domain/entities/InventoryEntity";
-import * as generalUtils from "@utils/GeneralUtils";
+import * as generalUtils from "@src/server/utils/GeneralUtils";
 
 export class InventoryService {
   private readonly instanceName = "InventoryService";

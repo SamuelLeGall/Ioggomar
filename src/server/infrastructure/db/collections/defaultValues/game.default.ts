@@ -1,4 +1,4 @@
-import { MainSettings } from "@src/models/game/settings.db.models";
+import { MainSettings } from "@src/server/models/game/settings.db.models";
 
 /** Default state - it is readonly **/
 export const gameCollection: MainSettings = {

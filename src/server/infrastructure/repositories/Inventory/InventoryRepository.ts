@@ -1,13 +1,13 @@
 import { BaseCollectionRepository } from "@src/server/infrastructure/repositories/BaseCollectionRepository";
 import { InventoryEntity } from "@src/server/domain/entities/InventoryEntity";
-import { Inventory } from "@src/models/inventory/inventory.db.model";
+import { Inventory } from "@src/server/models/inventory/inventory.db.model";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 import {
   AppErrorCodes,
   ErrorFactory,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 
 export class InventoryRepository extends BaseCollectionRepository<
   Inventory,

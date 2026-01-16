@@ -1,10 +1,10 @@
 import {
   InventoryItemUI,
   InventoryUI,
-} from "@src/models/inventory/inventory.frontend.model";
-import { ErrorFactory, Result } from "@src/models/BasicAndTempModels";
+} from "@src/server/models/inventory/inventory.frontend.model";
+import { ErrorFactory, Result } from "@src/server/models/BasicAndTempModels";
 import { InventoryEntity } from "@src/server/domain/entities/InventoryEntity";
-import { ActiveItem } from "@src/models/inventory/inventory.db.model";
+import { ActiveItem } from "@src/server/models/inventory/inventory.db.model";
 import { ItemEntity } from "@src/server/domain/entities/ItemEntity";
 
 export function toInventoryForFrontend(

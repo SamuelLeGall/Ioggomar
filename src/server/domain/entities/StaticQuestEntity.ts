@@ -2,15 +2,18 @@ import {
   ErrorFactory,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
-import { QuestItem } from "@src/models/quests/quest.db.model";
-import { QuestDifficulty, QuestType } from "@src/models/quests/quest.enums";
+} from "@src/server/models/BasicAndTempModels";
+import { QuestItem } from "@src/server/models/quests/quest.db.model";
+import {
+  QuestDifficulty,
+  QuestType,
+} from "@src/server/models/quests/quest.enums";
 import {
   QuestGoalConfig,
   QuestGoalSubConfig,
   QuestPenalties,
   QuestRewards,
-} from "@src/models/quests/quest.shared.model";
+} from "@src/server/models/quests/quest.shared.model";
 
 export class StaticQuestEntity {
   private quest: QuestItem;

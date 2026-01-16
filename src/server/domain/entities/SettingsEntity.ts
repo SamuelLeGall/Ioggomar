@@ -2,8 +2,8 @@ import {
   ErrorFactory,
   OptionConfig,
   Result,
-} from "@src/models/BasicAndTempModels";
-import { MainSettings } from "@src/models/game/settings.db.models";
+} from "@src/server/models/BasicAndTempModels";
+import { MainSettings } from "@src/server/models/game/settings.db.models";
 
 export class SettingsEntity {
   private readonly gameSettings: MainSettings;

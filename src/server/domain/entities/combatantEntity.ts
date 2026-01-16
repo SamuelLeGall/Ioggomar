@@ -1,14 +1,14 @@
-import { Combatant } from "@src/models/entitiesStats/CombatantModels";
-import { ElementalTypes } from "@src/models/fight/ElementalTypesModels";
+import { Combatant } from "@src/server/models/entitiesStats/CombatantModels";
+import { ElementalTypes } from "@src/server/models/fight/ElementalTypesModels";
 import {
   drawingResult,
   ErrorFactory,
   Result,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 import {
   convertPercentSuccessIntoSuccessMinNumber,
   isSuccess,
-} from "@utils/DrawsUtils";
+} from "@src/server/utils/DrawsUtils";
 
 export class CombatantEntity {
   private combatant: Combatant;

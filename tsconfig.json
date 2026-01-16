@@ -13,39 +13,6 @@
       "@src/*": [
         "src/*"
       ],
-      "@assets/*": [
-        "src/assets/*"
-      ],
-      "@composables/*": [
-        "src/composables/*"
-      ],
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@config/*": [
-        "src/config/*"
-      ],
-      "@directives/*": [
-        "src/directives/*"
-      ],
-      "@localizations/*": [
-        "src/localizations/*"
-      ],
-      "@models/*": [
-        "src/domain/models/*"
-      ],
-      "@router/*": [
-        "src/router/*"
-      ],
-      "@stores/*": [
-        "src/domain/database-stores/*"
-      ],
-      "@styles/*": [
-        "src/styles/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ]
     },
     "strict": true,
     "allowSyntheticDefaultImports": true,

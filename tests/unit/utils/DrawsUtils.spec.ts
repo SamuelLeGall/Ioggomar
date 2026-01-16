@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import * as GeneralUtilsModule from "@utils/GeneralUtils";
-import { isSuccess } from "@utils/DrawsUtils";
-import { drawingResult } from "@src/models/BasicAndTempModels";
+import * as GeneralUtilsModule from "@src/server/utils/GeneralUtils";
+import { isSuccess } from "@src/server/utils/DrawsUtils";
+import { drawingResult } from "@src/server/models/BasicAndTempModels";
 import {
   isSuccessMockedDrawResult,
   drawingLimitsMock,
@@ -82,7 +82,7 @@ describe("Test of GeneralUtils - isSuccess - useExtendingDrawingResult=true", ()
       const result = isSuccess(
         isSuccessMockedDrawResult,
         true,
-        drawingLimitsMock
+        drawingLimitsMock,
       );
       expect(spyConsoleError).not.toHaveBeenCalled();
       expect(spy).toHaveBeenCalled();

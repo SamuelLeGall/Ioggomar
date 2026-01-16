@@ -4,9 +4,9 @@ import {
   ErrorFactory,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 import { BaseDocumentRepository } from "@src/server/infrastructure/repositories/BaseDocumentRepository";
-import { Player } from "@src/models/player/player.db.models";
+import { Player } from "@src/server/models/player/player.db.models";
 
 export class PlayerRepository extends BaseDocumentRepository<
   Player,

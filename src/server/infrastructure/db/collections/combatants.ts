@@ -1,3 +1,3 @@
-import { Combatant } from "@src/models/entitiesStats/CombatantModels";
+import { Combatant } from "@src/server/models/entitiesStats/CombatantModels";
 
 export const combatantsCollection: Combatant[] = [];

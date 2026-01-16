@@ -2,28 +2,28 @@ import { questsCollection } from "@src/server/infrastructure/db/collections/ques
 import { playerCollection } from "@src/server/infrastructure/db/collections/defaultValues/player.default";
 import { gameCollection } from "@src/server/infrastructure/db/collections/defaultValues/game.default";
 import { combatantsCollection } from "@src/server/infrastructure/db/collections/combatants";
-import { Combatant } from "@src/models/entitiesStats/CombatantModels";
+import { Combatant } from "@src/server/models/entitiesStats/CombatantModels";
 import { Collection } from "@src/server/infrastructure/db/Collection";
 import { Document } from "@src/server/infrastructure/db/Document";
 import {
   ErrorFactory,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 import {
   ActiveQuest,
   ActiveQuests,
   QuestItem,
   Quests,
-} from "@src/models/quests/quest.db.model";
-import { Player } from "@src/models/player/player.db.models";
-import { MainSettings } from "@src/models/game/settings.db.models";
+} from "@src/server/models/quests/quest.db.model";
+import { Player } from "@src/server/models/player/player.db.models";
+import { MainSettings } from "@src/server/models/game/settings.db.models";
 import {
   Inventories,
   Inventory,
   Item,
   Items,
-} from "@src/models/inventory/inventory.db.model";
+} from "@src/server/models/inventory/inventory.db.model";
 import { itemsCollection } from "@src/server/infrastructure/db/collections/items";
 import { inventoriesCollection } from "@src/server/infrastructure/db/collections/defaultValues/inventories.default";
 

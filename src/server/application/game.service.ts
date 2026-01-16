@@ -10,7 +10,7 @@ import {
   FrontendResult,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 import { InventoryService } from "@src/server/application/inventory/inventory.service";
 
 export class GameService {

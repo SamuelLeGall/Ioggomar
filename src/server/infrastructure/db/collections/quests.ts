@@ -1,5 +1,8 @@
-import { Quests } from "@src/models/quests/quest.db.model";
-import { QuestDifficulty, QuestType } from "@src/models/quests/quest.enums";
+import { Quests } from "@src/server/models/quests/quest.db.model";
+import {
+  QuestDifficulty,
+  QuestType,
+} from "@src/server/models/quests/quest.enums";
 
 export const questsCollection: Quests = [
   {

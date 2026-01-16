@@ -4,9 +4,9 @@ import {
   ErrorFactory,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 import { BaseDocumentRepository } from "@src/server/infrastructure/repositories/BaseDocumentRepository";
-import { MainSettings } from "@src/models/game/settings.db.models";
+import { MainSettings } from "@src/server/models/game/settings.db.models";
 
 export class SettingsRepository extends BaseDocumentRepository<
   MainSettings,

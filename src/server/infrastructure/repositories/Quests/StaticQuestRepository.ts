@@ -2,11 +2,11 @@ import {
   ErrorFactory,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 import { StaticQuestEntity } from "@src/server/domain/entities/StaticQuestEntity";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 import { BaseCollectionRepository } from "@src/server/infrastructure/repositories/BaseCollectionRepository";
-import { QuestItem } from "@src/models/quests/quest.db.model";
+import { QuestItem } from "@src/server/models/quests/quest.db.model";
 
 export class StaticQuestRepository extends BaseCollectionRepository<
   QuestItem,

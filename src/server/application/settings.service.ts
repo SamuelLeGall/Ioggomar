@@ -4,7 +4,7 @@ import {
   OptionConfig,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 import { SettingsRepository } from "@src/server/infrastructure/repositories/SettingsRepository";
 import {
   toDataThemeForFrontend,

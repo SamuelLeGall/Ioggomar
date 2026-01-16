@@ -12,17 +12,6 @@ export default defineConfig({
   resolve: {
     alias: {
       "@src": path.resolve(__dirname, "./src"),
-      "@assets": path.resolve(__dirname, "./src/assets"),
-      "@composables": path.resolve(__dirname, "./src/composables"),
-      "@components": path.resolve(__dirname, "./src/components"),
-      "@config": path.resolve(__dirname, "./src/config"),
-      "@directives": path.resolve(__dirname, "./src/directives"),
-      "@localizations": path.resolve(__dirname, "./src/localizations"),
-      "@models": path.resolve(__dirname, "./src/server/models"),
-      "@router": path.resolve(__dirname, "./src/router"),
-      "@stores": path.resolve(__dirname, "./src/server/database"),
-      "@styles": path.resolve(__dirname, "./src/styles"),
-      "@utils": path.resolve(__dirname, "./src/utils"),
     },
   },
   plugins: [

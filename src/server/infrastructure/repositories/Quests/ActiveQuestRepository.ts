@@ -3,11 +3,11 @@ import {
   ErrorFactory,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 import { ActiveQuestEntity } from "@src/server/domain/entities/ActiveQuestEntity";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 import { BaseCollectionRepository } from "@src/server/infrastructure/repositories/BaseCollectionRepository";
-import { ActiveQuest } from "@src/models/quests/quest.db.model";
+import { ActiveQuest } from "@src/server/models/quests/quest.db.model";
 
 export class ActiveQuestRepository extends BaseCollectionRepository<
   ActiveQuest,

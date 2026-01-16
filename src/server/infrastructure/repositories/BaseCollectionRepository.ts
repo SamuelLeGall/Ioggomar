@@ -4,7 +4,7 @@ import {
   QueryParam,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 
 export abstract class BaseCollectionRepository<
   TDbItem extends { id: string },

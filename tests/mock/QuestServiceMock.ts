@@ -1,5 +1,5 @@
 import { TestCase } from "tests/Models/testsModels";
-import { QuestDifficulty } from "@src/models/quests/quest.enums";
+import { QuestDifficulty } from "@src/server/models/quests/quest.enums";
 
 const acceptQuestTestCases: TestCase[] = [
   {

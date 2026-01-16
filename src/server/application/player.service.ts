@@ -4,9 +4,9 @@ import {
   FrontendResult,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 import { toPlayerForFrontend } from "@src/server/domain/mappers/PlayerMappers";
-import { PlayerUI } from "@src/models/player/player.frontend.model";
+import { PlayerUI } from "@src/server/models/player/player.frontend.model";
 
 export class PlayerService {
   private readonly instanceName = "PlayerService";

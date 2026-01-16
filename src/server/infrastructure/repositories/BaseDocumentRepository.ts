@@ -2,7 +2,7 @@ import {
   ErrorFactory,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
+} from "@src/server/models/BasicAndTempModels";
 import { Document } from "@src/server/infrastructure/db/Document";
 
 export abstract class BaseDocumentRepository<TDbItem, TEntity> {

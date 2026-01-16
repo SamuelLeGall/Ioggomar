@@ -2,8 +2,8 @@ import {
   ErrorFactory,
   Result,
   ResultFactory,
-} from "@src/models/BasicAndTempModels";
-import { Combatant } from "@src/models/entitiesStats/CombatantModels";
+} from "@src/server/models/BasicAndTempModels";
+import { Combatant } from "@src/server/models/entitiesStats/CombatantModels";
 import { LocalDatabase } from "@src/server/infrastructure/db/LocalDatabase";
 import { CombatantEntity } from "@src/server/domain/entities/combatantEntity";
 import { BaseCollectionRepository } from "@src/server/infrastructure/repositories/BaseCollectionRepository";
