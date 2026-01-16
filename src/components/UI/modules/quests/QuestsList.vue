@@ -37,8 +37,8 @@
 <script setup lang="ts">
 import { onMounted, computed } from "vue";
 import { QuestStoreService } from "@src/services/quests/QuestStore.service";
-import QuestItem from "@components/UI/modules/QuestItem.vue";
-import ActiveQuestItem from "@components/UI/modules/ActiveQuestItem.vue";
+import QuestItem from "@components/UI/modules/quests/QuestItem.vue";
+import ActiveQuestItem from "@components/UI/modules/quests/ActiveQuestItem.vue";
 import {
   ActiveQuestUI,
   QuestItemUI,

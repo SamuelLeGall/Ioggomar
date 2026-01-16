@@ -18,13 +18,23 @@ import {
 } from "@src/models/quests/quest.db.model";
 import { Player } from "@src/models/player/player.db.models";
 import { MainSettings } from "@src/models/game/settings.db.models";
+import {
+  Inventories,
+  Inventory,
+  Item,
+  Items,
+} from "@src/models/inventory/inventory.db.model";
+import { itemsCollection } from "@src/server/infrastructure/db/collections/items";
+import { inventoriesCollection } from "@src/server/infrastructure/db/collections/defaultValues/inventories.default";
 
 export type GameDatabase = {
   readonly: {
     quests: Quests;
+    items: Items;
     combatants: Combatant[];
   };
   session: {
+    inventories: Inventories;
     activeQuests: ActiveQuests;
     player: Player;
     gameSettings: MainSettings;
@@ -97,6 +107,64 @@ export class LocalDatabase {
     },
     () => this.getDefault().readonly.combatants,
     "Combatant",
+  );
+  readonly items = new Collection<Item>(
+    () => {
+      const loadResult = this.load();
+      if (ResultFactory.isError(loadResult)) {
+        // Fallback to default on load error
+        return this.getDefault().readonly.items;
+      }
+      const [db] = loadResult;
+      return db.readonly.items;
+    },
+    (_, options) => {
+      if (!options?.force) {
+        throw new Error("Readonly data cannot be updated");
+      }
+
+      const loadResult = this.load();
+      if (ResultFactory.isError(loadResult)) {
+        throw new Error("Cannot reset: Database load failed");
+      }
+
+      const [db] = loadResult;
+      db.readonly.items = this.getDefault().readonly.items;
+
+      const saveResult = this.save(db);
+      if (ResultFactory.isError(saveResult)) {
+        throw new Error("Cannot reset: Database save failed");
+      }
+    },
+    () => this.getDefault().readonly.items,
+    "Item",
+  );
+  readonly inventories = new Collection<Inventory>(
+    () => {
+      const loadResult = this.load();
+      if (ResultFactory.isError(loadResult)) {
+        return this.getDefault().session.inventories;
+      }
+      const [db] = loadResult;
+      return db.session.inventories;
+    },
+    (data, options) => {
+      const loadResult = this.load();
+      if (ResultFactory.isError(loadResult)) {
+        throw new Error("Cannot update: Database load failed");
+      }
+      const [db] = loadResult;
+      db.session.inventories = options?.force
+        ? this.getDefault().session.inventories
+        : data;
+
+      const saveResult = this.save(db);
+      if (ResultFactory.isError(saveResult)) {
+        throw new Error("Cannot update: Database save failed");
+      }
+    },
+    () => this.getDefault().session.inventories,
+    "Inventory",
   );
 
   readonly quests = new Collection<QuestItem>(
@@ -219,10 +287,12 @@ export class LocalDatabase {
     return {
       readonly: {
         quests: questsCollection,
+        items: itemsCollection,
         combatants: combatantsCollection,
       },
       session: {
         activeQuests: [],
+        inventories: inventoriesCollection,
         player: playerCollection, // single document
         gameSettings: gameCollection, // single document
       },

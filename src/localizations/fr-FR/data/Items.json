@@ -1,0 +1,26 @@
+{
+  "keys": {
+    "item_key_001": {
+      "name": "Golden key",
+      "description": "A golden key used to open a chest on 2nd floor of XXXXXX dungeon"
+    }
+  },
+  "tags": {
+    "category": {
+      "trinket": {
+        "id": "001",
+        "type": "TEXT",
+        "text": "Trinket"
+      }
+    },
+    "quantity": {
+      "id": "002",
+      "type": "TEXT",
+      "text": "x<QUANTITY>"
+    }
+  },
+  "hints": {
+    "item_hint_mid_boss" : "Mid bosses",
+    "item_hint_main_boss" : "Final bosses"
+  }
+}

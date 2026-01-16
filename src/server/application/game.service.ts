@@ -11,12 +11,14 @@ import {
   Result,
   ResultFactory,
 } from "@src/models/BasicAndTempModels";
+import { InventoryService } from "@src/server/application/inventory/inventory.service";
 
 export class GameService {
   private readonly instanceName = "GameService";
   private settingsService: SettingsService;
   private playerService: PlayerService;
   private questService: QuestService;
+  private inventoryService: InventoryService;
   /** try not to use the database directly when you can use the services */
   private database: LocalDatabase;
 
@@ -25,11 +27,13 @@ export class GameService {
     settingsService = new SettingsService(),
     playerService = new PlayerService(),
     questService = new QuestService(),
+    inventoryService = new InventoryService(),
   ) {
     this.database = database;
     this.settingsService = settingsService;
     this.playerService = playerService;
     this.questService = questService;
+    this.inventoryService = inventoryService;
   }
 
   private initializeGlobal(): Result<boolean> {
@@ -61,6 +65,16 @@ export class GameService {
       if (ResultFactory.isError(resultInitilizeQuests)) {
         const [, errorInitializeQuests] = resultInitilizeQuests;
         return [null, ErrorFactory.chainError(errorInitializeQuests, context)];
+      }
+
+      const resultInitilizeInventories =
+        this.inventoryService.initializeInventories();
+      if (ResultFactory.isError(resultInitilizeInventories)) {
+        const [, errorInitializeInventories] = resultInitilizeInventories;
+        return [
+          null,
+          ErrorFactory.chainError(errorInitializeInventories, context),
+        ];
       }
 
       return [true, null];
