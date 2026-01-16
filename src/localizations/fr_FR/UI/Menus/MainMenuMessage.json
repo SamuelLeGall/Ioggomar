@@ -1,8 +1,0 @@
-{
-  "MainMenu": {
-    "title": "Menu principal",
-    "saveButton": "Sauvegarder la partie",
-    "loadButton": "Charger une partie",
-    "resumeButton": "Reprendre"
-  }
-}

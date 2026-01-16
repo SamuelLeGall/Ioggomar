@@ -4,7 +4,6 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import electron, { onstart } from "vite-plugin-electron";
 import pkg from "./package.json";
-import eslintPlugin from "vite-plugin-eslint";
 
 rmSync("dist", { recursive: true, force: true }); // v14.14.0
 
@@ -12,21 +11,10 @@ rmSync("dist", { recursive: true, force: true }); // v14.14.0
 export default defineConfig({
   resolve: {
     alias: {
-      "@assets": path.resolve(__dirname, "./src/assets"),
-      "@composables": path.resolve(__dirname, "./src/composables"),
-      "@components": path.resolve(__dirname, "./src/components"),
-      "@config": path.resolve(__dirname, "./src/config"),
-      "@directives": path.resolve(__dirname, "./src/directives"),
-      "@localizations": path.resolve(__dirname, "./src/localizations"),
-      "@models": path.resolve(__dirname, "./src/models"),
-      "@router": path.resolve(__dirname, "./src/router"),
-      "@stores": path.resolve(__dirname, "./src/stores"),
-      "@styles": path.resolve(__dirname, "./src/styles"),
-      "@utils": path.resolve(__dirname, "./src/utils"),
+      "@src": path.resolve(__dirname, "./src"),
     },
   },
   plugins: [
-    eslintPlugin(),
     vue(),
     electron({
       main: {

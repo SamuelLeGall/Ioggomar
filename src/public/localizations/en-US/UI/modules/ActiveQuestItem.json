@@ -1,0 +1,25 @@
+{
+  "outcomes": {
+    "difficulty": "Difficulty",
+    "rewards": {
+      "title": "Rewards",
+      "xp": "XP",
+      "gold": "Gold coins",
+      "items": "Items"
+    },
+    "penalties": {
+      "title": "Penalties",
+      "xpReset": "The accumulated experience for this level will be lost",
+      "equipmentDropped": "Equipment piece will be lost",
+      "levelsLost": "Number of level(s) lost: "
+    }
+  },
+  "progress": {
+    "title": "Progress"
+  },
+  "buttons": {
+    "cancel": "Cancel",
+    "increment": "+1",
+    "complete": "Complete"
+  }
+}

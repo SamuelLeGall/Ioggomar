@@ -10,38 +10,8 @@
     "sourceMap": true,
     "baseUrl": "./",
     "paths": {
-      "@assets/*": [
-        "src/assets/*"
-      ],
-      "@composables/*": [
-        "src/composables/*"
-      ],
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@config/*": [
-        "src/config/*"
-      ],
-      "@directives/*": [
-        "src/directives/*"
-      ],
-      "@localizations/*": [
-        "src/localizations/*"
-      ],
-      "@models/*": [
-        "src/models/*"
-      ],
-      "@router/*": [
-        "src/router/*"
-      ],
-      "@stores/*": [
-        "src/stores/*"
-      ],
-      "@styles/*": [
-        "src/styles/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
+      "@src/*": [
+        "src/*"
       ],
     },
     "strict": true,
@@ -49,9 +19,8 @@
     "skipLibCheck": true,
     "types": ["vitest/globals"]
   },
-  "include": [
-    "src"
-  ],
+  "include": [ "src/**/*",  "tests/**/*"],
+  "exclude": ["node_modules", "dist", "build"],
   "references": [
     {
       "path": "./tsconfig.node.json"

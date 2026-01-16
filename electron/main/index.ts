@@ -29,7 +29,7 @@ async function save(_event: IpcMainEvent, saveData: any): Promise<boolean> {
       return false;
     }
     const writer = fs.createWriteStream(filePath);
-    writer.write(saveData, "utf-8");
+    writer.write(JSON.stringify(saveData), "utf-8");
     return true;
   } catch (err) {
     console.error(`[save] Error : ${err}`);

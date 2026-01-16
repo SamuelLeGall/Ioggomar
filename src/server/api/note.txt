@@ -1,0 +1,2 @@
+In theory it would be where we would found the controllers (express-style routes + error logging).
+ex: quest.controller.ts

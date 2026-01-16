@@ -1,0 +1,7 @@
+Here the ideas is that repositories are dumb.
+
+They should not need to know what other context repository do.
+
+They should not no what is done/happen on the domain or service layer.
+
+They should only fetch or mutate data without implementing business logic

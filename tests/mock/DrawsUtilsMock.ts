@@ -1,4 +1,4 @@
-import { drawingResult } from "@models/game/basic";
+import { drawingResult } from "@src/server/models/BasicAndTempModels";
 
 export const isSuccessMockedDrawResult = 40;
 export const drawingLimitsMock = {

@@ -1,0 +1,25 @@
+{
+  "outcomes": {
+    "difficulty": "Difficulté",
+    "rewards": {
+      "title": "Récompenses",
+      "xp": "XP",
+      "gold": "Pièces d'or",
+      "items": "Pièces d'équipements"
+    },
+    "penalties": {
+      "title": "Pénalités",
+      "xpReset": "L'expérience accumulée pour ce niveau perdu",
+      "equipmentDropped": "Des pièces d'équipements seront perdu",
+      "levelsLost": "Nombre de niveau(x) perdu(s) : "
+    }
+  },
+  "progress": {
+    "title": "Progrès"
+  },
+  "buttons": {
+    "cancel": "Annuler",
+    "increment": "+1",
+    "complete": "Terminer"
+  }
+}
